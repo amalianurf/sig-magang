@@ -1,0 +1,13 @@
+{
+  "development": {
+    "use_env_variable": false,
+    "username": "postgres",
+    "password": "amalia",
+    "database": "magang_db",
+    "host": "localhost",
+    "dialect": "postgres"
+  },
+  "production": {
+    "use_env_variable": "POSTGRES_PROD_URL"
+  }
+}
