@@ -1,6 +1,5 @@
 'use strict';
 const { Model } = require('sequelize');
-const CompanyModel = require('../models').Company;
 
 module.exports = (sequelize, DataTypes) => {
   class Sector extends Model {}
@@ -21,7 +20,9 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: true
   });
 
-  Sector.hasMany(CompanyModel, { foreignKey: 'sector_id' });
+  Sector.associate = (models) => {
+    Sector.hasMany(models.Company, { foreignKey: 'sector_id' });
+  }
 
   return Sector;
 };

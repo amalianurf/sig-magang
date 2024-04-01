@@ -1,6 +1,5 @@
 'use strict';
 const { Model } = require('sequelize');
-const CompanyModel = require('../models').Company;
 
 module.exports = (sequelize, DataTypes) => {
   class Opportunity extends Model {}
@@ -54,7 +53,9 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: true
   });
 
-  Opportunity.belongsTo(CompanyModel, { foreignKey: 'company_id' });
+  Opportunity.associate = (models) => {
+    Opportunity.belongsTo(models.Company, { foreignKey: 'company_id' });
+  }
 
   return Opportunity;
 };

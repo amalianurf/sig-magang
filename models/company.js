@@ -1,7 +1,5 @@
 'use strict';
 const { Model } = require('sequelize');
-const SectorModel = require('../models').Sector;
-const OpportunityModel = require('../models').Opportunity;
 
 module.exports = (sequelize, DataTypes) => {
   class Company extends Model {}
@@ -49,8 +47,12 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: true
   });
 
-  Company.belongsTo(SectorModel, { foreignKey: 'sector_id' });
-  Company.hasMany(OpportunityModel, { foreignKey: 'company_id' });
+  Company.associate = (models) => {
+    Company.belongsTo(models.Sector, { foreignKey: 'sector_id' });
+    Company.hasMany(models.Opportunity, { foreignKey: 'company_id' });
+  }
+  // Company.belongsTo(SectorModel, { foreignKey: 'sector_id' });
+  // Company.hasMany(OpportunityModel, { foreignKey: 'company_id' });
 
   return Company;
 };
