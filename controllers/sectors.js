@@ -59,7 +59,7 @@ exports.update = async (req, res) => {
             return res.status(401).json({ message: 'Gagal mengubah data' });
         }
 
-        res.status(201).json({ message: 'Data sektor berhasil diubah' });
+        res.status(200).json({ message: 'Data sektor berhasil diubah' });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ message: 'Gagal mengubah data' });
@@ -73,7 +73,7 @@ exports.delete = async (req, res) => {
             return res.status(401).json({ message: 'Gagal menghapus data' });
         }
 
-        res.status(201).json({ message: 'Data sektor berhasil dihapus' });
+        res.status(200).json({ message: 'Data sektor berhasil dihapus' });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ message: 'Gagal menghapus data' });
