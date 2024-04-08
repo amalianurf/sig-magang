@@ -8,6 +8,8 @@ const handle = app.getRequestHandler();
 
 const userController = require('./controllers/users');
 const sectorController = require('./controllers/sectors');
+const companyController = require('./controllers/companies');
+const opportunityController = require('./controllers/opportunities');
 
 app.prepare().then(() => {
     const server = express();
@@ -23,6 +25,20 @@ app.prepare().then(() => {
     server.post('/api/sector', sectorController.create);
     server.put('/api/sector/:id', sectorController.update);
     server.delete('/api/sector/:id', sectorController.delete);
+
+    // company api
+    server.get('/api/companies', companyController.getAll);
+    server.get('/api/company/:id', companyController.getById);
+    server.post('/api/company', companyController.create);
+    server.put('/api/company/:id', companyController.update);
+    server.delete('/api/company/:id', companyController.delete);
+
+    // opportunity api
+    server.get('/api/opportunities', opportunityController.getAll);
+    server.get('/api/opportunity/:id', opportunityController.getById);
+    server.post('/api/opportunity', opportunityController.create);
+    server.put('/api/opportunity/:id', opportunityController.update);
+    server.delete('/api/opportunity/:id', opportunityController.delete);
 
     server.get('*', (req, res) => {
         return handle(req, res);

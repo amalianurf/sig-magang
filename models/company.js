@@ -51,8 +51,6 @@ module.exports = (sequelize, DataTypes) => {
     Company.belongsTo(models.Sector, { foreignKey: 'sector_id' });
     Company.hasMany(models.Opportunity, { foreignKey: 'company_id' });
   }
-  // Company.belongsTo(SectorModel, { foreignKey: 'sector_id' });
-  // Company.hasMany(OpportunityModel, { foreignKey: 'company_id' });
 
   return Company;
 };
