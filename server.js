@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const next = require('next');
 require('dotenv').config({ path: '.env.local' });
 
@@ -18,6 +19,7 @@ app.prepare().then(() => {
     const port = process.env.PORT;
 
     server.use(express.json())
+    server.use(cors())
 
     server.post('/api/auth', userController.auth);
 
