@@ -1,5 +1,6 @@
 'use client'
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Cookies from 'js-cookie'
 import toast, { Toaster } from 'react-hot-toast'
 import Button from '@component/components/Button'
@@ -17,32 +18,34 @@ function page() {
         setForm({ ...form, [e.target.name]: e.target.value })
     }
 
+    const router = useRouter()
+
     const handleLogin = async (e) => {
         e.preventDefault()
 
         if (form.email == '' || form.password == '') {
             toast.error('Harap lengkapi semua data.')
         } else {
-            try {
-                await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/auth`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(form)
-                }).then((response) => {
-                    return response.json()
-                }).then((data) => {
-                    if (data.accessToken) {
-                        Cookies.set('access-token', data.accessToken)
-                        toast.success(data.message)
-                    } else {
-                        toast.error(data.message)
-                    }
-                })
-            } catch (error) {
-                console.error('Error:', error)
-            }
+            await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/auth`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(form)
+            }).then(async (response) => {
+                if (!response.ok) {
+                    return response.json().then(error => {
+                        throw new Error(error.message)
+                    })
+                }
+                return response.json()
+            }).then((data) => {
+                Cookies.set('access-token', data.accessToken)
+                router.push('/admin/dashboard')
+            }).catch((error) => {
+                toast.error(error.message)
+                console.error('Error:', error.message)
+            })
         }
     }
 
