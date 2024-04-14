@@ -52,8 +52,8 @@ function page() {
     return (
         <>
             <Toaster position='top-center' reverseOrder={false} />
-            <div className='bg-blue-light w-full h-screen grid place-items-center'>
-                <div className='flex flex-col gap-9 bg-white w-fit h-fit px-14 py-12 rounded-2xl shadow-md'>
+            <main className='bg-blue-light w-full h-screen grid place-items-center'>
+                <section className='flex flex-col gap-9 bg-white w-fit h-fit px-14 py-12 rounded-2xl shadow-md'>
                     <h1 className='text-iris-normal text-center'>LOGIN ADMIN</h1>
                     <form onSubmit={handleLogin} className='flex flex-col gap-9 w-[440px]'>
                         <div className='flex flex-col gap-1'>
@@ -71,8 +71,8 @@ function page() {
                             <Button type={'submit'} name={'MASUK'} buttonStyle={'w-1/2 py-3 text-white font-bold bg-iris-normal rounded-lg'} />
                         </div>
                     </form>
-                </div>
-            </div>
+                </section>
+            </main>
         </>
     )
 }
