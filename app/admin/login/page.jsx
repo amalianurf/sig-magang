@@ -29,14 +29,12 @@ function page() {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    mode: 'no-cors',
                     body: JSON.stringify(form)
                 }).then((response) => {
                     return response.json()
                 }).then((data) => {
-                    console.log(data)
                     if (data.accessToken) {
-                        Cookies.set('login', data.accessToken)
+                        Cookies.set('access-token', data.accessToken)
                         toast.success(data.message)
                     } else {
                         toast.error(data.message)
@@ -52,9 +50,9 @@ function page() {
         <>
             <Toaster position='top-center' reverseOrder={false} />
             <div className='bg-blue-light w-full h-screen grid place-items-center'>
-                <div className='flex flex-col gap-9 bg-white w-[35%] h-fit px-14 py-12 rounded-2xl shadow-md'>
+                <div className='flex flex-col gap-9 bg-white w-fit h-fit px-14 py-12 rounded-2xl shadow-md'>
                     <h1 className='text-iris-normal text-center'>LOGIN ADMIN</h1>
-                    <form onSubmit={handleLogin} className='flex flex-col gap-9'>
+                    <form onSubmit={handleLogin} className='flex flex-col gap-9 w-[440px]'>
                         <div className='flex flex-col gap-1'>
                             <label htmlFor='email' className='font-medium'>Email</label>
                             <input type='email' name='email' value={form.email} onChange={handleFormChange} placeholder='Email' className='w-full px-4 py-2 border border-grey-normal rounded-lg text-base outline-none' required />
