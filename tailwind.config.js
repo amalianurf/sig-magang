@@ -10,13 +10,14 @@ module.exports = {
       black: '#1C1B1F',
       white: '#FFFFFF',
       grey: {
-        normal: '#7C7C7C'
+        DEFAULT: '#7C7C7C',
+        light: '#D4D4D4'
       },
       blue: {
         light: '#E7EFFE'
       },
       iris: {
-        normal: '#5D5FEF'
+        DEFAULT: '#5D5FEF'
       }
     },
     fontFamily: {
