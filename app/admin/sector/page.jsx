@@ -7,7 +7,7 @@ import Cookies from 'js-cookie'
 import toast from 'react-hot-toast'
 
 function page() {
-    const [sector, setSector] = useState([])
+    const [sectors, setSectors] = useState([])
     const [loading, setLoading] = useState(true)
     const [filterModel, setFilterModel] = useState({
         items: [],
@@ -15,7 +15,7 @@ function page() {
     })
 
     useEffect(() => {
-        const fetchDataSector = async () => {
+        const fetchDataSectors = async () => {
             await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/sectors`).then(async (response) => {
                 if (!response.ok) {
                     return response.json().then(error => {
@@ -24,7 +24,7 @@ function page() {
                 }
                 return response.json()
             }).then((data) => {
-                setSector(data)
+                setSectors(data)
                 setLoading(false)
             }).catch((error) => {
                 console.error('Error:', error)
@@ -32,8 +32,8 @@ function page() {
             })
         }
 
-        fetchDataSector()
-    }, [sector])
+        fetchDataSectors()
+    }, [sectors])
 
     const handleDelete = (id) => {
         toast.loading('Menghapus data...')
@@ -66,7 +66,7 @@ function page() {
         })
     }
 
-    const rows = addRowNumbers(sector)
+    const rows = addRowNumbers(sectors)
 
     const columns = [
         { field: 'no', headerName: 'No.', width: 70 },
