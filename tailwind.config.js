@@ -7,7 +7,7 @@ module.exports = {
   ],
   theme: {
     colors: {
-      black: '#1C1B1F',
+      black: '#1E1E1E',
       white: '#FFFFFF',
       grey: {
         DEFAULT: '#7C7C7C',
@@ -18,6 +18,12 @@ module.exports = {
       },
       iris: {
         DEFAULT: '#5D5FEF'
+      },
+      red: '#FA0014',
+      green: '#117E19',
+      neutral: {
+        DEFAULT: '#F8F9FC',
+        dark: '#F1F3F9'
       }
     },
     fontFamily: {

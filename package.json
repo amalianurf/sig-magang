@@ -13,6 +13,8 @@
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.15.15",
     "@mui/material": "^5.15.15",
+    "@mui/styled-engine-sc": "^6.0.0-alpha.18",
+    "@mui/x-data-grid": "^7.2.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -26,6 +28,7 @@
     "react-dom": "^18",
     "react-hot-toast": "^2.4.1",
     "sequelize": "^6.37.1",
+    "styled-components": "^6.1.8",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
