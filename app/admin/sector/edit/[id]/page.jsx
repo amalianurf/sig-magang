@@ -73,16 +73,14 @@ function page() {
 
     return (
         <section className='flex flex-col gap-6 p-10'>
+            <div className='flex items-center gap-2 text-iris'>
+                <Button type={'button'} onClick={() => router.back()} name={<ArrowBackIcon fontSize='large' />} buttonStyle={'flex items-center p-1.5 rounded-full hover:bg-grey-light/[.3]'} />
+                <h2>Edit Data Sektor</h2>
+            </div>
             {loading ? (
                 <div>Loading...</div>
             ) : (
-                <>
-                    <div className='flex items-center gap-2 text-iris'>
-                        <Button type={'button'} onClick={() => router.back()} name={<ArrowBackIcon fontSize='large' />} buttonStyle={'flex items-center p-1.5 rounded-full hover:bg-grey-light/[.3]'} />
-                        <h2>Edit Data Sektor</h2>
-                    </div>
-                    <SectorForm value={sectorName} buttonName={'Ubah Data'} handleChange={handleSectorChange} handleSubmit={handleSubmit} />
-                </>
+                <SectorForm value={sectorName} buttonName={'Ubah Data'} handleChange={handleSectorChange} handleSubmit={handleSubmit} />
             )}
         </section>
     )

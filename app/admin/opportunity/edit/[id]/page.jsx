@@ -133,7 +133,11 @@ function page() {
                 <Button type={'button'} onClick={() => router.back()} name={<ArrowBackIcon fontSize='large' />} buttonStyle={'flex items-center p-1.5 rounded-full hover:bg-grey-light/[.3]'} />
                 <h2>Edit Data Magang</h2>
             </div>
-            <OpportunityForm value={opportunity} selectedOption={selectedOption} buttonName={'Ubah Data'} handleInputChange={handleInputChange} handleSelectChange={handleSelectChange} handleSubmit={handleSubmit} />
+            {loading ? (
+                <div>Loading...</div>
+            ) : (
+                <OpportunityForm value={opportunity} selectedOption={selectedOption} buttonName={'Ubah Data'} handleInputChange={handleInputChange} handleSelectChange={handleSelectChange} handleSubmit={handleSubmit} />
+            )}
         </section>
     )
 }
