@@ -19,6 +19,10 @@
   h3 {
     @apply font-semibold text-2xl
   }
+
+  h4 {
+    @apply font-semibold text-xl
+  }
 }
 
 /* Chrome, Safari, Edge, Opera */
