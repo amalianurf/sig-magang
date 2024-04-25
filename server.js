@@ -35,6 +35,18 @@ app.prepare().then(() => {
     server.get('/api/opportunities', opportunityController.getAll);
     server.get('/api/opportunity/:id', opportunityController.getById);
 
+    // kabupaten/kota api
+    server.get('/api/cities', async (req, res) => {
+        try {
+            const response = await fetch('https://sipedas.pertanian.go.id/api/wilayah/list_wilayah?thn=2024&lvl=10&lv2=12');
+            const data = await response.json();
+            res.status(200).json(data);
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
+
     // admin only
     server.use(middleware.authMiddleware);
 
