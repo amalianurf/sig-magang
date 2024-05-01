@@ -21,21 +21,23 @@ app.prepare().then(() => {
     server.use(express.json())
     server.use(cors())
 
+    // API ROUTES
     server.post('/api/auth', userController.auth);
 
-    // sector api
     server.get('/api/sectors', sectorController.getAll);
     server.get('/api/sector/:id', sectorController.getById);
 
-    // company api
     server.get('/api/companies', companyController.getAll);
     server.get('/api/company/:id', companyController.getById);
 
-    // opportunity api
     server.get('/api/opportunities', opportunityController.getAll);
     server.get('/api/opportunity/:id', opportunityController.getById);
 
-    // admin only
+    server.get('*', (req, res) => {
+        return handle(req, res);
+    });
+
+    // ADMIN API ROUTES
     server.use(middleware.authMiddleware);
 
     server.post('/api/company', companyController.create);
@@ -50,10 +52,6 @@ app.prepare().then(() => {
     server.put('/api/opportunity/:id', opportunityController.update);
     server.delete('/api/opportunity/:id', opportunityController.delete);
 
-    server.get('*', (req, res) => {
-        return handle(req, res);
-    });
-  
     server.listen(port, () => {
         console.log(`Express server listening on port ${port}`);
     });
