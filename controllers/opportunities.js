@@ -57,22 +57,45 @@ exports.getById = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        const opportunity = await OpportunityModel.create({
-            id: uuidv4(),
-            name: req.body.name,
-            activity_type: req.body.activity_type,
-            duration: req.body.duration,
-            description: req.body.description,
-            quota: req.body.quota,
-            start_period: req.body.start_period,
-            min_semester: req.body.min_semester,
-            salary: req.body.salary,
-            company_id: req.body.company_id,
-            createdAt: new Date(),
-            updatedAt: new Date()
-        });
-        if (!opportunity) {
-            return res.status(401).json({ message: 'Gagal menambahkan data' });
+        if (req.body.length > 1) {
+            const isValidData = req.body.every((data) => {
+                return (
+                    'name' in data &&
+                    'activity_type' in data &&
+                    'description' in data &&
+                    'quota' in data &&
+                    'start_period' in data &&
+                    'min_semester' in data &&
+                    'salary' in data &&
+                    'company_id' in data
+                );
+            });
+    
+            if (isValidData) {
+                const reqData = req.body.map((data) => ({
+                    ...data,
+                    id: data.id || uuidv4(),
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                }))
+
+                const opportunity = await OpportunityModel.bulkCreate(reqData);
+                if (!opportunity) {
+                    return res.status(401).json({ message: 'Gagal menambahkan data' });
+                }
+            } else {
+                return res.status(401).json({ message: 'Struktur data tidak sesuai format' });
+            }
+        } else {
+            const opportunity = await OpportunityModel.create({
+                id: uuidv4(),
+                ...req.body,
+                createdAt: new Date(),
+                updatedAt: new Date()
+            });
+            if (!opportunity) {
+                return res.status(401).json({ message: 'Gagal menambahkan data' });
+            }
         }
 
         res.status(201).json({ message: 'Data lowongan berhasil ditambahkan' });
@@ -86,15 +109,7 @@ exports.update = async (req, res) => {
     try {
         const dataUpdated = await OpportunityModel.update(
             {
-                name: req.body.name,
-                activity_type: req.body.activity_type,
-                duration: req.body.duration,
-                description: req.body.description,
-                quota: req.body.quota,
-                start_period: req.body.start_period,
-                min_semester: req.body.min_semester,
-                salary: req.body.salary,
-                company_id: req.body.company_id,
+                ...req.body,
                 updatedAt: new Date()
             },
             {
