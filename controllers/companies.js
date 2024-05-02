@@ -27,21 +27,45 @@ exports.getById = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        const company = await CompanyModel.create({
-            id: uuidv4(),
-            brand_name: req.body.brand_name,
-            company_name: req.body.company_name,
-            description: req.body.description,
-            logo: req.body.logo,
-            address: req.body.address,
-            city: req.body.city,
-            location: req.body.location,
-            sector_id: req.body.sector_id,
-            createdAt: new Date(),
-            updatedAt: new Date()
-        });
-        if (!company) {
-            return res.status(401).json({ message: 'Gagal menambahkan data' });
+        if (req.body.length > 1) {
+            const isValidData = req.body.every((data) => {
+                return (
+                    'brand_name' in data &&
+                    'company_name' in data &&
+                    'description' in data &&
+                    'logo' in data &&
+                    'address' in data &&
+                    'city' in data &&
+                    'location' in data &&
+                    'sector_id' in data
+                );
+            });
+    
+            if (isValidData) {
+                const reqData = req.body.map((data) => ({
+                    ...data,
+                    id: data.id || uuidv4(),
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                }))
+        
+                const company = await CompanyModel.bulkCreate(reqData);
+                if (!company) {
+                    return res.status(401).json({ message: 'Gagal menambahkan data' });
+                }
+            } else {
+                return res.status(401).json({ message: 'Struktur data tidak sesuai format' });
+            }
+        } else {
+            const company = await CompanyModel.create({
+                ...req.body,
+                id: uuidv4(),
+                createdAt: new Date(),
+                updatedAt: new Date()
+            });
+            if (!company) {
+                return res.status(401).json({ message: 'Gagal menambahkan data' });
+            }
         }
 
         res.status(201).json({ message: 'Data perusahaan berhasil ditambahkan' });
@@ -55,14 +79,7 @@ exports.update = async (req, res) => {
     try {
         const dataUpdated = await CompanyModel.update(
             {
-                brand_name: req.body.brand_name,
-                company_name: req.body.company_name,
-                description: req.body.description,
-                logo: req.body.logo,
-                address: req.body.address,
-                city: req.body.city,
-                location: req.body.location,
-                sector_id: req.body.sector_id,
+                ...req.body,
                 updatedAt: new Date()
             },
             {

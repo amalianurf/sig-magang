@@ -27,14 +27,36 @@ exports.getById = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        const sector = await SectorModel.create({
-            id: uuidv4(),
-            name: req.body.name,
-            createdAt: new Date(),
-            updatedAt: new Date()
-        });
-        if (!sector) {
-            return res.status(401).json({ message: 'Gagal menambahkan data' });
+        if (req.body.length > 1) {
+            const isValidData = req.body.every((data) => {
+                return 'name' in data;
+            });
+    
+            if (isValidData) {
+                const reqData = req.body.map((data) => ({
+                    ...data,
+                    id: data.id || uuidv4(),
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                }))
+        
+                const sector = await SectorModel.bulkCreate(reqData);
+                if (!sector) {
+                    return res.status(401).json({ message: 'Gagal menambahkan data' });
+                }
+            } else {
+                return res.status(401).json({ message: 'Struktur data tidak sesuai format' });
+            }
+        } else {    
+            const sector = await SectorModel.create({
+                ...req.body,
+                id: uuidv4(),
+                createdAt: new Date(),
+                updatedAt: new Date()
+            });
+            if (!sector) {
+                return res.status(401).json({ message: 'Gagal menambahkan data' });
+            }
         }
 
         res.status(201).json({ message: 'Data sektor berhasil ditambahkan' });

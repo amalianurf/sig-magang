@@ -21,21 +21,18 @@ app.prepare().then(() => {
     server.use(express.json())
     server.use(cors())
 
+    // API ROUTES
     server.post('/api/auth', userController.auth);
 
-    // sector api
     server.get('/api/sectors', sectorController.getAll);
     server.get('/api/sector/:id', sectorController.getById);
 
-    // company api
     server.get('/api/companies', companyController.getAll);
     server.get('/api/company/:id', companyController.getById);
 
-    // opportunity api
     server.get('/api/opportunities', opportunityController.getAll);
     server.get('/api/opportunity/:id', opportunityController.getById);
-
-    // kabupaten/kota api
+  
     server.get('/api/cities', async (req, res) => {
         try {
             const response = await fetch('https://sipedas.pertanian.go.id/api/wilayah/list_wilayah?thn=2024&lvl=10&lv2=12');
@@ -47,7 +44,11 @@ app.prepare().then(() => {
         }
     });
 
-    // admin only
+    server.get('*', (req, res) => {
+        return handle(req, res);
+    });
+
+    // ADMIN API ROUTES
     server.use(middleware.authMiddleware);
 
     server.post('/api/company', companyController.create);
@@ -62,10 +63,6 @@ app.prepare().then(() => {
     server.put('/api/opportunity/:id', opportunityController.update);
     server.delete('/api/opportunity/:id', opportunityController.delete);
 
-    server.get('*', (req, res) => {
-        return handle(req, res);
-    });
-  
     server.listen(port, () => {
         console.log(`Express server listening on port ${port}`);
     });
