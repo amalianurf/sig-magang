@@ -33,7 +33,7 @@ function page() {
         }
 
         fetchDataSectors()
-    }, [sectors])
+    }, [])
 
     const handleDelete = (id) => {
         toast.loading('Menghapus data...')
@@ -51,6 +51,8 @@ function page() {
             }
             return response.json()
         }).then((data) => {
+            const newData = sectors.filter(sector => sector.id !== id)
+            setSectors(newData)
             toast.dismiss()
             toast.success(data.message)
         }).catch((error) => {
@@ -126,11 +128,6 @@ function page() {
                                 slots={{
                                     toolbar: GridToolbarQuickFilter,
                                     pagination: customPagination
-                                }}
-                                slotProps={{
-                                    toolbar: {
-                                        showQuickFilter: true
-                                    }
                                 }}
                                 filterModel={filterModel}
                                 onFilterModelChange={(newModel) => setFilterModel(newModel)}

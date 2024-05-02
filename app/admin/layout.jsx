@@ -40,7 +40,7 @@ function layout({ children }) {
     return (
         <>
             <Toaster position='top-center' reverseOrder={false} />
-            <div className='flex bg-black'>
+            <div className='relative flex bg-black'>
                 <SideBar />
                 <div className='flex flex-col w-full min-h-screen'>
                     <header className='max-w-full ml-64 flex justify-between px-10 py-4 text-white'>
