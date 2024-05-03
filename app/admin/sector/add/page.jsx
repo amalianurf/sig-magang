@@ -6,7 +6,6 @@ import Button from '@component/components/Button'
 import UploadFileModal from '@component/components/modal/UploadFileModal'
 import toast from 'react-hot-toast'
 import Cookies from 'js-cookie'
-import * as Excel from 'exceljs'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 function page() {
@@ -17,54 +16,6 @@ function page() {
 
     const handleSectorChange = (e) => {
         setSectorName(e.target.value)
-    }
-
-    const convertWorksheetToJson = (worksheet) => {
-        const jsonData = []
-
-        worksheet.eachRow((row, rowNumber) => {
-            if (rowNumber === 1) return
-
-            const rowData = {}
-            row.eachCell((cell, colNumber) => {
-                const columnName = worksheet.getRow(1).getCell(colNumber).value
-                rowData[columnName] = cell.value
-            })
-
-            const isEmpty = Object.values(rowData).every(cell => cell === null || cell === undefined || cell === '')
-            if (!isEmpty) {
-                jsonData.push(rowData)
-            }
-        })
-    
-        return jsonData
-    }
-
-    const handleFileChange = (e) => {
-        const file = e.target.files[0]
-
-        if (file && (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
-            const reader = new FileReader()
-
-            reader.readAsArrayBuffer(file)
-
-            reader.onload = async (event) => {
-                try {
-                    const data = event.target.result
-                    const workbook = new Excel.Workbook()
-                    await workbook.xlsx.load(data)
-
-                    const worksheet = workbook.worksheets[0]
-                    const jsonData = convertWorksheetToJson(worksheet)
-    
-                    setExcelData(jsonData)
-                } catch (error) {
-                    console.log(error)
-                }
-            }
-        } else {
-            toast.error('File tidak didukung')
-        }
     }
 
     const handleUpload = (e) => {
@@ -158,7 +109,7 @@ function page() {
                 <Button type={'button'} onClick={() => setIsShow(true)} name={'Upload File'} buttonStyle={'w-fit h-fit text-center font-medium text-white text-base bg-iris hover:bg-iris/[.3] rounded-lg px-4 py-2'} />
             </div>
             <SectorForm value={sectorName} buttonName={'Tambah'} handleChange={handleSectorChange} handleSubmit={handleSubmit} />
-            <UploadFileModal isShow={isShow} setIsShow={setIsShow} handleFileChange={handleFileChange} handleUpload={handleUpload} />
+            <UploadFileModal isShow={isShow} setIsShow={setIsShow} setExcelData={setExcelData} handleUpload={handleUpload} />
         </section>
     )
 }
