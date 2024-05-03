@@ -71,7 +71,7 @@ function page() {
         fetchDataOpportunities()
         fetchDataCompanies()
         fetchDataSectors()
-    }, [opportunities, companies, sectors])
+    }, [])
 
     const groupOpportunitiesByMonth = (opportunities) => {
         opportunities.sort((a, b) => new Date(a.start_period) - new Date(b.start_period))
