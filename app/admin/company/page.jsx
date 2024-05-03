@@ -33,7 +33,7 @@ function page() {
         }
 
         fetchDataCompanies()
-    }, [companies])
+    }, [])
 
     const handleDelete = (id) => {
         toast.loading('Menghapus data...')
@@ -51,6 +51,8 @@ function page() {
             }
             return response.json()
         }).then((data) => {
+            const newData = companies.filter(company => company.id !== id)
+            setCompanies(newData)
             toast.dismiss()
             toast.success(data.message)
         }).catch((error) => {
