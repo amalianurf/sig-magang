@@ -11,10 +11,6 @@ function OpportunityCard(props) {
         return `${day}-${month}-${year}`
     }
 
-    const toTitleCase = (str) => {
-        return str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())
-    }
-
     return (
         <Link href={props.href}>
             <div className='w-full h-full flex rounded-lg shadow-md'>
@@ -25,7 +21,7 @@ function OpportunityCard(props) {
                     <div className='text-xl text-black font-semibold'>{props.name}</div>
                     <div className='text-grey'>
                         { props.brand_name && <div>{props.brand_name}</div> }
-                        { props.city && <div>{toTitleCase(props.city)}</div> }
+                        { props.city && <div>{props.city}</div> }
                         { props.start_period && <div>{formatDate(props.start_period)}</div> }
                     </div>
                 </div>
