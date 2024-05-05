@@ -1,13 +1,11 @@
 import React from 'react'
 import { MapContainer, TileLayer, GeoJSON, Marker, Popup } from 'react-leaflet'
-import L from 'leaflet'
+import MarkerClusterGroup from 'react-leaflet-cluster'
 import 'leaflet/dist/leaflet.css'
+import 'leaflet-defaulticon-compatibility'
+import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css'
 
 function Map(props) {
-    const geoJSONPointToLatLng = (point) => {
-        return L.latLng(point.coordinates[1], point.coordinates[0])
-    }
-
     return (
         <MapContainer center={[-1.3631627162310562, 118.42289645522916]} zoom={5} style={{ height: `calc(100vh - ${props.navbarHeight}px)`, width: '100%' }}>
             <TileLayer
@@ -20,14 +18,17 @@ function Map(props) {
                     style={{ fillColor: '#0000ff99', color: '#ffffff', weight: 1 }}
                 />
             )}
-            {props.companies && props.companies.map((company, index) => {
-                return (
-                    <Marker key={index} position={geoJSONPointToLatLng(company.location)}>
-                        <Popup>{company.brand_name}</Popup>
-                    </Marker>
-                )
-            })}
-
+            {props.companies && (
+                <MarkerClusterGroup chunkedLoading >
+                    {props.companies.map((company, index) => (
+                        <Marker key={index} position={[company.location.coordinates[0], company.location.coordinates[1]]} title={company.brand_name}>
+                            <Popup>
+                                {company.brand_name}
+                            </Popup>
+                        </Marker>
+                    ))}
+                </MarkerClusterGroup>
+            )}
         </MapContainer>
     )
 }
