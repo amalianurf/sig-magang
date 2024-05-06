@@ -14,24 +14,12 @@ function page() {
     const [loading, setLoading] = useState({
         geojson: true,
         sector: true,
-        company: true,
-        opportunity: true
+        company: true
     })
 
     useEffect(() => {
-        const fetchGeoJson = async () => {
-            await fetch('/boundary-data.geojson').then(async (response) => {
-                return response.json()
-            }).then((data) => {
-                setGeoJsonData(data)
-                setLoading({ ...loading, geojson: false })
-            }).catch((error) => {
-                console.error('Error:', error)
-            })
-        }
-
-        const fetchDataSectors = async () => {
-            await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/sectors`).then(async (response) => {
+        const fetchDataGeoms = async () => {
+            await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/geoms`).then(async (response) => {
                 if (!response.ok) {
                     return response.json().then(error => {
                         throw new Error(error.message)
@@ -39,11 +27,11 @@ function page() {
                 }
                 return response.json()
             }).then((data) => {
-                setSectors(data)
-                setLoading({ ...loading, sector: false })
+                setGeoJsonData(data)
+                setLoading({ ...loading, geojson: false })
             }).catch((error) => {
                 console.error('Error:', error)
-                setLoading({ ...loading, sector: false })
+                setLoading({ ...loading, geojson: false })
             })
         }
 
@@ -64,9 +52,26 @@ function page() {
             })
         }
 
-        fetchGeoJson()
-        fetchDataSectors()
+        const fetchDataSectors = async () => {
+            await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/sectors`).then(async (response) => {
+                if (!response.ok) {
+                    return response.json().then(error => {
+                        throw new Error(error.message)
+                    })
+                }
+                return response.json()
+            }).then((data) => {
+                setSectors(data)
+                setLoading({ ...loading, sector: false })
+            }).catch((error) => {
+                console.error('Error:', error)
+                setLoading({ ...loading, sector: false })
+            })
+        }
+
+        fetchDataGeoms()
         fetchDataCompanies()
+        fetchDataSectors()
     }, [])
 
     return (
@@ -74,13 +79,13 @@ function page() {
             <header>
                 <NavBar setNavbarHeight={setNavbarHeight} />
             </header>
-            {loading.geojson && loading.company && loading.sector ? (
-                <div>Loading...</div>
-            ) : (
-                <main style={{ paddingTop: navbarHeight }} className='w-full'>
+            <main style={{ paddingTop: navbarHeight }} className='w-full'>
+                {loading.geojson && loading.sector && loading.company ? (
+                    <div className='p-10'>Loading...</div>
+                ) : (
                     <Map geoJsonData={geoJsonData} navbarHeight={navbarHeight} companies={companies} />
-                </main>
-            )}
+                )}
+            </main>
         </>
     )
 }

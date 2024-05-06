@@ -6,6 +6,14 @@ import 'leaflet-defaulticon-compatibility'
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css'
 
 function Map(props) {
+    const getPolygonColor = (value) => {
+        return value > 2
+            ? 'green'
+            : value > 1
+            ? 'yellow'
+            : 'red'
+    }
+
     return (
         <MapContainer center={[-1.3631627162310562, 118.42289645522916]} zoom={5} style={{ height: `calc(100vh - ${props.navbarHeight}px)`, width: '100%' }}>
             <TileLayer
@@ -14,8 +22,12 @@ function Map(props) {
             />
             {props.geoJsonData && (
                 <GeoJSON
-                    data={props.geoJsonData.features}
-                    style={{ fillColor: '#0000ff99', color: '#ffffff', weight: 1 }}
+                    data={props.geoJsonData}
+                    style={(feature) => ({
+                        fillColor: getPolygonColor(feature.properties.opportunities),
+                        color: '#ffffff',
+                        weight: 1
+                    })}
                 />
             )}
             {props.companies && (
