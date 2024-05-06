@@ -64,6 +64,7 @@ exports.create = async (req, res) => {
                     'activity_type' in data &&
                     'description' in data &&
                     'quota' in data &&
+                    'duration' in data &&
                     'start_period' in data &&
                     'min_semester' in data &&
                     'salary' in data &&

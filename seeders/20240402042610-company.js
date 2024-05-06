@@ -14,7 +14,7 @@ module.exports = {
         address: 'Jalan Mawar Melati, Jakarta Selatan, Jakarta',
         city: 'Jakarta Selatan',
         location: Sequelize.fn('ST_GeomFromText', 'POINT(-6.255774727241181 106.8065370374879)'),
-        sector_id: '8c41c737-8353-407c-9cb5-a8018582c7f7',
+        sector_id: '415874f3-f58f-47a5-999f-9a72a42a59b5',
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -27,7 +27,7 @@ module.exports = {
         address: 'Jalan Apel Manggis, Bandung Barat, Jawa Barat',
         city: 'Bandung Barat',
         location: Sequelize.fn('ST_GeomFromText', 'POINT(-6.890153319326862 107.39509157355332)'),
-        sector_id: '32ce5378-41f0-4479-bc86-01d07635a580',
+        sector_id: '1f6b9997-5546-44a8-a500-a05fcc14e3ae',
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -40,7 +40,7 @@ module.exports = {
         address: 'Jalan Harimau, Kota Malang, Jawa Timur',
         city: 'Kota Malang',
         location: Sequelize.fn('ST_GeomFromText', 'POINT(-7.957896673427737 112.62834419317218)'),
-        sector_id: '50e2d8d0-bf29-4289-8bca-3b331a235f7f',
+        sector_id: '607a7d9e-c30a-48c6-a8d1-4f771738ed62',
         createdAt: new Date(),
         updatedAt: new Date()
       }

@@ -27,12 +27,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT
     },
     city: {
-      type: DataTypes.STRING(50),
-      allowNull: false
+      type: DataTypes.STRING(50)
     },
     location: {
       type: DataTypes.GEOMETRY('POINT'),
-      allowNull: false
     },
     sector_id: {
       type: DataTypes.STRING(36),
