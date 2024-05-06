@@ -57,8 +57,8 @@ function CompanyForm(props) {
 
     const cityOptions = Object.values(cities).map(data => ({
         name: 'city',
-        value: data.replace('KAB.', 'KABUPATEN'),
-        label: data.replace('KAB.', 'KABUPATEN'),
+        value: data.replace('KAB.', 'KABUPATEN').replace('ADM.', ''),
+        label: data.replace('KAB.', 'KABUPATEN').replace('ADM.', ''),
     }))
 
     const selectStyle = {
@@ -77,7 +77,7 @@ function CompanyForm(props) {
             ) : (
                 <form onSubmit={props.handleSubmit} className='flex flex-col gap-5'>
                     <div className='w-full flex items-start gap-5'>
-                        <div className='w-full flex flex-col gap-5'>
+                        <div className='w-full flex flex-col gap-4'>
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor='brand_name' className='font-medium'>Nama Brand</label>
                                 <input type='text' name='brand_name' value={props.value.brand_name} onChange={props.handleInputChange} placeholder='Nama Brand' className='w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' required />
@@ -108,7 +108,7 @@ function CompanyForm(props) {
                                 <textarea name='description' value={props.value.description} onChange={props.handleInputChange} placeholder='Deskripsi Perusahaan' className='w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' cols='30' rows='3'></textarea>
                             </div>
                         </div>
-                        <div className='w-full flex flex-col gap-5'>
+                        <div className='w-full flex flex-col gap-4'>
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor='address' className='font-medium'>Alamat</label>
                                 <textarea name='address' value={props.value.address} onChange={props.handleInputChange} placeholder='Alamat Perusahaan' className='w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' cols='30' rows='3'></textarea>
@@ -129,11 +129,11 @@ function CompanyForm(props) {
                             </div>
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor='latitude' className='font-medium'>Latitude</label>
-                                <input type='number' name='latitude' value={props.value.latitude} onChange={props.handleInputChange} placeholder='Nilai Latitude' className='relative w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' required />
+                                <input type='number' name='latitude' value={props.value.latitude} onChange={props.handleInputChange} placeholder='Nilai Latitude' className='relative w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' />
                             </div>
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor='longitude' className='font-medium'>Longitude</label>
-                                <input type='number' name='longitude' value={props.value.longitude} onChange={props.handleInputChange} placeholder='Nilai Longitude' className='relative w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' required />
+                                <input type='number' name='longitude' value={props.value.longitude} onChange={props.handleInputChange} placeholder='Nilai Longitude' className='relative w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' />
                             </div>
                         </div>
                     </div>

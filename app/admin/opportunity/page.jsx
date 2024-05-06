@@ -33,7 +33,7 @@ function page() {
         }
 
         fetchDataOpportunities()
-    }, [opportunities])
+    }, [])
 
     const handleDelete = (id) => {
         toast.loading('Menghapus data...')
@@ -51,6 +51,8 @@ function page() {
             }
             return response.json()
         }).then((data) => {
+            const newData = opportunities.filter(opportunity => opportunity.id !== id)
+            setOpportunities(newData)
             toast.dismiss()
             toast.success(data.message)
         }).catch((error) => {
