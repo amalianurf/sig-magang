@@ -44,12 +44,10 @@ module.exports = {
         type: Sequelize.TEXT
       },
       city: {
-        type: Sequelize.STRING(50),
-        allowNull: false
+        type: Sequelize.STRING(50)
       },
       location: {
-        type: Sequelize.GEOMETRY('POINT'),
-        allowNull: false
+        type: Sequelize.GEOMETRY('POINT')
       },
       sector_id: {
         type: Sequelize.STRING(36),
