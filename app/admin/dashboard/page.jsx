@@ -71,7 +71,7 @@ function page() {
         fetchDataOpportunities()
         fetchDataCompanies()
         fetchDataSectors()
-    }, [opportunities, companies, sectors])
+    }, [])
 
     const groupOpportunitiesByMonth = (opportunities) => {
         opportunities.sort((a, b) => new Date(a.start_period) - new Date(b.start_period))
@@ -123,10 +123,10 @@ function page() {
                 <div>Loading...</div>
             ) : (
                 <>
-                    <section className='w-full h-fit flex items-center justify-between gap-5'>
+                    <section className='w-full h-fit grid grid-cols-3 gap-5'>
                         <TotalCard icon={<WorkOutlineOutlinedIcon fontSize='large' />} total={opportunities.length} name={'Jumlah Lowongan Magang'} />
                         <TotalCard icon={<CorporateFareOutlinedIcon fontSize='large' />} total={companies.length} name={'Jumlah Perusahaan'} />
-                        <TotalCard icon={<PieChartOutlineOutlinedIcon fontSize='large' />} total={sectors.length} name={'Jumlah Sector Perusahaan'} />
+                        <TotalCard icon={<PieChartOutlineOutlinedIcon fontSize='large' />} total={sectors.length} name={'Jumlah Sektor Perusahaan'} />
                     </section>
                     <section className='w-full flex items-start gap-6'>
                         <section className='w-full flex flex-col gap-5'>
