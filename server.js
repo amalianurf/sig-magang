@@ -13,6 +13,7 @@ const userController = require('./controllers/users');
 const sectorController = require('./controllers/sectors');
 const companyController = require('./controllers/companies');
 const opportunityController = require('./controllers/opportunities');
+const geomController = require('./controllers/geoms');
 
 app.prepare().then(() => {
     const server = express();
@@ -32,6 +33,8 @@ app.prepare().then(() => {
 
     server.get('/api/opportunities', opportunityController.getAll);
     server.get('/api/opportunity/:id', opportunityController.getById);
+
+    server.get('/api/geoms', geomController.getAll);
   
     server.get('/api/cities', async (req, res) => {
         try {
