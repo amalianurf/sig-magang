@@ -5,8 +5,11 @@ import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility'
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css'
 import Select from 'react-select'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 import Button from '@component/components/Button'
 import CircleIcon from '@mui/icons-material/Circle'
+import CloseIcon from '@mui/icons-material/Close'
 
 function Map(props) {
     const [mapKey, setMapKey] = useState(0)
@@ -84,17 +87,37 @@ function Map(props) {
                             label: data.name
                         }))}
                         isSearchable={true}
-                        isClearable={true}
                         styles={selectStyle}
                     />
-                    <form onSubmit={'/'} className='flex items-center gap-3'>
-                        <div className='flex items-center gap-1'>
-                            <input type='date' name='start_date' value={props.dateRange.start} onChange={props.handleDateChange} className='relative w-fit px-3 py-1.5 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' required />
-                            <div>to</div>
-                            <input type='date' name='end_date' value={props.dateRange.end} onChange={props.handleDateChange} className='relative w-fit px-3 py-1.5 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' required />
-                        </div>
-                        <Button type={'submit'} name={'Filter Data'} buttonStyle={'w-fit px-3 py-2 text-white font-bold bg-iris hover:bg-iris/[.3] rounded-lg'} />
-                    </form>
+                    <div className='flex items-center gap-1'>
+                        <DatePicker
+                            selected={props.dateRange.start}
+                            onChange={(date) => props.setDateRange({...props.dateRange, start: date})}
+                            selectsStart
+                            startDate={props.dateRange.start}
+                            endDate={props.dateRange.end}
+                            maxDate={props.dateRange.end}
+                            placeholderText='dd/mm/yyyy'
+                            dateFormat={'dd/MM/yyyy'}
+                            className='relative w-28 px-3 py-1.5 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]'
+                            required
+                        />
+                        <div>to</div>
+                        <DatePicker
+                            selected={props.dateRange.end}
+                            onChange={(date) => props.setDateRange({...props.dateRange, end: date})}
+                            selectsEnd
+                            startDate={props.dateRange.start}
+                            endDate={props.dateRange.end}
+                            minDate={props.dateRange.start}
+                            placeholderText='dd/mm/yyyy'
+                            dateFormat={'dd/MM/yyyy'}
+                            className='relative w-28 px-3 py-1.5 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]'
+                            required
+                        />
+                    </div>
+                    <Button type={'button'} onClick={props.handleFilter} name={'Filter Data'} buttonStyle={'w-fit px-3 py-2 text-white font-bold bg-iris hover:bg-iris/[.3] rounded-lg'} />
+                    <Button type={'button'} onClick={props.handleResetData} name={<CloseIcon />} buttonStyle={props.isFiltered ? 'w-fit p-2 text-iris font-bold bg-neutral hover:bg-neutral/[.3] rounded-full' : 'hidden'} />
                 </div>
             )}
             <MapContainer center={[-1.3631627162310562, 118.42289645522916]} zoom={5} style={{ height: `calc(100vh - ${props.navbarHeight}px)`, width: '100%' }}>
@@ -115,17 +138,21 @@ function Map(props) {
                 )}
                 {props.companies && (
                     <MarkerClusterGroup chunkedLoading >
-                        {props.companies.map((company, index) => (
-                            <Marker key={index} position={[company.location.coordinates[0], company.location.coordinates[1]]} title={company.brand_name}>
-                                <Popup>
-                                    {company.brand_name}
-                                </Popup>
-                            </Marker>
-                        ))}
+                        {props.companies.map((company, index) => {
+                            if (company.location) {
+                                return (
+                                    <Marker key={index} position={[company.location.coordinates[0], company.location.coordinates[1]]} title={company.brand_name}>
+                                        <Popup>
+                                            {company.brand_name}
+                                        </Popup>
+                                    </Marker>
+                                )
+                            }
+                        })}
                     </MarkerClusterGroup>
                 )}
             </MapContainer>
-            {props.geoJsonData && (
+            {props.geoJsonData && props.geoJsonData.features.length ? (
                 <div className='fixed right-0 bottom-0 w-full px-6 py-2 flex justify-end items-center gap-10 bg-white z-[1000]'>
                     <div className='flex items-center gap-1'>
                         <CircleIcon fontSize='small' className='text-green' />
@@ -140,7 +167,7 @@ function Map(props) {
                         <div>Lowongan &lt; {UpperLowerBounds(standardDeviation()).lowerBounds.toFixed(2)}</div>
                     </div>
                 </div>
-            )}
+            ) : ''}
         </>
     )
 }
