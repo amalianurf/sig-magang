@@ -13,10 +13,14 @@ import CloseIcon from '@mui/icons-material/Close'
 
 function Map(props) {
     const [mapKey, setMapKey] = useState(0)
+    const [mapView, setMapView] = useState({
+        center: [-1.3631627162310562, 118.42289645522916],
+        zoom: 5
+    })
 
     useEffect(() => {
         setMapKey((prevKey) => prevKey + 1)
-    }, [props.geoJsonData])
+    }, [props.geoJsonData, mapView])
 
     // perhitungan simpangan baku
     const standardDeviation = () => {
@@ -75,7 +79,7 @@ function Map(props) {
     return (
         <>
             {props.sectors && (
-                <div style={{ top: `${props.navbarHeight}px` }} className='fixed right-0 flex items-center gap-3 px-7 py-5 rounded-bl-lg bg-white/[.6] z-[1000]'>
+                <div style={{ top: `${props.navbarHeight}px` }} className='fixed right-0 flex items-center gap-3 px-7 py-5 rounded-bl-lg bg-white/[.6] z-[900]'>
                     <Select
                         name='sector_id'
                         onChange={(selectedOption) => props.handleSelectChange(selectedOption)}
@@ -120,7 +124,7 @@ function Map(props) {
                     <Button type={'button'} onClick={props.handleResetData} name={<CloseIcon />} buttonStyle={props.isFiltered ? 'w-fit p-2 text-iris font-bold bg-neutral hover:bg-neutral/[.3] rounded-full' : 'hidden'} />
                 </div>
             )}
-            <MapContainer center={[-1.3631627162310562, 118.42289645522916]} zoom={5} style={{ height: `calc(100vh - ${props.navbarHeight}px)`, width: '100%' }}>
+            <MapContainer key={mapKey} center={mapView.center} zoom={mapView.zoom} style={{ height: `calc(100vh - ${props.navbarHeight}px)`, width: '100%' }}>
                 <TileLayer
                     attribution='&copy <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
@@ -141,7 +145,21 @@ function Map(props) {
                         {props.companies.map((company, index) => {
                             if (company.location) {
                                 return (
-                                    <Marker key={index} position={[company.location.coordinates[0], company.location.coordinates[1]]} title={company.brand_name}>
+                                    <Marker
+                                        key={index}
+                                        position={[company.location.coordinates[0], company.location.coordinates[1]]}
+                                        title={company.brand_name}
+                                        data={company.id}
+                                        eventHandlers={{
+                                            click: (e) => {
+                                                props.setCompanyId(e.target.options.data)
+                                                setMapView({
+                                                    center: [e.latlng.lat, e.latlng.lng - 0.25],
+                                                    zoom: 10
+                                                })
+                                            }
+                                        }}
+                                    >
                                         <Popup>
                                             {company.brand_name}
                                         </Popup>

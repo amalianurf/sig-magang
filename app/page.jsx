@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import NavBar from '@component/components/navigations/NavBar'
+import MapInfoPanel from '@component/components/panel/MapInfoPanel'
 import toast, {Toaster} from 'react-hot-toast'
 
 const Map = dynamic(() => import('@component/components/map/Map'), { ssr: false })
@@ -11,6 +12,7 @@ function page() {
     const [geoJsonData, setGeoJsonData] = useState()
     const [filteredGeoJsonData, setFilteredGeoJsonData] = useState()
     const [companies, setCompanies] = useState()
+    const [companyId, setCompanyId] = useState()
     const [filteredCompanies, setFilteredCompanies] = useState()
     const [sectors, setSectors] = useState()
     const [selectedSector, setSelectedSector] = useState()
@@ -218,7 +220,7 @@ function page() {
             <header>
                 <NavBar setNavbarHeight={setNavbarHeight} />
             </header>
-            <main style={{ paddingTop: navbarHeight }} className='w-full'>
+            <main style={{ paddingTop: navbarHeight }} className='relative w-full'>
                 {loading.company && loading.geojson && loading.sector ? (
                     <div className='p-10'>Loading...</div>
                 ) : (
@@ -230,12 +232,18 @@ function page() {
                         dateRange={dateRange}
                         selectedSector={selectedSector}
                         isFiltered={isFiltered}
+                        setCompanyId={setCompanyId}
                         setDateRange={setDateRange}
                         handleSelectChange={handleSelectChange}
                         handleFilter={handleFilter}
                         handleResetData={handleResetData}
                     />
                 )}
+                <section style={{ paddingTop: navbarHeight }} className={`absolute bg-white top-0 left-0 min-h-full max-h-screen w-[582px] z-[999] overflow-scroll ${companyId ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-500 ease-in-out`}>
+                    {companyId && (
+                        <MapInfoPanel companies={companies} companyId={companyId} setCompanyId={setCompanyId} />
+                    )}
+                </section>
             </main>
         </>
     )
