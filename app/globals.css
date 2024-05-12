@@ -23,6 +23,7 @@
   h4 {
     @apply font-semibold text-xl
   }
+}
 
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
