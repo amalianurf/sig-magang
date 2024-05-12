@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import Button from '@component/components/Button'
+import ConfirmDeleteModal from '@component/components/modal/ConfirmDeleteModal'
 import { DataGrid, useGridApiContext, useGridSelector, gridPageSelector, gridPageCountSelector, GridToolbarQuickFilter } from '@mui/x-data-grid'
 import { Pagination, PaginationItem, createTheme, ThemeProvider } from '@mui/material'
 import Cookies from 'js-cookie'
@@ -9,6 +10,10 @@ import toast from 'react-hot-toast'
 function page() {
     const [opportunities, setOpportunities] = useState([])
     const [loading, setLoading] = useState(true)
+    const [confirmDelete, setConfirmDelete] = useState({
+        showModal: false,
+        id: ''
+    })
     const [filterModel, setFilterModel] = useState({
         items: [],
         quickFilterExcludeHiddenColumns: false,
@@ -55,6 +60,10 @@ function page() {
             setOpportunities(newData)
             toast.dismiss()
             toast.success(data.message)
+            setConfirmDelete({
+                showModal: false,
+                id: ''
+            })
         }).catch((error) => {
             toast.dismiss()
             toast.error(error.message)
@@ -93,7 +102,7 @@ function page() {
             renderCell: (params) => (
                 <div className='flex justify-center items-center gap-2 w-full h-full'>
                     <Button type={'button'} href={`/admin/opportunity/edit/${params.id}`} name={'Edit'} buttonStyle={'text-center font-medium text-sm text-white bg-green hover:bg-green/[.3] rounded-md px-2 py-1 w-full'} />
-                    <Button type={'button'} onClick={() => handleDelete(params.id)} name={'Hapus'} buttonStyle={'text-center font-medium text-sm text-white bg-red hover:bg-red/[.3] rounded-md px-2 py-1 w-full'} />
+                    <Button type={'button'} onClick={() => setConfirmDelete({ showModal: true, id: params.id })} name={'Hapus'} buttonStyle={'text-center font-medium text-sm text-white bg-red hover:bg-red/[.3] rounded-md px-2 py-1 w-full'} />
                 </div>
             )
         }
@@ -170,6 +179,9 @@ function page() {
                             />
                         </ThemeProvider>
                     </div>
+                    {confirmDelete.showModal && (
+                        <ConfirmDeleteModal handleDelete={handleDelete} confirmDelete={confirmDelete} setConfirmDelete={setConfirmDelete} />
+                    )}
                 </>
             )}
         </section>
