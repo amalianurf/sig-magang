@@ -33,7 +33,6 @@ function page() {
                 setLoading(false)
             }).catch((error) => {
                 console.error('Error:', error)
-                setLoading(false)
             })
         }
 
@@ -138,6 +137,7 @@ function page() {
                                     toolbar: GridToolbarQuickFilter,
                                     pagination: customPagination
                                 }}
+                                rowSelection={false}
                                 filterModel={filterModel}
                                 onFilterModelChange={(newModel) => setFilterModel(newModel)}
                                 initialState={{pagination: {paginationModel: {pageSize: 100}}}}
@@ -151,6 +151,8 @@ function page() {
                                     '& .MuiDataGrid-main': { borderRadius: 2, boxShadow: '0 2px 8px #0000001F', marginTop: '12px' },
                                     '& .MuiDataGrid-footerContainer': { border: 0, marginTop: '12px' },
                                     '& .MuiDataGrid-cell': { border: 0 },
+                                    '& .MuiDataGrid-cell:focus': { outline: '0 !important' },
+                                    '& .MuiDataGrid-cell:focus-within': { outline: '0 !important' },
                                     '& .MuiDataGrid-topContainer::after': { height: 0 },
                                     '& .MuiFormControl-root': { border: 1, borderRadius: 2, borderColor: '#7C7C7C', width: '312px', padding: '2px 10px' },
                                     '& .MuiFormControl-root:focus-within': { boxShadow: 'inset 0 0 0 1px #5D5FEF', borderColor: '#5D5FEF' },

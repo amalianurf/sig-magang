@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import Button from '@component/components/Button'
 import ConfirmDeleteModal from '@component/components/modal/ConfirmDeleteModal'
 import { DataGrid, useGridApiContext, useGridSelector, gridPageSelector, gridPageCountSelector, GridToolbarQuickFilter } from '@mui/x-data-grid'
@@ -18,6 +19,7 @@ function page() {
         items: [],
         quickFilterExcludeHiddenColumns: false,
     })
+    const router = useRouter()
 
     useEffect(() => {
         const fetchDataCompanies = async () => {
@@ -33,7 +35,6 @@ function page() {
                 setLoading(false)
             }).catch((error) => {
                 console.error('Error:', error)
-                setLoading(false)
             })
         }
 
@@ -125,6 +126,12 @@ function page() {
         )
     }
 
+    const handleCellClick = (params) => {
+        if (params.field !== 'actions') {
+            router.push(`company/${params.id}`)
+        }
+    }
+
     return (
         <section className='p-10'>
             {loading ? (
@@ -148,7 +155,9 @@ function page() {
                                         showQuickFilter: true
                                     }
                                 }}
+                                rowSelection={false}
                                 filterModel={filterModel}
+                                onCellClick={handleCellClick}
                                 onFilterModelChange={(newModel) => setFilterModel(newModel)}
                                 initialState={{pagination: {paginationModel: {pageSize: 100}}}}
                                 classes={{
@@ -160,7 +169,9 @@ function page() {
                                     borderRadius: 2,
                                     '& .MuiDataGrid-main': { borderRadius: 2, boxShadow: '0 2px 8px #0000001F', marginTop: '12px' },
                                     '& .MuiDataGrid-footerContainer': { border: 0, marginTop: '12px' },
-                                    '& .MuiDataGrid-cell': { border: 0 },
+                                    '& .MuiDataGrid-cell': { border: 0, cursor: 'pointer' },
+                                    '& .MuiDataGrid-cell:focus': { outline: '0 !important' },
+                                    '& .MuiDataGrid-cell:focus-within': { outline: '0 !important' },
                                     '& .MuiDataGrid-topContainer::after': { height: 0 },
                                     '& .MuiFormControl-root': { border: 1, borderRadius: 2, borderColor: '#7C7C7C', width: '312px', padding: '2px 10px' },
                                     '& .MuiFormControl-root:focus-within': { boxShadow: 'inset 0 0 0 1px #5D5FEF', borderColor: '#5D5FEF' },
