@@ -3,7 +3,7 @@ import CompanyDetail from '@component/components/company/CompanyDetail'
 import Button from '@component/components/Button'
 import CloseIcon from '@mui/icons-material/Close'
 
-function MapInfoPanel(props) {
+function CompanyInfoPanel(props) {
     const [company, setCompany] = useState()
     const [opportunities, setOpportunities] = useState()
     const [companySector, setCompanySector] = useState()
@@ -25,7 +25,17 @@ function MapInfoPanel(props) {
                 return response.json()
             }).then((data) => {
                 if (data) {
-                    setOpportunities(data)
+                    const filteredOpportunities = props.filteredOpportunityIds.map(id => {
+                        const opportunity = data.find(item => item.id === id)
+            
+                        if (opportunity) {
+                            return opportunity
+                        } else {
+                            return null
+                        }
+                    }).filter((opportunity) => opportunity != null)
+
+                    setOpportunities(filteredOpportunities)
                 }
             }).catch((error) => {
                 console.error('Error:', error)
@@ -52,6 +62,7 @@ function MapInfoPanel(props) {
     }, [props.companyId])
 
     const handleClosePanel = () => {
+        props.setFilteredOpportunityIds(props.opportunityIds)
         props.setCompanyId(null)
     }
 
@@ -63,4 +74,4 @@ function MapInfoPanel(props) {
     )
 }
 
-export default MapInfoPanel
+export default CompanyInfoPanel

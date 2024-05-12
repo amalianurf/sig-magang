@@ -7,6 +7,7 @@ import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import Select from 'react-select'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import ReactDOMServer from 'react-dom/server'
 import Button from '@component/components/Button'
 import CircleIcon from '@mui/icons-material/Circle'
 import CloseIcon from '@mui/icons-material/Close'
@@ -138,6 +139,19 @@ function Map(props) {
                             color: '#ffffff',
                             weight: 1
                         })}
+                        onEachFeature={(feature, layer) =>{
+                            layer.bindPopup(ReactDOMServer.renderToString(
+                                <>
+                                    <div>Jumlah Perusahaan: {feature.properties.companies || 0}</div>
+                                    <div>Jumlah Lowongan: {feature.properties.opportunities || 0}</div>
+                                </>
+                            ))
+                            layer.on({
+                                mouseover: (e) => { layer.openPopup() },
+                                mouseout: (e) => { layer.closePopup() },
+                                click: (e) => { props.setCity(feature.properties.city) }
+                            })
+                        }}
                     />
                 )}
                 {props.companies && (

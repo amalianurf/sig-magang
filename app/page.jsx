@@ -2,8 +2,9 @@
 import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import NavBar from '@component/components/navigations/NavBar'
-import MapInfoPanel from '@component/components/panel/MapInfoPanel'
+import CompanyInfoPanel from '@component/components/panel/CompanyInfoPanel'
 import toast, {Toaster} from 'react-hot-toast'
+import OpportunityListPanel from '@component/components/panel/OpportunityListPanel'
 
 const Map = dynamic(() => import('@component/components/map/Map'), { ssr: false })
 
@@ -11,8 +12,11 @@ function page() {
     const [navbarHeight, setNavbarHeight] = useState()
     const [geoJsonData, setGeoJsonData] = useState()
     const [filteredGeoJsonData, setFilteredGeoJsonData] = useState()
-    const [companies, setCompanies] = useState()
+    const [opportunityIds, setOpportunityIds] = useState()
+    const [filteredOpportunityIds, setFilteredOpportunityIds] = useState()
+    const [city, setCity] = useState()
     const [companyId, setCompanyId] = useState()
+    const [companies, setCompanies] = useState()
     const [filteredCompanies, setFilteredCompanies] = useState()
     const [sectors, setSectors] = useState()
     const [selectedSector, setSelectedSector] = useState()
@@ -24,7 +28,8 @@ function page() {
     const [loading, setLoading] = useState({
         geojson: true,
         sector: true,
-        company: true
+        company: true,
+        opportunity: true
     })
 
     useEffect(() => {
@@ -43,6 +48,25 @@ function page() {
             }).catch((error) => {
                 console.error('Error:', error)
                 setLoading({ ...loading, geojson: false })
+            })
+        }
+
+        const fetchDataOpportunities = async () => {
+            await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/opportunities`).then(async (response) => {
+                if (!response.ok) {
+                    return response.json().then(error => {
+                        throw new Error(error.message)
+                    })
+                }
+                return response.json()
+            }).then((data) => {
+                const ids = data.map(item => item.id)
+                setOpportunityIds(ids)
+                setFilteredOpportunityIds(ids)
+                setLoading({ ...loading, opportunity: false })
+            }).catch((error) => {
+                console.error('Error:', error)
+                setLoading({ ...loading, opportunity: false })
             })
         }
 
@@ -82,6 +106,7 @@ function page() {
         }
 
         fetchDataGeoms()
+        fetchDataOpportunities()
         fetchDataCompanies()
         fetchDataSectors()
     }, [])
@@ -189,9 +214,13 @@ function page() {
                                 })
                             }
                         })
-    
+
+                        const opportunitiesIds = joinedData.map(item => item.id)
+                        setFilteredOpportunityIds(opportunitiesIds)
                         updateGeoJsonData(joinedData)
                     } else {
+                        const opportunitiesIds = data.map(item => item.id)
+                        setFilteredOpportunityIds(opportunitiesIds)
                         updateGeoJsonData(data)
                     }
                 }
@@ -221,7 +250,7 @@ function page() {
                 <NavBar setNavbarHeight={setNavbarHeight} />
             </header>
             <main style={{ paddingTop: navbarHeight }} className='relative w-full'>
-                {loading.company && loading.geojson && loading.sector ? (
+                {loading.company && loading.geojson && loading.sector && loading.opportunity ? (
                     <div className='p-10'>Loading...</div>
                 ) : (
                     <Map
@@ -232,6 +261,7 @@ function page() {
                         dateRange={dateRange}
                         selectedSector={selectedSector}
                         isFiltered={isFiltered}
+                        setCity={setCity}
                         setCompanyId={setCompanyId}
                         setDateRange={setDateRange}
                         handleSelectChange={handleSelectChange}
@@ -239,9 +269,25 @@ function page() {
                         handleResetData={handleResetData}
                     />
                 )}
-                <section style={{ paddingTop: navbarHeight }} className={`absolute bg-white top-0 left-0 min-h-full max-h-screen w-[582px] z-[999] overflow-scroll ${companyId ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-500 ease-in-out`}>
+                <section style={{ paddingTop: navbarHeight }} className={`absolute bg-white top-0 left-0 min-h-full max-h-screen w-[582px] z-[999] overflow-scroll ${companyId || city ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-500 ease-in-out`}>
                     {companyId && (
-                        <MapInfoPanel companies={companies} companyId={companyId} setCompanyId={setCompanyId} />
+                        <CompanyInfoPanel
+                            companies={companies}
+                            companyId={companyId}
+                            setCompanyId={setCompanyId}
+                            opportunityIds={opportunityIds}
+                            filteredOpportunityIds={filteredOpportunityIds}
+                            setFilteredOpportunityIds={setFilteredOpportunityIds}
+                        />
+                    )}
+                    {city && (
+                        <OpportunityListPanel
+                            city={city}
+                            setCity={setCity}
+                            opportunityIds={opportunityIds}
+                            filteredOpportunityIds={filteredOpportunityIds}
+                            setFilteredOpportunityIds={setFilteredOpportunityIds}
+                        />
                     )}
                 </section>
             </main>
