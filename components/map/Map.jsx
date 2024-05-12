@@ -149,7 +149,14 @@ function Map(props) {
                             layer.on({
                                 mouseover: (e) => { layer.openPopup() },
                                 mouseout: (e) => { layer.closePopup() },
-                                click: (e) => { props.setCity(feature.properties.city) }
+                                click: (e) => {
+                                    props.setCity(feature.properties.city)
+                                    props.setCompanyId(null)
+                                    setMapView({
+                                        center: [e.latlng.lat, e.latlng.lng - 0.25],
+                                        zoom: 10
+                                    })
+                                }
                             })
                         }}
                     />
@@ -167,6 +174,7 @@ function Map(props) {
                                         eventHandlers={{
                                             click: (e) => {
                                                 props.setCompanyId(e.target.options.data)
+                                                props.setCity(null)
                                                 setMapView({
                                                     center: [e.latlng.lat, e.latlng.lng - 0.25],
                                                     zoom: 10

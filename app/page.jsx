@@ -47,7 +47,6 @@ function page() {
                 setLoading({ ...loading, geojson: false })
             }).catch((error) => {
                 console.error('Error:', error)
-                setLoading({ ...loading, geojson: false })
             })
         }
 
@@ -66,7 +65,6 @@ function page() {
                 setLoading({ ...loading, opportunity: false })
             }).catch((error) => {
                 console.error('Error:', error)
-                setLoading({ ...loading, opportunity: false })
             })
         }
 
@@ -84,7 +82,6 @@ function page() {
                 setLoading({ ...loading, company: false })
             }).catch((error) => {
                 console.error('Error:', error)
-                setLoading({ ...loading, company: false })
             })
         }
 
@@ -101,7 +98,6 @@ function page() {
                 setLoading({ ...loading, sector: false })
             }).catch((error) => {
                 console.error('Error:', error)
-                setLoading({ ...loading, sector: false })
             })
         }
 
