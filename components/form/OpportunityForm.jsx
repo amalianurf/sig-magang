@@ -55,7 +55,7 @@ function OpportunityForm(props) {
             ) : (
                 <form onSubmit={props.handleSubmit} className='flex flex-col gap-5'>
                     <div className='w-full flex items-start gap-5'>
-                        <div className='w-full flex flex-col gap-5'>
+                        <div className='w-full flex flex-col gap-4'>
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor='name' className='font-medium'>Nama Lowongan</label>
                                 <input type='text' name='name' value={props.value.name} onChange={props.handleInputChange} placeholder='Nama Lowongan' className='w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' required />
@@ -98,7 +98,7 @@ function OpportunityForm(props) {
                                 <textarea name='description' value={props.value.description} onChange={props.handleInputChange} placeholder='Deskripsi Lowongan' className='w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' cols='30' rows='3' required></textarea>
                             </div>
                         </div>
-                        <div className='w-full flex flex-col gap-5'>
+                        <div className='w-full flex flex-col gap-4'>
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor='quota' className='font-medium'>Kuota Peserta</label>
                                 <input type='number' name='quota' value={props.value.quota} onChange={props.handleInputChange} placeholder='Kuota Peserta' className='relative w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' />
