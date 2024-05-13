@@ -74,7 +74,7 @@ function page() {
             {loading.company && loading.opportunity ? (
                 <div>Loading...</div>
             ) : (
-                <CompanyDetail company={company} opportunities={opportunities} sector={companySector} />
+                <CompanyDetail company={company} opportunities={opportunities} sector={companySector} isAdmin={true} />
             )}
         </section>
     )

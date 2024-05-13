@@ -9,7 +9,7 @@ function OpportunityList(props) {
                     <div className='flex flex-col gap-2.5'>
                         {props.opportunities.map((opportunity, index) => {
                             return (
-                                <OpportunityCard key={index} href={`/opportunity/${opportunity.id}`} image={opportunity.Company.logo} name={opportunity.name} brand_name={opportunity.Company.brand_name} start_period={opportunity.start_period} />
+                                <OpportunityCard key={index} href={`opportunity/${opportunity.id}`} image={opportunity.Company.logo} name={opportunity.name} brand_name={opportunity.Company.brand_name} start_period={opportunity.start_period} />
                             )
                         })}
                     </div>
