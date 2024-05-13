@@ -153,7 +153,7 @@ function page() {
                                 <PieChart
                                     series={[
                                         {
-                                            arcLabel: (item) => item.value,
+                                            arcLabel: (item) => String(item.value),
                                             arcLabelMinAngle: 45,
                                             data: [
                                                 { value: countOpportunitiesByStartPeriod(opportunities).started, label: 'Telah dimulai', color: '#FA0014' },
