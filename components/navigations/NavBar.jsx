@@ -14,7 +14,7 @@ function NavBar(props) {
     }, [])
 
     return (
-        <nav ref={navbarRef} className='fixed w-full px-10 py-4 flex justify-between items-center bg-white shadow-md'>
+        <nav ref={navbarRef} className='fixed w-full px-10 py-4 flex justify-between items-center bg-white shadow-md z-[1000]'>
             <Image src={''} alt='logo' />
             <ul className='flex items-center gap-14'>
                 <li className={path == '/' ? 'py-1 text-lg text-iris font-semibold border-b-2 border-iris' : 'text-lg text-iris'}>

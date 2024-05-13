@@ -54,7 +54,7 @@ function page() {
         ]
 
         const newDate = new Date(date)
-        const day = newDate.getDate()
+        const day = newDate.getDate().toString().padStart(2, '0')
         const month = months[newDate.getMonth()]
         const year = newDate.getFullYear()
 

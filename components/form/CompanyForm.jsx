@@ -10,6 +10,10 @@ function CompanyForm(props) {
         city: true
     })
 
+    const toTitleCase = (str) => {
+        return str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())
+    }
+
     useEffect(() => {
         const fetchDataSectors = async () => {
             await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/sectors`).then(async (response) => {
@@ -57,8 +61,8 @@ function CompanyForm(props) {
 
     const cityOptions = Object.values(cities).map(data => ({
         name: 'city',
-        value: data.replace('KAB.', 'KABUPATEN').replace('ADM.', ''),
-        label: data.replace('KAB.', 'KABUPATEN').replace('ADM.', ''),
+        value: toTitleCase(data).replace('Kab. ', '').replace('Kab ', '').replace('Adm. ', ''),
+        label: toTitleCase(data).replace('Kab. ', '').replace('Kab ', '').replace('Adm. ', ''),
     }))
 
     const selectStyle = {
