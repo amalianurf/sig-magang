@@ -125,8 +125,8 @@ function page() {
                         <TotalCard icon={<CorporateFareOutlinedIcon fontSize='large' />} total={companies.length} name={'Jumlah Perusahaan'} />
                         <TotalCard icon={<PieChartOutlineOutlinedIcon fontSize='large' />} total={sectors.length} name={'Jumlah Sektor Perusahaan'} />
                     </section>
-                    <section className='w-full flex items-start gap-6'>
-                        <section className='w-full flex flex-col gap-5'>
+                    <section className='w-full flex flex-wrap items-start gap-6'>
+                        <section className='w-fit flex flex-col gap-5'>
                             <h4>Lowongan Magang per Periode Mulai</h4>
                             <div className='border border-grey rounded-lg'>
                                 <BarChart
@@ -142,7 +142,7 @@ function page() {
                                             color: '#5D5FEF'
                                         }
                                     ]}
-                                    width={500}
+                                    width={550}
                                     height={300}
                                 />
                             </div>
