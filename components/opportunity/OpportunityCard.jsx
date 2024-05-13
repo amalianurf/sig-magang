@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useLayoutEffect, useState, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -7,17 +7,18 @@ function OpportunityCard(props) {
     const contentRef = useRef(null)
     const [contentSize, setContentSize] = useState()
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const handleResize = () => {
-            setContentSize(contentRef.current.clientHeight)
+            if (contentRef.current) {
+                setContentSize(contentRef.current.clientHeight)
+            }
         }
 
-        if (contentRef.current) {
-            window.addEventListener('resize', handleResize);
-        }
+        handleResize()
+        window.addEventListener('resize', handleResize)
 
         return () => {
-            window.removeEventListener('resize', handleResize);
+            window.removeEventListener('resize', handleResize)
         }
     }, [])
 

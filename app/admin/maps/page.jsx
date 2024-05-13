@@ -1,15 +1,14 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import dynamic from 'next/dynamic'
-import NavBar from '@component/components/navigations/NavBar'
+import toast from 'react-hot-toast'
 import CompanyInfoPanel from '@component/components/panel/CompanyInfoPanel'
-import toast, {Toaster} from 'react-hot-toast'
 import OpportunityListPanel from '@component/components/panel/OpportunityListPanel'
+import { HeaderContext } from '../layout'
 
 const Map = dynamic(() => import('@component/components/map/Map'), { ssr: false })
 
 function page() {
-    const [navbarHeight, setNavbarHeight] = useState()
     const [geoJsonData, setGeoJsonData] = useState()
     const [filteredGeoJsonData, setFilteredGeoJsonData] = useState()
     const [opportunityIds, setOpportunityIds] = useState()
@@ -31,6 +30,7 @@ function page() {
         company: true,
         opportunity: true
     })
+    const { headerHeight } = useContext(HeaderContext)
 
     useEffect(() => {
         const fetchDataGeoms = async () => {
@@ -241,16 +241,12 @@ function page() {
 
     return (
         <>
-            <Toaster position='top-center' reverseOrder={false} />
-            <header>
-                <NavBar setNavbarHeight={setNavbarHeight} />
-            </header>
-            <main style={{ paddingTop: navbarHeight }} className='relative w-full'>
-                {loading.company && loading.geojson && loading.sector && loading.opportunity ? (
-                    <div className='p-10'>Loading...</div>
-                ) : (
+            {loading.company && loading.geojson && loading.sector && loading.opportunity ? (
+                <div className='p-10'>Loading...</div>
+            ) : (
+                <section className='relative w-full rounded-t-2xl overflow-hidden'>
                     <Map
-                        navbarHeight={navbarHeight}
+                        navbarHeight={headerHeight}
                         geoJsonData={filteredGeoJsonData}
                         companies={filteredCompanies}
                         sectors={sectors}
@@ -264,29 +260,29 @@ function page() {
                         handleFilter={handleFilter}
                         handleResetData={handleResetData}
                     />
-                )}
-                <section style={{ paddingTop: navbarHeight }} className={`absolute bg-white top-0 left-0 min-h-full max-h-screen w-[582px] z-[999] overflow-scroll ${companyId || city ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-500 ease-in-out`}>
-                    {companyId && (
-                        <CompanyInfoPanel
-                            companies={companies}
-                            companyId={companyId}
-                            setCompanyId={setCompanyId}
-                            opportunityIds={opportunityIds}
-                            filteredOpportunityIds={filteredOpportunityIds}
-                            setFilteredOpportunityIds={setFilteredOpportunityIds}
-                        />
-                    )}
-                    {city && (
-                        <OpportunityListPanel
-                            city={city}
-                            setCity={setCity}
-                            opportunityIds={opportunityIds}
-                            filteredOpportunityIds={filteredOpportunityIds}
-                            setFilteredOpportunityIds={setFilteredOpportunityIds}
-                        />
-                    )}
+                    <div className={`absolute bg-white top-0 left-0 min-h-full max-h-screen w-[582px] pb-10 z-[999] overflow-scroll ${companyId || city ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-500 ease-in-out`}>
+                        {companyId && (
+                            <CompanyInfoPanel
+                                companies={companies}
+                                companyId={companyId}
+                                setCompanyId={setCompanyId}
+                                opportunityIds={opportunityIds}
+                                filteredOpportunityIds={filteredOpportunityIds}
+                                setFilteredOpportunityIds={setFilteredOpportunityIds}
+                            />
+                        )}
+                        {city && (
+                            <OpportunityListPanel
+                                city={city}
+                                setCity={setCity}
+                                opportunityIds={opportunityIds}
+                                filteredOpportunityIds={filteredOpportunityIds}
+                                setFilteredOpportunityIds={setFilteredOpportunityIds}
+                            />
+                        )}
+                    </div>
                 </section>
-            </main>
+            )}
         </>
     )
 }

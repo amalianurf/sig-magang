@@ -38,7 +38,7 @@ function CompanyDetail(props) {
                             <div className='flex flex-col gap-2.5'>
                                 {props.opportunities.map((opportunity, index) => {
                                     return (
-                                        <OpportunityCard key={index} href={`/opportunity/${opportunity.id}`} image={props.company.logo} name={opportunity.name} start_period={opportunity.start_period} activity_type={opportunity.activity_type} />
+                                        <OpportunityCard key={index} href={`${props.isAdmin ? '/admin/' : ''}opportunity/${opportunity.id}`} image={props.company.logo} name={opportunity.name} start_period={opportunity.start_period} activity_type={opportunity.activity_type} />
                                     )
                                 })}
                             </div>

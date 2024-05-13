@@ -80,7 +80,7 @@ function Map(props) {
     return (
         <>
             {props.sectors && (
-                <div style={{ top: `${props.navbarHeight}px` }} className='fixed right-0 flex items-center gap-3 px-7 py-5 rounded-bl-lg bg-white/[.6] z-[900]'>
+                <div className='absolute right-0 flex items-center gap-3 px-7 py-5 rounded-bl-lg bg-white/[.6] z-[900]'>
                     <Select
                         name='sector_id'
                         onChange={(selectedOption) => props.handleSelectChange(selectedOption)}
@@ -149,7 +149,14 @@ function Map(props) {
                             layer.on({
                                 mouseover: (e) => { layer.openPopup() },
                                 mouseout: (e) => { layer.closePopup() },
-                                click: (e) => { props.setCity(feature.properties.city) }
+                                click: (e) => {
+                                    props.setCity(feature.properties.city)
+                                    props.setCompanyId(null)
+                                    setMapView({
+                                        center: [e.latlng.lat, e.latlng.lng - 0.25],
+                                        zoom: 10
+                                    })
+                                }
                             })
                         }}
                     />
@@ -167,6 +174,7 @@ function Map(props) {
                                         eventHandlers={{
                                             click: (e) => {
                                                 props.setCompanyId(e.target.options.data)
+                                                props.setCity(null)
                                                 setMapView({
                                                     center: [e.latlng.lat, e.latlng.lng - 0.25],
                                                     zoom: 10
@@ -185,7 +193,7 @@ function Map(props) {
                 )}
             </MapContainer>
             {props.geoJsonData && props.geoJsonData.features.length ? (
-                <div className='fixed right-0 bottom-0 w-full px-6 py-2 flex justify-end items-center gap-10 bg-white z-[1000]'>
+                <div className='absolute right-0 bottom-0 w-full px-6 py-2 flex justify-end items-center gap-10 bg-white z-[1000]'>
                     <div className='flex items-center gap-1'>
                         <CircleIcon fontSize='small' className='text-green' />
                         <div>Lowongan &gt; {UpperLowerBounds(standardDeviation()).upperBounds.toFixed(2)}</div>

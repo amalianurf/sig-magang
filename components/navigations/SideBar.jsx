@@ -3,13 +3,16 @@ import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import * as Logo from '../../public/logo-white.svg'
 
 function SideBar() {
     const path = usePathname()
 
     return (
         <nav className='fixed flex flex-col gap-14 py-4 w-64 min-h-screen text-white'>
-            <Image src={''} alt='logo' />
+            <div className='px-10'>
+                <Image src={Logo} height={32} alt='logo' priority />
+            </div>
             <ul className='flex flex-col gap-2'>
                 <li>
                     <Link href={'/admin/dashboard'}>

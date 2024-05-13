@@ -56,9 +56,6 @@ function page() {
                     setOpportunities(joinedData)
                     setFilteredOpportunities(joinedData)
                     setLoading(false)
-                }).catch((error) => {
-                    console.error('Error:', error)
-                    setLoading(false)
                 })
             }).catch((error) => {
                 console.error('Error:', error)

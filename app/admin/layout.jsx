@@ -1,9 +1,12 @@
 'use client'
+import React, { useState, useLayoutEffect, useRef, createContext } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import SideBar from '@component/components/navigations/SideBar'
 import Button from '@component/components/Button'
 import { Toaster } from 'react-hot-toast'
 import Cookies from 'js-cookie'
+
+export const HeaderContext = createContext()
 
 function layout({ children }) {
     const path = usePathname()
@@ -15,13 +18,18 @@ function layout({ children }) {
         '/admin/sector': 'Data Sektor'
     }
     const router = useRouter()
-    const token = Cookies.get('access-token')
+    const headerRef = useRef()
+    const [headerHeight, setHeaderHeight] = useState()
 
-    if (typeof window !== 'undefined') {
-        if (!token) {
-            router.push('/login')
+    useLayoutEffect(() => {
+        const handleResize = () => {
+            if (headerRef.current) {
+                setHeaderHeight(headerRef.current.clientHeight)
+            }
         }
-    }
+
+        handleResize()
+    }, [])
 
     const getTitle = (path) => {
         for (const key of Object.keys(title)) {
@@ -43,12 +51,14 @@ function layout({ children }) {
             <div className='relative flex bg-black'>
                 <SideBar />
                 <div className='flex flex-col w-full min-h-screen'>
-                    <header className='max-w-full ml-64 flex justify-between px-10 py-4 text-white'>
+                    <header ref={headerRef} className='max-w-full ml-64 flex justify-between px-10 py-4 text-white'>
                         <h3>{getTitle(path)}</h3>
                         <Button type={'button'} onClick={logout} name={'Logout'} buttonStyle={'bg-red px-4 py-2 text-white font-bold text-sm uppercase rounded-lg'} />
                     </header>
                     <main className='max-w-full ml-64 h-full bg-white rounded-t-2xl'>
-                        {children}
+                        <HeaderContext.Provider value={{ headerHeight }}>
+                            {children}
+                        </HeaderContext.Provider>
                     </main>
                 </div>
             </div>

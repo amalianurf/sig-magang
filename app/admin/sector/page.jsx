@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import Button from '@component/components/Button'
+import ConfirmDeleteModal from '@component/components/modal/ConfirmDeleteModal'
 import { DataGrid, useGridApiContext, useGridSelector, gridPageSelector, gridPageCountSelector, GridToolbarQuickFilter } from '@mui/x-data-grid'
 import { Pagination, PaginationItem, createTheme, ThemeProvider } from '@mui/material'
 import Cookies from 'js-cookie'
@@ -9,6 +10,10 @@ import toast from 'react-hot-toast'
 function page() {
     const [sectors, setSectors] = useState([])
     const [loading, setLoading] = useState(true)
+    const [confirmDelete, setConfirmDelete] = useState({
+        showModal: false,
+        id: ''
+    })
     const [filterModel, setFilterModel] = useState({
         items: [],
         quickFilterExcludeHiddenColumns: false,
@@ -28,7 +33,6 @@ function page() {
                 setLoading(false)
             }).catch((error) => {
                 console.error('Error:', error)
-                setLoading(false)
             })
         }
 
@@ -55,6 +59,10 @@ function page() {
             setSectors(newData)
             toast.dismiss()
             toast.success(data.message)
+            setConfirmDelete({
+                showModal: false,
+                id: ''
+            })
         }).catch((error) => {
             toast.dismiss()
             toast.error(error.message)
@@ -80,7 +88,7 @@ function page() {
             renderCell: (params) => (
                 <div className='flex justify-center items-center gap-2 w-full h-full'>
                     <Button type={'button'} href={`/admin/sector/edit/${params.id}`} name={'Edit'} buttonStyle={'text-center font-medium text-sm text-white bg-green hover:bg-green/[.3] rounded-md px-2 py-1 w-full'} />
-                    <Button type={'button'} onClick={() => handleDelete(params.id)} name={'Hapus'} buttonStyle={'text-center font-medium text-sm text-white bg-red hover:bg-red/[.3] rounded-md px-2 py-1 w-full'} />
+                    <Button type={'button'} onClick={() => setConfirmDelete({ showModal: true, id: params.id })} name={'Hapus'} buttonStyle={'text-center font-medium text-sm text-white bg-red hover:bg-red/[.3] rounded-md px-2 py-1 w-full'} />
                 </div>
             )
         }
@@ -129,6 +137,7 @@ function page() {
                                     toolbar: GridToolbarQuickFilter,
                                     pagination: customPagination
                                 }}
+                                rowSelection={false}
                                 filterModel={filterModel}
                                 onFilterModelChange={(newModel) => setFilterModel(newModel)}
                                 initialState={{pagination: {paginationModel: {pageSize: 100}}}}
@@ -142,6 +151,8 @@ function page() {
                                     '& .MuiDataGrid-main': { borderRadius: 2, boxShadow: '0 2px 8px #0000001F', marginTop: '12px' },
                                     '& .MuiDataGrid-footerContainer': { border: 0, marginTop: '12px' },
                                     '& .MuiDataGrid-cell': { border: 0 },
+                                    '& .MuiDataGrid-cell:focus': { outline: '0 !important' },
+                                    '& .MuiDataGrid-cell:focus-within': { outline: '0 !important' },
                                     '& .MuiDataGrid-topContainer::after': { height: 0 },
                                     '& .MuiFormControl-root': { border: 1, borderRadius: 2, borderColor: '#7C7C7C', width: '312px', padding: '2px 10px' },
                                     '& .MuiFormControl-root:focus-within': { boxShadow: 'inset 0 0 0 1px #5D5FEF', borderColor: '#5D5FEF' },
@@ -152,6 +163,9 @@ function page() {
                             />
                         </ThemeProvider>
                     </div>
+                    {confirmDelete.showModal && (
+                        <ConfirmDeleteModal handleDelete={handleDelete} confirmDelete={confirmDelete} setConfirmDelete={setConfirmDelete} />
+                    )}
                 </>
             )}
         </section>
