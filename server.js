@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const next = require('next');
+const cookieParser = require('cookie-parser');
 require('dotenv').config({ path: '.env.local' });
 
 const dev = process.env.NODE_ENV !== 'production';
@@ -19,8 +20,9 @@ app.prepare().then(() => {
     const server = express();
     const port = process.env.PORT;
 
-    server.use(express.json())
-    server.use(cors())
+    server.use(express.json());
+    server.use(cors());
+    server.use(cookieParser());
 
     // API ROUTES
     server.post('/api/auth', userController.auth);
@@ -45,6 +47,12 @@ app.prepare().then(() => {
             console.error('Error:', error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
+    });
+
+    server.get('/admin/*', (req, res) => {
+        middleware.clientAuthMiddleware(req, res, () => {
+            return handle(req, res);
+        });
     });
 
     server.get('*', (req, res) => {
