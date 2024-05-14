@@ -140,7 +140,7 @@ function page() {
                                 rowSelection={false}
                                 filterModel={filterModel}
                                 onFilterModelChange={(newModel) => setFilterModel(newModel)}
-                                initialState={{pagination: {paginationModel: {pageSize: 100}}}}
+                                initialState={{pagination: {paginationModel: {pageSize: 10}}}}
                                 classes={{
                                     columnHeader: 'bg-neutral-dark !font-semibold',
                                     row: 'odd:bg-white even:bg-neutral',

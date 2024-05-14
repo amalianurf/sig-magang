@@ -82,7 +82,7 @@ function page() {
 
     const formatRowData = (data) => {
         return data.map((row, index) => {
-            return { ...row, no: index + 1, duration: `${row.duration.toString()} bulan`, start_period: formatDate(row.start_period) }
+            return { ...row, no: index + 1, duration: row.duration ? `${row.duration.toString()} bulan` : null, start_period: formatDate(row.start_period) }
         })
     }
 
@@ -167,7 +167,7 @@ function page() {
                                 filterModel={filterModel}
                                 onCellClick={handleCellClick}
                                 onFilterModelChange={(newModel) => setFilterModel(newModel)}
-                                initialState={{pagination: {paginationModel: {pageSize: 100}}}}
+                                initialState={{pagination: {paginationModel: {pageSize: 25}}}}
                                 classes={{
                                     columnHeader: 'bg-neutral-dark !font-semibold',
                                     row: 'odd:bg-white even:bg-neutral',
