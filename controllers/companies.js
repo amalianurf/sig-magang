@@ -15,7 +15,7 @@ exports.getById = async (req, res) => {
     try {
         const company = await CompanyModel.findByPk(req.params.id);
         if (!company) {
-            return res.status(401).json({ message: 'Gagal mengambil data' });
+            return res.status(400).json({ message: 'Gagal mengambil data' });
         }
 
         res.status(200).json(company);
@@ -49,22 +49,26 @@ exports.create = async (req, res) => {
                     updatedAt: new Date()
                 }))
         
-                const company = await CompanyModel.bulkCreate(reqData);
-                if (!company) {
-                    return res.status(401).json({ message: 'Gagal menambahkan data' });
+                try {
+                    await CompanyModel.bulkCreate(reqData);
+                } catch (error) {
+                    console.error('Error:', error);
+                    return res.status(400).json({ message: 'Gagal menambahkan data' });
                 }
             } else {
-                return res.status(401).json({ message: 'Struktur data tidak sesuai format' });
+                return res.status(400).json({ message: 'Struktur data tidak sesuai format' });
             }
         } else {
-            const company = await CompanyModel.create({
-                ...req.body,
-                id: uuidv4(),
-                createdAt: new Date(),
-                updatedAt: new Date()
-            });
-            if (!company) {
-                return res.status(401).json({ message: 'Gagal menambahkan data' });
+            try {
+                await CompanyModel.create({
+                    ...req.body,
+                    id: uuidv4(),
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                return res.status(400).json({ message: 'Gagal menambahkan data' });
             }
         }
 
@@ -87,7 +91,7 @@ exports.update = async (req, res) => {
             }
         );
         if (dataUpdated === 0) {
-            return res.status(401).json({ message: 'Gagal mengubah data' });
+            return res.status(400).json({ message: 'Gagal mengubah data' });
         }
 
         res.status(200).json({ message: 'Data perusahaan berhasil diubah' });
@@ -101,7 +105,7 @@ exports.delete = async (req, res) => {
     try {
         const dataDeleted = await CompanyModel.destroy({ where: { id: req.params.id } });
         if (dataDeleted === 0) {
-            return res.status(401).json({ message: 'Gagal menghapus data' });
+            return res.status(400).json({ message: 'Gagal menghapus data' });
         }
 
         res.status(200).json({ message: 'Data perusahaan berhasil dihapus' });

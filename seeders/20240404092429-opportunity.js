@@ -15,7 +15,7 @@ module.exports = {
         start_period: new Date('2024-04-10'),
         min_semester: 5,
         salary: 1000000,
-        company_id: '33839e69-cf59-4e51-a6e1-0980058001d2',
+        company_id: '19e4194c-9453-42fa-a8df-f090d34217bc',
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -29,7 +29,7 @@ module.exports = {
         start_period: new Date('2024-04-10'),
         min_semester: 5,
         salary: 1200000,
-        company_id: '33839e69-cf59-4e51-a6e1-0980058001d2',
+        company_id: '19e4194c-9453-42fa-a8df-f090d34217bc',
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -43,7 +43,7 @@ module.exports = {
         start_period: new Date('2024-04-20'),
         min_semester: 5,
         salary: 500000,
-        company_id: '40c7ca4f-e3b9-4b65-becf-5efee7dbb857',
+        company_id: 'fd1ab494-ece4-4046-8a59-e4268892a628',
         createdAt: new Date(),
         updatedAt: new Date()
       },

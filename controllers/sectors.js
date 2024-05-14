@@ -15,7 +15,7 @@ exports.getById = async (req, res) => {
     try {
         const sector = await SectorModel.findByPk(req.params.id);
         if (!sector) {
-            return res.status(401).json({ message: 'Gagal mengambil data' });
+            return res.status(400).json({ message: 'Gagal mengambil data' });
         }
 
         res.status(200).json(sector);
@@ -42,10 +42,10 @@ exports.create = async (req, res) => {
         
                 const sector = await SectorModel.bulkCreate(reqData);
                 if (!sector) {
-                    return res.status(401).json({ message: 'Gagal menambahkan data' });
+                    return res.status(400).json({ message: 'Gagal menambahkan data' });
                 }
             } else {
-                return res.status(401).json({ message: 'Struktur data tidak sesuai format' });
+                return res.status(400).json({ message: 'Struktur data tidak sesuai format' });
             }
         } else {    
             const sector = await SectorModel.create({
@@ -55,7 +55,7 @@ exports.create = async (req, res) => {
                 updatedAt: new Date()
             });
             if (!sector) {
-                return res.status(401).json({ message: 'Gagal menambahkan data' });
+                return res.status(400).json({ message: 'Gagal menambahkan data' });
             }
         }
 
@@ -78,7 +78,7 @@ exports.update = async (req, res) => {
             }
         );
         if (dataUpdated === 0) {
-            return res.status(401).json({ message: 'Gagal mengubah data' });
+            return res.status(400).json({ message: 'Gagal mengubah data' });
         }
 
         res.status(200).json({ message: 'Data sektor berhasil diubah' });
@@ -92,7 +92,7 @@ exports.delete = async (req, res) => {
     try {
         const dataDeleted = await SectorModel.destroy({ where: { id: req.params.id } });
         if (dataDeleted === 0) {
-            return res.status(401).json({ message: 'Gagal menghapus data' });
+            return res.status(400).json({ message: 'Gagal menghapus data' });
         }
 
         res.status(200).json({ message: 'Data sektor berhasil dihapus' });

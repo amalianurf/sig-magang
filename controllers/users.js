@@ -8,12 +8,12 @@ exports.auth = async (req, res) => {
 
         const user = await UserModel.findOne({ where: { email } });
         if (!user) {
-            return res.status(401).json({ message: 'Email atau password salah!' });
+            return res.status(400).json({ message: 'Email atau password salah!' });
         }
     
         const isPasswordValid = bcrypt.compareSync(password, user.password);
         if (!isPasswordValid) {
-            return res.status(401).json({ message: 'Email atau password salah!' });
+            return res.status(400).json({ message: 'Email atau password salah!' });
         }
 
         var token = 'Bearer ' + jwt.sign({
