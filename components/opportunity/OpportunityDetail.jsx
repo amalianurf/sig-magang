@@ -73,14 +73,14 @@ function OpportunityDetail(props) {
                 <div>Loading...</div>
             ) : (
                 <div className='flex flex-col gap-10 px-10'>
-                    <div className='w-full flex justify-between items-center'>
+                    <div className='w-full flex justify-between items-center gap-5'>
                         <div className='w-full flex items-center gap-4'>
                             <Image src={company.logo} width={90} height={90} alt='logo' className='w-fit aspect-square rounded-lg' priority />
                             <div className='w-full flex flex-col gap-2'>
                                 <div className='text-2xl text-black font-semibold'>{opportunity.name}</div>
                                 <div className='text-grey'>
                                     <div>{company.brand_name}</div>
-                                    <div>{company.address ? company.address : '-'}</div>
+                                    <div>{company.address ? company.address : (<em>Belum diketahui</em>)}</div>
                                 </div>
                             </div>
                         </div>
@@ -101,19 +101,19 @@ function OpportunityDetail(props) {
                                 <div className='flex flex-col gap-2'>
                                     <div className='flex flex-col gap-1'>
                                         <div className='text-grey'>Periode Magang</div>
-                                        <div className='font-medium'>{opportunity.start_period ? formatDate(opportunity.start_period) : '-'}</div>
+                                        <div className='font-medium'>{opportunity.start_period ? formatDate(opportunity.start_period) : (<em>Belum diketahui</em>)}</div>
                                     </div>
                                     <div className='flex flex-col gap-1'>
                                         <div className='text-grey'>Durasi</div>
-                                        <div className='font-medium'>{opportunity.duration ? `${opportunity.duration} Bulan` : '-'}</div>
+                                        <div className='font-medium'>{opportunity.duration ? `${opportunity.duration} Bulan` : (<em>Belum diketahui</em>)}</div>
                                     </div>
                                     <div className='flex flex-col gap-1'>
                                         <div className='text-grey'>Sistem Magang</div>
-                                        <div className='font-medium'>{opportunity.activity_type ? opportunity.activity_type : '-'}</div>
+                                        <div className='font-medium'>{opportunity.activity_type ? opportunity.activity_type : (<em>Belum diketahui</em>)}</div>
                                     </div>
                                     <div className='flex flex-col gap-1'>
                                         <div className='text-grey'>Bantuan Biaya Hidup</div>
-                                        <div className='font-medium'>{opportunity.salary ? formatToIDR(opportunity.salary) : '-'}</div>
+                                        <div className='font-medium'>{opportunity.salary ? formatToIDR(opportunity.salary) : (<em>Belum diketahui</em>)}</div>
                                     </div>
                                 </div>
                             </div>

@@ -63,11 +63,11 @@ function page() {
                             value: company.id,
                             label: company.brand_name
                         },
-                        activity_type: {
+                        activity_type: opportunity.activity_type ? {
                             name: 'activity_type',
                             value: opportunity.activity_type,
                             label: opportunity.activity_type
-                        }
+                        } : null
                     })
                 }).catch((error) => {
                     console.error('Error:', error)

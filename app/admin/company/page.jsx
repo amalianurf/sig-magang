@@ -74,7 +74,7 @@ function page() {
 
     const formatRowData = (data) => {
         return data.map((row, index) => {
-            return { ...row, no: index + 1, latitude: row.location.coordinates[0], longitude: row.location.coordinates[1] }
+            return { ...row, no: index + 1, latitude: row.location ? row.location.coordinates[0] : null, longitude: row.location ? row.location.coordinates[1] : null }
         })
     }
 
@@ -159,7 +159,7 @@ function page() {
                                 filterModel={filterModel}
                                 onCellClick={handleCellClick}
                                 onFilterModelChange={(newModel) => setFilterModel(newModel)}
-                                initialState={{pagination: {paginationModel: {pageSize: 100}}}}
+                                initialState={{pagination: {paginationModel: {pageSize: 25}}}}
                                 classes={{
                                     columnHeader: 'bg-neutral-dark !font-semibold',
                                     row: 'odd:bg-white even:bg-neutral',

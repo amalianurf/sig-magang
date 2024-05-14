@@ -21,12 +21,10 @@ function CompanyDetail(props) {
                             </div>
                         </div>
                     </div>
-                    {props.company.address && (
-                        <div className='w-full flex items-start gap-0.5'>
-                            <LocationOnOutlinedIcon fontSize='small' />
-                            <div>{props.company.address}</div>
-                        </div>
-                    )}
+                    <div className='w-full flex items-start gap-0.5'>
+                        <LocationOnOutlinedIcon fontSize='small' />
+                        <div>{props.company.address ? props.company.address : (<em>Belum diketahui</em>)}</div>
+                    </div>
                     {props.company.description && (
                         <div>{props.company.description}</div>
                     )}

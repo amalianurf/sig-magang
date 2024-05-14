@@ -43,6 +43,29 @@ function page() {
         }
     }
 
+    const uploadData = async (data, chunkSize) => {
+        let response
+
+        for (let i = 0; i < data.length; i += chunkSize) {
+            const chunk = data.slice(i, i + chunkSize)
+            response = await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/company`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': Cookies.get('access-token'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(chunk)
+            })
+    
+            if (!response.ok) {
+                const error = await response.json()
+                throw new Error(error.message)
+            }
+        }
+
+        return response.json()
+    }
+
     const handleUpload = (e) => {
         e.preventDefault()
 
@@ -66,6 +89,7 @@ function page() {
                 description: data.description || null,
                 logo: data.logo || 'https://ibb.co/M1hJxSJ',
                 address: data.address || null,
+                city: data.city || null,
                 sector_id: data.sector_id || null,
                 location: data.lat && data.lon ? {
                     type: 'Point',
@@ -76,21 +100,7 @@ function page() {
                 } : null
             }))
 
-            fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/company`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': Cookies.get('access-token'),
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formatedData)
-            }).then(async (response) => {
-                if (!response.ok) {
-                    return response.json().then(error => {
-                        throw new Error(error.message)
-                    })
-                }
-                return response.json()
-            }).then((data) => {
+            uploadData(formatedData, 100).then((data) => {
                 toast.dismiss()
                 toast.success(data.message)
                 setIsShow(false)

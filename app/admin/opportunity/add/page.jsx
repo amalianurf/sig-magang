@@ -39,6 +39,29 @@ function page() {
         }
     }
 
+    const uploadData = async (data, chunkSize) => {
+        let response
+
+        for (let i = 0; i < data.length; i += chunkSize) {
+            const chunk = data.slice(i, i + chunkSize)
+            response = await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/opportunity`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': Cookies.get('access-token'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(chunk)
+            })
+    
+            if (!response.ok) {
+                const error = await response.json()
+                throw new Error(error.message)
+            }
+        }
+
+        return response.json()
+    }
+
     const handleUpload = (e) => {
         e.preventDefault()
 
@@ -66,21 +89,7 @@ function page() {
                 company_id: data.company_id || null
             }))
 
-            fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/opportunity`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': Cookies.get('access-token'),
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formatedData)
-            }).then(async (response) => {
-                if (!response.ok) {
-                    return response.json().then(error => {
-                        throw new Error(error.message)
-                    })
-                }
-                return response.json()
-            }).then((data) => {
+            uploadData(formatedData, 60).then((data) => {
                 toast.dismiss()
                 toast.success(data.message)
                 setIsShow(false)
