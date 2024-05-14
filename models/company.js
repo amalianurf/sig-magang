@@ -11,11 +11,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     brand_name: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.STRING(100),
       allowNull: false
     },
     company_name: {
-      type: DataTypes.STRING(50)
+      type: DataTypes.STRING(100)
     },
     description: {
       type: DataTypes.TEXT

@@ -45,7 +45,7 @@ exports.getById = async (req, res) => {
     try {
         const opportunity = await OpportunityModel.findByPk(req.params.id);
         if (!opportunity) {
-            return res.status(401).json({ message: 'Gagal mengambil data' });
+            return res.status(400).json({ message: 'Gagal mengambil data' });
         }
 
         res.status(200).json(opportunity);
@@ -80,22 +80,26 @@ exports.create = async (req, res) => {
                     updatedAt: new Date()
                 }))
 
-                const opportunity = await OpportunityModel.bulkCreate(reqData);
-                if (!opportunity) {
-                    return res.status(401).json({ message: 'Gagal menambahkan data' });
+                try {
+                    await OpportunityModel.bulkCreate(reqData);
+                } catch (error) {
+                    console.error('Error:', error);
+                    return res.status(400).json({ message: 'Gagal menambahkan data' });
                 }
             } else {
-                return res.status(401).json({ message: 'Struktur data tidak sesuai format' });
+                return res.status(400).json({ message: 'Struktur data tidak sesuai format' });
             }
         } else {
-            const opportunity = await OpportunityModel.create({
-                id: uuidv4(),
-                ...req.body,
-                createdAt: new Date(),
-                updatedAt: new Date()
-            });
-            if (!opportunity) {
-                return res.status(401).json({ message: 'Gagal menambahkan data' });
+            try {
+                await OpportunityModel.create({
+                    id: uuidv4(),
+                    ...req.body,
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                return res.status(400).json({ message: 'Gagal menambahkan data' });
             }
         }
 
@@ -118,7 +122,7 @@ exports.update = async (req, res) => {
             }
         );
         if (dataUpdated === 0) {
-            return res.status(401).json({ message: 'Gagal mengubah data' });
+            return res.status(400).json({ message: 'Gagal mengubah data' });
         }
 
         res.status(200).json({ message: 'Data lowongan berhasil diubah' });
@@ -132,7 +136,7 @@ exports.delete = async (req, res) => {
     try {
         const dataDeleted = await OpportunityModel.destroy({ where: { id: req.params.id } });
         if (dataDeleted === 0) {
-            return res.status(401).json({ message: 'Gagal menghapus data' });
+            return res.status(400).json({ message: 'Gagal menghapus data' });
         }
 
         res.status(200).json({ message: 'Data lowongan berhasil dihapus' });

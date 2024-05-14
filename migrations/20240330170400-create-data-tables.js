@@ -10,7 +10,7 @@ module.exports = {
           allowNull: false,
         },
         name: {
-          type: Sequelize.STRING(50),
+          type: Sequelize.STRING(62),
           allowNull: false,
         },
         createdAt: {
@@ -28,11 +28,11 @@ module.exports = {
         allowNull: false
       },
       brand_name: {
-        type: Sequelize.STRING(50),
+        type: Sequelize.STRING(100),
         allowNull: false
       },
       company_name: {
-        type: Sequelize.STRING(50)
+        type: Sequelize.STRING(100)
       },
       description: {
         type: Sequelize.TEXT
@@ -71,7 +71,7 @@ module.exports = {
         allowNull: false
       },
       name: {
-        type: Sequelize.STRING(50),
+        type: Sequelize.STRING(100),
         allowNull: false
       },
       activity_type: {
