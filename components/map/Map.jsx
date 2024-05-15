@@ -59,12 +59,12 @@ function Map(props) {
         const { upperBounds, lowerBounds } = UpperLowerBounds(standardDeviation())
 
         return value > upperBounds
-            ? 'green'
+            ? '#117E19'
             : value <= upperBounds && value > lowerBounds
-            ? 'yellow'
+            ? '#FFFF00'
             : value <= lowerBounds
-            ? 'red'
-            : 'grey'
+            ? '#FA0014'
+            : '#7C7C7C'
     }
 
     const selectStyle = {
