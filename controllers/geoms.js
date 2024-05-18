@@ -12,21 +12,26 @@ exports.getAll = async (req, res) => {
 
         const opportunityCounts = await OpportunityModel.findAll({
             include: [{
-                model: CompanyModel
+                model: CompanyModel,
+                attributes: ['city']
             }],
             attributes: ['Company.city', [Sequelize.fn('COUNT', Sequelize.col('Opportunity.id')), 'opportunity_count']],
-            group: ['city', 'Company.id']
+            group: ['Company.city', 'Company.id']
         });
 
         const geomData = await IndonesiaGeoModel.findAll();
 
         const companyCountsMap = companyCounts.reduce((accumulator, value) => {
-            accumulator[value.city] = value.dataValues.company_count;
+            accumulator[value.city] = parseInt(value.dataValues.company_count);
             return accumulator;
         }, {});
 
         const opportunityCountsMap = opportunityCounts.reduce((accumulator, value) => {
-            accumulator[value.Company.city] = value.dataValues.opportunity_count;
+            if (accumulator[value.Company.city]) {
+                accumulator[value.Company.city] = parseInt(accumulator[value.Company.city]) + parseInt(value.dataValues.opportunity_count);
+            } else {
+                accumulator[value.Company.city] = parseInt(value.dataValues.opportunity_count);
+            }
             return accumulator;
         }, {});
 
