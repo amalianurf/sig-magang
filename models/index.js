@@ -11,7 +11,7 @@ const db = {};
 
 let sequelize;
 if (env === 'production ') {
-  sequelize = new Sequelize(process.env.POSTGRES_PROD_URL);
+  sequelize = new Sequelize(process.env[config.database], process.env[config.username], process.env[config.password], config);
 } else {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
