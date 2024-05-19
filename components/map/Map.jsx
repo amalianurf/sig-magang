@@ -141,10 +141,13 @@ function Map(props) {
                         })}
                         onEachFeature={(feature, layer) =>{
                             layer.bindPopup(ReactDOMServer.renderToString(
-                                <>
-                                    <div>Jumlah Perusahaan: {feature.properties.companies || 0}</div>
-                                    <div>Jumlah Lowongan: {feature.properties.opportunities || 0}</div>
-                                </>
+                                <div className='flex flex-col gap-1'>
+                                    <div className='font-semibold'>{feature.properties.city}</div>
+                                    <div>
+                                        <div>Jumlah Perusahaan: {feature.properties.companies || 0}</div>
+                                        <div>Jumlah Lowongan: {feature.properties.opportunities || 0}</div>
+                                    </div>
+                                </div>
                             ))
                             layer.on({
                                 mouseover: (e) => { layer.openPopup() },
