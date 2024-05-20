@@ -11,7 +11,16 @@ const db = {};
 
 let sequelize;
 if (env === 'production ') {
-  sequelize = new Sequelize(process.env[config.database], process.env[config.username], process.env[config.password], config);
+  sequelize = new Sequelize(process.env[config.database], process.env[config.username], process.env[config.password], {
+    host: process.env[config.host],
+    dialect: 'postgres',
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    }
+  });
 } else {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
