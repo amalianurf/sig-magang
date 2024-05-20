@@ -26,7 +26,7 @@ function CompanyDetail(props) {
                         <div>{props.company.address ? props.company.address : (<em>Belum diketahui</em>)}</div>
                     </div>
                     {props.company.description && (
-                        <div>{props.company.description}</div>
+                        <div dangerouslySetInnerHTML={{ __html: props.company.description }}></div>
                     )}
                 </div>
                 {props.opportunities && (

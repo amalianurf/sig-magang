@@ -90,9 +90,9 @@ function OpportunityDetail(props) {
                         <h4>Deskripsi</h4>
                         <div className='flex items-start justify-between gap-14'>
                             {opportunity.description.includes('</') ? (
-                                <div className='text-justify'>{opportunity.description}</div>
+                                <div dangerouslySetInnerHTML={{ __html: opportunity.description }}></div>
                             ) : (
-                                <div className='text-justify'>
+                                <div>
                                     <p>{opportunity.description}</p>
                                 </div>
                             )}
