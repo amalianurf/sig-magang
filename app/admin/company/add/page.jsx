@@ -87,7 +87,7 @@ function page() {
                 ...data,
                 company_name: data.company_name || null,
                 description: data.description || null,
-                logo: data.logo || 'https://ibb.co/M1hJxSJ',
+                logo: data.logo || 'https://i.ibb.co.com/NN3GdCG/placeholder.png',
                 address: data.address || null,
                 city: data.city || null,
                 sector_id: data.sector_id || null,

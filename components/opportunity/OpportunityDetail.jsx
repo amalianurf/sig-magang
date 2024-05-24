@@ -8,6 +8,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 function OpportunityDetail(props) {
     const [opportunity, setOpportunity] = useState()
     const [company, setCompany] = useState()
+    const [companyLogo, setCompanyLogo] = useState()
     const [loading, setLoading] = useState(true)
     const router = useRouter()
 
@@ -32,6 +33,7 @@ function OpportunityDetail(props) {
                     return response.json()
                 }).then((data) => {
                     setCompany(data)
+                    setCompanyLogo(data.logo)
                 }).catch((error) => {
                     console.error('Error:', error)
                 })
@@ -63,6 +65,10 @@ function OpportunityDetail(props) {
         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(amount)
     }
 
+    const handleImageError = () => {
+        setCompanyLogo('https://i.ibb.co.com/NN3GdCG/placeholder.png')
+    }
+
     return (
         <section className='flex flex-col gap-10 p-10'>
             <div className='flex items-center gap-2 text-iris'>
@@ -75,7 +81,7 @@ function OpportunityDetail(props) {
                 <div className='flex flex-col gap-10 px-10'>
                     <div className='w-full flex justify-between items-center gap-5'>
                         <div className='w-full flex items-center gap-4'>
-                            <Image src={company.logo} width={90} height={90} alt='logo' className='w-fit aspect-square rounded-lg' priority />
+                            <Image src={companyLogo} onError={handleImageError} width={90} height={90} alt='logo' className='w-fit aspect-square rounded-lg' priority />
                             <div className='w-full flex flex-col gap-2'>
                                 <div className='text-2xl text-black font-semibold'>{opportunity.name}</div>
                                 <div className='text-grey'>

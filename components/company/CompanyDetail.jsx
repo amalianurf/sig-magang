@@ -1,14 +1,28 @@
+'use client'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import OpportunityCard from '../opportunity/OpportunityCard'
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined'
 
 function CompanyDetail(props) {
+    const [companyLogo, setCompanyLogo] = useState()
+
+    useEffect(() => {
+        if (props.company) {
+            setCompanyLogo(props.company.logo)
+        }
+    }, [props.company != null && props.company])
+
+    const handleImageError = () => {
+        setCompanyLogo('https://i.ibb.co.com/NN3GdCG/placeholder.png')
+    }
+
     return (
         props.company ? (
             <div className='w-full flex flex-col gap-7'>
                 <div className='flex flex-col gap-2.5'>
                     <div className='w-full flex items-center gap-4'>
-                        <Image src={props.company.logo} width={65} height={65} alt='logo' className='w-fit aspect-square rounded-lg' priority />
+                        <Image src={companyLogo} onError={handleImageError} width={65} height={65} alt='logo' className='w-fit aspect-square rounded-lg' priority />
                         <div className='w-full flex flex-col gap-2'>
                             <h3>{props.company.brand_name}</h3>
                             <div className='text-grey'>

@@ -1,11 +1,12 @@
 'use client'
-import React, { useLayoutEffect, useState, useRef } from 'react'
+import React, { useLayoutEffect, useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
 function OpportunityCard(props) {
     const contentRef = useRef(null)
     const [contentSize, setContentSize] = useState()
+    const [opportunityImage, setOpportunityImage] = useState()
 
     useLayoutEffect(() => {
         const handleResize = () => {
@@ -22,6 +23,10 @@ function OpportunityCard(props) {
         }
     }, [])
 
+    useEffect(() => {
+        setOpportunityImage(props.image)
+    }, [props.image])
+
     const formatDate = (dateString) => {
         const months = [
             'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
@@ -36,11 +41,15 @@ function OpportunityCard(props) {
         return `${day} ${month} ${year}`
     }
 
+    const handleImageError = () => {
+        setOpportunityImage('https://i.ibb.co.com/NN3GdCG/placeholder.png')
+    }
+
     return (
         <Link href={props.href}>
             <div className='w-full h-full flex rounded-lg shadow-md'>
                 <div style={{ minWidth: `${contentSize}px`, minHeight: `${contentSize}px`, maxWidth: `${contentSize}px`, maxHeight: `${contentSize}px` }} className='flex items-center'>
-                    <Image src={props.image} width={100} height={100} alt='logo' className='w-full max-h-full rounded-lg' priority />
+                    <Image src={opportunityImage} onError={handleImageError} width={100} height={100} alt='logo' className='w-full max-h-full rounded-lg' priority />
                 </div>
                 <div ref={contentRef} className='w-full h-fit flex flex-col px-4 py-3 gap-1'>
                     <div className='text-black font-semibold line-clamp-1'>{props.name}</div>
