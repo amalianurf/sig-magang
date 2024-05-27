@@ -14,6 +14,13 @@ function CompanyForm(props) {
         return str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())
     }
 
+    const separateGunung = (str) => {
+        const regex = /(GUNUNG)([A-Z]+)/g
+        const result = str.replace(regex, '$1 $2')
+
+        return result
+    }
+
     useEffect(() => {
         const fetchDataSectors = async () => {
             await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/sectors`).then(async (response) => {
@@ -59,11 +66,17 @@ function CompanyForm(props) {
         label: data.name
     }))
 
-    const cityOptions = Object.values(cities).map(data => ({
-        name: 'city',
-        value: toTitleCase(data).replace('Kab. ', '').replace('Kab ', '').replace('Adm. ', ''),
-        label: toTitleCase(data).replace('Kab. ', '').replace('Kab ', '').replace('Adm. ', ''),
-    }))
+    const cityOptions = Object.values(cities).map(data => {
+        if (data.includes('GUNUNG') && !data.includes('PEGUNUNGAN')) {
+            data = separateGunung(data)
+        }
+
+        return ({
+            name: 'city',
+            value: toTitleCase(data).replace('Kab. ', '').replace('Kab ', '').replace('Adm. ', ''),
+            label: toTitleCase(data).replace('Kab. ', '').replace('Kab ', '').replace('Adm. ', ''),
+        })
+    })
 
     const selectStyle = {
         control: (styles, { isFocused }) => ({ ...styles, width: '100%', fontSize: '16px', padding: '8px 16px', border: isFocused ? '1px solid #5D5FEF99 !important' : '1px solid #7C7C7C !important', borderRadius: '8px', outline: 'none !important', boxShadow: isFocused ? 'inset 0 0 0 1px #5D5FEFB3' : 'none', '&.hover': { border: '1px solid #7C7C7C !important'} }),

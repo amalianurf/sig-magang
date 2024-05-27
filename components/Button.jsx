@@ -6,7 +6,7 @@ function Button(props) {
         <>
             {props.href != null ? 
                 <button type={props.type} onClick={props.onClick} className={props.buttonStyle}>
-                    <Link href={props.href}>{props.name}</Link>
+                    <Link href={props.href} target={props.target} >{props.name}</Link>
                 </button>
                 :
                 <button type={props.type} onClick={props.onClick} className={props.buttonStyle}>
