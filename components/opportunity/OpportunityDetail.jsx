@@ -90,7 +90,7 @@ function OpportunityDetail(props) {
                                 </div>
                             </div>
                         </div>
-                        <Button type={'button'} href={`https://kampusmerdeka.kemdikbud.go.id/program/magang-mandiri/browse/${opportunity.company_id}/${opportunity.id}`} name={'Buka di Web Kampus Merdeka'} buttonStyle={'w-fit text-center font-medium text-white bg-iris hover:bg-iris/[.3] rounded-lg px-4 py-2'} />
+                        <Button type={'button'} target={'_blank'} href={`https://kampusmerdeka.kemdikbud.go.id/program/magang-mandiri/browse/${opportunity.company_id}/${opportunity.id}`} name={'Buka di Web Kampus Merdeka'} buttonStyle={'w-fit text-center font-medium text-white bg-iris hover:bg-iris/[.3] rounded-lg px-4 py-2'} />
                     </div>
                     <div className='flex flex-col gap-4'>
                         <h4>Deskripsi</h4>

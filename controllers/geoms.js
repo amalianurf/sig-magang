@@ -40,14 +40,11 @@ exports.getAll = async (req, res) => {
                 return {
                     type: 'Feature',
                     geometry: {
-                        type: 'Polygon',
-                        coordinates: data.geom.coordinates[0]
+                        type: 'MultiPolygon',
+                        coordinates: data.geom.coordinates
                     },
                     properties: {
                         city: data.city,
-                        city_code: data.city_code,
-                        shape_area: parseFloat(data.shape_area),
-                        shape_leng: parseFloat(data.shape_leng),
                         companies: parseInt(companyCountsMap[data.city]),
                         opportunities: parseInt(opportunityCountsMap[data.city])
                     }

@@ -10,10 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       allowNull: false
     },
-    shape_leng: DataTypes.NUMERIC,
-    shape_area: DataTypes.NUMERIC,
     city: DataTypes.STRING(50),
-    city_code: DataTypes.STRING(50),
     geom: DataTypes.GEOMETRY
   }, {
     sequelize,

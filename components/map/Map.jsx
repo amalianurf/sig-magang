@@ -18,6 +18,7 @@ function Map(props) {
         center: [-1.3631627162310562, 118.42289645522916],
         zoom: 5
     })
+    const [popupPosition, setPopupPosition] = useState()
 
     useEffect(() => {
         setMapKey((prevKey) => prevKey + 1)
@@ -150,7 +151,7 @@ function Map(props) {
                                 </div>
                             ))
                             layer.on({
-                                mouseover: (e) => { layer.openPopup() },
+                                mouseover: (e) => { layer.openPopup(e.latlng) },
                                 mouseout: (e) => { layer.closePopup() },
                                 click: (e) => {
                                     props.setCity(feature.properties.city)
@@ -165,7 +166,7 @@ function Map(props) {
                     />
                 )}
                 {props.companies && (
-                    <MarkerClusterGroup chunkedLoading >
+                    <MarkerClusterGroup chunkedLoading showCoverageOnHover={false} >
                         {props.companies.map((company, index) => {
                             if (company.location) {
                                 return (
@@ -179,8 +180,8 @@ function Map(props) {
                                                 props.setCompanyId(e.target.options.data)
                                                 props.setCity(null)
                                                 setMapView({
-                                                    center: [e.latlng.lat, e.latlng.lng - 0.25],
-                                                    zoom: 10
+                                                    center: [e.latlng.lat, e.latlng.lng - 0.0011],
+                                                    zoom: 20
                                                 })
                                             }
                                         }}
@@ -199,15 +200,15 @@ function Map(props) {
                 <div className='absolute right-0 bottom-0 w-full px-6 py-2 flex justify-end items-center gap-10 bg-white z-[1000]'>
                     <div className='flex items-center gap-1'>
                         <CircleIcon fontSize='small' className='text-green' />
-                        <div>Lowongan &gt; {UpperLowerBounds(standardDeviation()).upperBounds.toFixed(2)}</div>
+                        <div>Jumlah Lowongan &gt; {Math.floor(UpperLowerBounds(standardDeviation()).upperBounds)}</div>
                     </div>
                     <div className='flex items-center gap-1'>
                         <CircleIcon fontSize='small' className='text-yellow' />
-                        <div>{UpperLowerBounds(standardDeviation()).upperBounds.toFixed(2)} &gt;= Lowongan &gt;= {UpperLowerBounds(standardDeviation()).lowerBounds.toFixed(2)}</div>
+                        <div>{Math.floor(UpperLowerBounds(standardDeviation()).upperBounds)} &gt;= Jumlah Lowongan &gt;= {Math.floor(UpperLowerBounds(standardDeviation()).lowerBounds)}</div>
                     </div>
                     <div className='flex items-center gap-1'>
                         <CircleIcon fontSize='small' className='text-red' />
-                        <div>Lowongan &lt; {UpperLowerBounds(standardDeviation()).lowerBounds.toFixed(2)}</div>
+                        <div>Lowongan &lt; {Math.floor(UpperLowerBounds(standardDeviation()).lowerBounds)}</div>
                     </div>
                 </div>
             ) : ''}
