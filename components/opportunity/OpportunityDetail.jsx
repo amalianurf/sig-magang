@@ -69,6 +69,10 @@ function OpportunityDetail(props) {
         setCompanyLogo('https://i.ibb.co.com/NN3GdCG/placeholder.png')
     }
 
+    const handleButton = () => {
+        window.open(`https://kampusmerdeka.kemdikbud.go.id/program/magang-mandiri/browse/${opportunity.company_id}/${opportunity.id}`, '_blank')
+    }
+
     return (
         <section className='flex flex-col gap-10 p-10'>
             <div className='flex items-center gap-2 text-iris'>
@@ -90,7 +94,7 @@ function OpportunityDetail(props) {
                                 </div>
                             </div>
                         </div>
-                        <Button type={'button'} target={'_blank'} href={`https://kampusmerdeka.kemdikbud.go.id/program/magang-mandiri/browse/${opportunity.company_id}/${opportunity.id}`} name={'Buka di Web Kampus Merdeka'} buttonStyle={'w-fit text-center font-medium text-white bg-iris hover:bg-iris/[.3] rounded-lg px-4 py-2'} />
+                        <Button type={'button'} onClick={handleButton} name={'Buka di Web Kampus Merdeka'} buttonStyle={'w-fit text-center font-medium text-white bg-iris hover:bg-iris/[.3] rounded-lg px-4 py-2'} />
                     </div>
                     <div className='flex flex-col gap-4'>
                         <h4>Deskripsi</h4>
