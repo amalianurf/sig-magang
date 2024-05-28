@@ -26,6 +26,7 @@ function page() {
         toast.loading('Login diproses...')
 
         if (form.email == '' || form.password == '') {
+            toast.dismiss()
             toast.error('Harap lengkapi semua data.')
         } else {
             await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/auth`, {

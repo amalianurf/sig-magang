@@ -172,8 +172,9 @@ function page() {
 
         toast.loading('Mengirim data...')
 
-        if (company.brand_name == '' || company.city == '' || company.latitude == '' || company.longitude == '') {
-            toast.error('Harap lengkapi nama brand, kabupaten/kota, latitude, dan longitude.')
+        if (company.brand_name == '') {
+            toast.dismiss()
+            toast.error('Harap lengkapi nama brand.')
         } else {
             if (company.logo) {
                 const data = new FormData()

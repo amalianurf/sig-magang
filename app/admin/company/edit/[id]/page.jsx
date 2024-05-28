@@ -130,7 +130,8 @@ function page() {
 
         toast.loading('Mengirim data...')
 
-        if (company.brand_name == '' || company.city == '' || company.latitude == '' || company.longitude == '') {
+        if (company.brand_name == '') {
+            toast.dismiss()
             toast.error('Harap lengkapi nama brand, kabupaten/kota, latitude, dan longitude.')
         } else {
             if (company.logo != '' && isValidFileSize(company.logo)) {

@@ -141,7 +141,6 @@ function CompanyForm(props) {
                                     isSearchable={true}
                                     isClearable={true}
                                     styles={selectStyle}
-                                    required={true}
                                 />
                             </div>
                             <div className='flex flex-col gap-1'>

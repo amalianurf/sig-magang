@@ -100,6 +100,7 @@ function page() {
         toast.loading('Mengirim data...')
 
         if (opportunity.name == '' || opportunity.description == '' || opportunity.start_period == '') {
+            toast.dismiss()
             toast.error('Harap lengkapi nama, deskripsi, dan periode mulai magang.')
         } else {
             fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/opportunity/${id}`, {

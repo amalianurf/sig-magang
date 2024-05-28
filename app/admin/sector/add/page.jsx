@@ -76,6 +76,7 @@ function page() {
         toast.loading('Mengirim data...')
 
         if (sectorName == '') {
+            toast.dismiss()
             toast.error('Harap lengkapi semua data.')
         } else {
             fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/sector`, {
