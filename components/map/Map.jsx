@@ -18,11 +18,21 @@ function Map(props) {
         center: [-1.3631627162310562, 118.42289645522916],
         zoom: 5
     })
-    const [popupPosition, setPopupPosition] = useState()
 
     useEffect(() => {
         setMapKey((prevKey) => prevKey + 1)
     }, [props.geoJsonData, mapView])
+
+    useEffect(() => {
+        if (props.isFiltered) {
+            props.setCompanyId(null)
+            props.setCity(null)
+            setMapView({
+                center: [-1.3631627162310562, 118.42289645522916],
+                zoom: 5
+            })
+        }
+    }, [props.isFiltered])
 
     // perhitungan simpangan baku
     const standardDeviation = () => {
@@ -204,7 +214,7 @@ function Map(props) {
                     </div>
                     <div className='flex items-center gap-1'>
                         <CircleIcon fontSize='small' className='text-yellow' />
-                        <div>{Math.floor(UpperLowerBounds(standardDeviation()).upperBounds)} &gt;= Jumlah Lowongan &gt;= {Math.floor(UpperLowerBounds(standardDeviation()).lowerBounds)}</div>
+                        <div>{Math.floor(UpperLowerBounds(standardDeviation()).upperBounds)} &ge; Jumlah Lowongan &ge; {Math.floor(UpperLowerBounds(standardDeviation()).lowerBounds)}</div>
                     </div>
                     <div className='flex items-center gap-1'>
                         <CircleIcon fontSize='small' className='text-red' />

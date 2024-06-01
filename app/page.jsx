@@ -223,8 +223,8 @@ function page() {
             }).catch((error) => {
                 console.error('Error:', error)
             })
-        } else if (!dateRange.start || !dateRange.end) {
-            toast.error('Harap lengkapi rentang tanggal dengan benar')
+        } else {
+            toast.error('Harap lengkapi rentang tanggal atau pilih sektor')
         }
     }
 
