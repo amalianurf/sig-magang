@@ -62,6 +62,10 @@ function page() {
                 toast.dismiss()
                 toast.success(data.message)
                 setIsShow(false)
+            }).catch((error) => {
+                toast.dismiss()
+                toast.error(error.message)
+                console.error('Error:', error)
             })
         }).catch((error) => {
             toast.dismiss()

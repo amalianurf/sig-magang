@@ -104,6 +104,10 @@ function page() {
                 toast.dismiss()
                 toast.success(data.message)
                 setIsShow(false)
+            }).catch((error) => {
+                toast.dismiss()
+                toast.error(error.message)
+                console.error('Error:', error)
             })
         }).catch((error) => {
             toast.dismiss()
@@ -199,7 +203,7 @@ function page() {
                     console.error('Error:', error.message)
                 })
             } else {
-                const logoUrl = 'https://ibb.co/M1hJxSJ'
+                const logoUrl = 'https://i.ibb.co.com/NN3GdCG/placeholder.png'
                 addCompany(logoUrl)
             }
         }

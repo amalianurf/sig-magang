@@ -87,7 +87,7 @@ function page() {
             width: 150,
             renderCell: (params) => (
                 <div className='flex justify-center items-center gap-2 w-full h-full'>
-                    <Button type={'button'} href={`/admin/sector/edit/${params.id}`} name={'Edit'} buttonStyle={'text-center font-medium text-sm text-white bg-green hover:bg-green/[.3] rounded-md px-2 py-1 w-full'} />
+                    <Button type={'button'} href={`/admin/sector/edit/${params.id}`} onClick={() => { window.open(`${process.env.NEXT_PUBLIC_CLIENT}/admin/sector/edit/${params.id}`, '_self') }} name={'Edit'} buttonStyle={'text-center font-medium text-sm text-white bg-green hover:bg-green/[.3] rounded-md px-2 py-1 w-full'} />
                     <Button type={'button'} onClick={() => setConfirmDelete({ showModal: true, id: params.id })} name={'Hapus'} buttonStyle={'text-center font-medium text-sm text-white bg-red hover:bg-red/[.3] rounded-md px-2 py-1 w-full'} />
                 </div>
             )
@@ -126,7 +126,7 @@ function page() {
             ) : (
                 <>
                     <div className='relative'>
-                        <Button type={'button'} href={'/admin/sector/add'} name={'Tambah Data'} buttonStyle={'absolute right-0 top-0 z-10 w-fit h-fit text-center font-medium text-white text-base bg-iris hover:bg-iris/[.3] rounded-lg px-4 py-2'} />
+                        <Button type={'button'} href={'/admin/sector/add'} onClick={() => { window.open(`${process.env.NEXT_PUBLIC_CLIENT}/admin/sector/add`, '_self') }} name={'Tambah Data'} buttonStyle={'absolute right-0 top-0 z-10 w-fit h-fit text-center font-medium text-white text-base bg-iris hover:bg-iris/[.3] rounded-lg px-4 py-2'} />
                         <ThemeProvider theme={paginationTheme}>
                             <DataGrid
                                 autoHeight

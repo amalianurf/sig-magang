@@ -44,7 +44,7 @@ function OpportunityListPanel(props) {
 
     return (
         <div className='relative w-full p-10 pb-20'>
-            <OpportunityList opportunities={opportunities} />
+            <OpportunityList isAdmin={props.isAdmin} opportunities={opportunities} />
             <Button type={'button'} onClick={handleClosePanel} name={<CloseIcon />} buttonStyle={'absolute top-5 right-5 flex items-center p-1.5 rounded-full text-grey hover:bg-grey-light/[.3]'} />
         </div>
     )

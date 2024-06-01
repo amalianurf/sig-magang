@@ -85,7 +85,7 @@ function OpportunityDetail(props) {
                 <div className='flex flex-col gap-10 px-10'>
                     <div className='w-full flex justify-between items-center gap-5'>
                         <div className='w-full flex items-center gap-4'>
-                            <Image src={companyLogo} onError={handleImageError} width={90} height={90} alt='logo' className='w-fit aspect-square rounded-lg' priority />
+                            <Image src={companyLogo} onError={handleImageError} width={90} height={90} alt='logo' className='w-fit h-fit rounded-lg' priority />
                             <div className='w-full flex flex-col gap-2'>
                                 <div className='text-2xl text-black font-semibold'>{opportunity.name}</div>
                                 <div className='text-grey'>

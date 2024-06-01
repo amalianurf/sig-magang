@@ -16,13 +16,15 @@ function NavBar(props) {
 
     return (
         <nav ref={navbarRef} className='fixed w-full px-10 py-4 flex justify-between items-center bg-white shadow-md z-[1000]'>
-            <Image src={Logo} height={32} alt='logo' priority />
+            <Link href={'/'} onClick={() => { window.open(`${process.env.NEXT_PUBLIC_CLIENT}/`, '_self') }}>
+                <Image src={Logo} height={32} alt='logo' priority />
+            </Link>
             <ul className='flex items-center gap-14'>
                 <li className={path == '/' ? 'py-1 text-lg text-iris font-semibold border-b-2 border-iris' : 'text-lg text-iris'}>
-                    <Link href={'/'}>Peta</Link>
+                    <Link href={'/'} onClick={() => { window.open(`${process.env.NEXT_PUBLIC_CLIENT}/`, '_self') }}>Peta</Link>
                 </li>
                 <li className={path.includes('/opportunity') ? 'py-1 text-lg text-iris font-semibold border-b-2 border-iris' : 'text-lg text-iris'}>
-                    <Link href={'/opportunity'}>Data Magang</Link>
+                    <Link href={'/opportunity'} onClick={() => { window.open(`${process.env.NEXT_PUBLIC_CLIENT}/opportunity`, '_self') }}>Data Magang</Link>
                 </li>
             </ul>
         </nav>

@@ -5,6 +5,7 @@ import TotalCard from '@component/components/dashboard/TotalCard'
 import WorkOutlineOutlinedIcon from '@mui/icons-material/WorkOutlineOutlined'
 import CorporateFareOutlinedIcon from '@mui/icons-material/CorporateFareOutlined'
 import PieChartOutlineOutlinedIcon from '@mui/icons-material/PieChartOutlineOutlined'
+import toast from 'react-hot-toast'
 
 function page() {
     const [opportunities, setOpportunities] = useState([])
@@ -17,6 +18,7 @@ function page() {
     })
 
     useEffect(() => {
+        toast.dismiss()
         const fetchDataOpportunities = async () => {
             await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/opportunities`).then(async (response) => {
                 if (!response.ok) {

@@ -46,7 +46,7 @@ function OpportunityCard(props) {
     }
 
     return (
-        <Link href={props.href}>
+        <Link href={`/${props.href}`} onClick={() => { window.open(`${process.env.NEXT_PUBLIC_CLIENT}/${props.href}`, '_self') }}>
             <div className='w-full h-full flex rounded-lg shadow-md'>
                 <div style={{ minWidth: `${contentSize}px`, minHeight: `${contentSize}px`, maxWidth: `${contentSize}px`, maxHeight: `${contentSize}px` }} className='flex items-center'>
                     <Image src={opportunityImage} onError={handleImageError} width={100} height={100} alt='logo' className='w-full max-h-full rounded-lg' priority />

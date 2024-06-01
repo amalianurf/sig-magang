@@ -22,7 +22,7 @@ function CompanyDetail(props) {
             <div className='w-full flex flex-col gap-7'>
                 <div className='flex flex-col gap-2.5'>
                     <div className='w-full flex items-center gap-4'>
-                        <Image src={companyLogo} onError={handleImageError} width={65} height={65} alt='logo' className='w-fit aspect-square rounded-lg' priority />
+                        <Image src={companyLogo} onError={handleImageError} width={65} height={65} alt='logo' className='w-fit h-fit rounded-lg' priority />
                         <div className='w-full flex flex-col gap-2'>
                             <h3>{props.company.brand_name}</h3>
                             <div className='text-grey'>
@@ -50,7 +50,7 @@ function CompanyDetail(props) {
                             <div className='flex flex-col gap-2.5'>
                                 {props.opportunities.map((opportunity, index) => {
                                     return (
-                                        <OpportunityCard key={index} href={`${props.isAdmin ? '/admin/' : ''}opportunity/${opportunity.id}`} image={props.company.logo} name={opportunity.name} start_period={opportunity.start_period} activity_type={opportunity.activity_type} />
+                                        <OpportunityCard key={index} href={`${props.isAdmin ? 'admin/' : ''}opportunity/${opportunity.id}`} image={props.company.logo} name={opportunity.name} start_period={opportunity.start_period} activity_type={opportunity.activity_type} />
                                     )
                                 })}
                             </div>

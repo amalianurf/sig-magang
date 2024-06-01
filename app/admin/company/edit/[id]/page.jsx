@@ -41,14 +41,14 @@ function page() {
                 setCurrLogo(company.logo)
                 setCompany({
                     brand_name: company.brand_name,
-                    company_name: company.company_name,
-                    sector_id: company.sector_id,
+                    company_name: company.company_name && company.company_name,
+                    sector_id: company.sector_id && company.sector_id,
                     logo: '',
-                    description: company.description,
-                    address: company.address,
-                    city: company.city,
-                    latitude: company.location.coordinates[0],
-                    longitude: company.location.coordinates[1]
+                    description: company.description && company.description,
+                    address: company.address && company.address,
+                    city: company.city && company.city,
+                    latitude: company.location && company.location.coordinates[0],
+                    longitude: company.location && company.location.coordinates[1]
                 })
 
                 await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/sector/${company.sector_id}`).then(async (response) => {
@@ -158,13 +158,13 @@ function page() {
                         description: company.description,
                         address: company.address,
                         city: company.city,
-                        location: {
+                        location: company.latitude && company.longitude ? {
                             type: 'Point',
                             coordinates: [
                                 company.latitude,
                                 company.longitude
                             ]
-                        }
+                        } : null
                     }
                     editCompany(dataCompany)
                 }).catch((error) => {
@@ -181,13 +181,13 @@ function page() {
                     description: company.description,
                     address: company.address,
                     city: company.city,
-                    location: {
+                    location: company.latitude && company.longitude ? {
                         type: 'Point',
                         coordinates: [
                             company.latitude,
                             company.longitude
                         ]
-                    }
+                    } : null
                 }
                 editCompany(dataCompany)
             }

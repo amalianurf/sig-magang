@@ -263,6 +263,7 @@ function page() {
                     <div className={`absolute bg-white top-0 left-0 min-h-full max-h-screen w-[582px] pb-10 z-[999] overflow-scroll ${companyId || city ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-500 ease-in-out`}>
                         {companyId && (
                             <CompanyInfoPanel
+                                isAdmin={true}
                                 companies={companies}
                                 companyId={companyId}
                                 setCompanyId={setCompanyId}
@@ -273,6 +274,7 @@ function page() {
                         )}
                         {city && (
                             <OpportunityListPanel
+                                isAdmin={true}
                                 city={city}
                                 setCity={setCity}
                                 opportunityIds={opportunityIds}
