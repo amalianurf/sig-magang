@@ -84,7 +84,7 @@ exports.create = async (req, res) => {
                     await OpportunityModel.bulkCreate(reqData);
                 } catch (error) {
                     console.error('Error:', error);
-                    return res.status(400).json({ message: 'Gagal menambahkan data' });
+                    return res.status(400).json({ message: 'Gagal menambahkan data, harap cek kembali data' });
                 }
             } else {
                 return res.status(400).json({ message: 'Struktur data tidak sesuai format' });

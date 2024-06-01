@@ -40,39 +40,42 @@ function page() {
                 const period = new Date(opportunity.start_period)
                 setOpportunity({
                     name: opportunity.name,
-                    activity_type: opportunity.activity_type,
-                    duration: opportunity.duration,
+                    activity_type: opportunity.activity_type || '',
+                    duration: opportunity.duration || '',
                     description: opportunity.description,
-                    quota: opportunity.quota,
+                    quota: opportunity.quota || '',
                     start_period: period.toISOString().split('T')[0],
-                    min_semester: opportunity.min_semester,
-                    salary: opportunity.salary,
-                    company_id: opportunity.company_id
+                    min_semester: opportunity.min_semester || '',
+                    salary: opportunity.salary || '',
+                    company_id: opportunity.company_id || ''
                 })
-                await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/company/${opportunity.company_id}`).then(async (response) => {
-                    if (!response.ok) {
-                        return response.json().then(error => {
-                            throw new Error(error.message)
+
+                if (opportunity.company_id) {
+                    await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/company/${opportunity.company_id}`).then(async (response) => {
+                        if (!response.ok) {
+                            return response.json().then(error => {
+                                throw new Error(error.message)
+                            })
+                        }
+                        return response.json()
+                    }).then((company) => {
+                        setSelectedOption({
+                            company: {
+                                name: 'company_id',
+                                value: company.id,
+                                label: company.brand_name
+                            },
+                            activity_type: opportunity.activity_type ? {
+                                name: 'activity_type',
+                                value: opportunity.activity_type,
+                                label: opportunity.activity_type
+                            } : null
                         })
-                    }
-                    return response.json()
-                }).then((company) => {
-                    setSelectedOption({
-                        company: {
-                            name: 'company_id',
-                            value: company.id,
-                            label: company.brand_name
-                        },
-                        activity_type: opportunity.activity_type ? {
-                            name: 'activity_type',
-                            value: opportunity.activity_type,
-                            label: opportunity.activity_type
-                        } : null
+                    }).catch((error) => {
+                        console.error('Error:', error)
+                        setLoading(false)
                     })
-                }).catch((error) => {
-                    console.error('Error:', error)
-                    setLoading(false)
-                })
+                }
                 setLoading(false)
             }).catch((error) => {
                 console.error('Error:', error)
@@ -109,7 +112,15 @@ function page() {
                     'Authorization': Cookies.get('access-token'),
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(opportunity)
+                body: JSON.stringify({
+                    ...opportunity,
+                    activity_type: opportunity.activity_type || null,
+                    duration: opportunity.duration || null,
+                    quota: opportunity.quota || null,
+                    min_semester: opportunity.min_semester || null,
+                    salary: opportunity.salary || null,
+                    company_id: opportunity.company_id || null
+                })
             }).then(async (response) => {
                 if (!response.ok) {
                     return response.json().then(error => {

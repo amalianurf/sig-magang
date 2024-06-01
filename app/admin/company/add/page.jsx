@@ -125,12 +125,12 @@ function page() {
             },
             body: JSON.stringify({
                 brand_name: company.brand_name,
-                company_name: company.company_name,
-                sector_id: company.sector_id,
+                company_name: company.company_name || null,
+                sector_id: company.sector_id || null,
                 logo: image,
-                description: company.description,
-                address: company.address,
-                city: company.city,
+                description: company.description || null,
+                address: company.address || null,
+                city: company.city || null,
                 location: company.latitude && company.longitude ? {
                     type: 'Point',
                     coordinates: [
@@ -171,6 +171,12 @@ function page() {
         })
     }
 
+    const convertUrl = (url) => {
+        const parts = url.split('/')
+        parts[2] = 'i.ibb.co.com'
+        return parts.join('/')
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault()
 
@@ -195,7 +201,7 @@ function page() {
                     }
                     return response.json()
                 }).then((data) => {
-                    const logoUrl = data.data.url
+                    const logoUrl = convertUrl(data.data.url)
                     addCompany(logoUrl)
                 }).catch((error) => {
                     toast.dismiss()

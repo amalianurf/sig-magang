@@ -41,40 +41,42 @@ function page() {
                 setCurrLogo(company.logo)
                 setCompany({
                     brand_name: company.brand_name,
-                    company_name: company.company_name && company.company_name,
-                    sector_id: company.sector_id && company.sector_id,
+                    company_name: company.company_name || '',
+                    sector_id: company.sector_id || '',
                     logo: '',
-                    description: company.description && company.description,
-                    address: company.address && company.address,
-                    city: company.city && company.city,
-                    latitude: company.location && company.location.coordinates[0],
-                    longitude: company.location && company.location.coordinates[1]
+                    description: company.description || '',
+                    address: company.address || '',
+                    city: company.city || '',
+                    latitude: (company.location && company.location.coordinates[0]) || '',
+                    longitude: (company.location && company.location.coordinates[1]) || ''
                 })
 
-                await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/sector/${company.sector_id}`).then(async (response) => {
-                    if (!response.ok) {
-                        return response.json().then(error => {
-                            throw new Error(error.message)
-                        })
-                    }
-                    return response.json()
-                }).then((sector) => {
-                    setSelectedOption({
-                        sector: {
-                            name: 'sector_id',
-                            value: sector.id,
-                            label: sector.name
-                        },
-                        city: {
-                            name: 'city',
-                            value: company.city,
-                            label: company.city
+                if (company.sector_id) {
+                    await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/sector/${company.sector_id}`).then(async (response) => {
+                        if (!response.ok) {
+                            return response.json().then(error => {
+                                throw new Error(error.message)
+                            })
                         }
+                        return response.json()
+                    }).then((sector) => {
+                        setSelectedOption({
+                            sector: {
+                                name: 'sector_id',
+                                value: sector.id,
+                                label: sector.name
+                            },
+                            city: {
+                                name: 'city',
+                                value: company.city,
+                                label: company.city
+                            }
+                        })
+                    }).catch((error) => {
+                        console.error('Error:', error)
+                        setLoading(false)
                     })
-                }).catch((error) => {
-                    console.error('Error:', error)
-                    setLoading(false)
-                })
+                }
                 setLoading(false)
             }).catch((error) => {
                 console.error('Error:', error)
@@ -125,6 +127,12 @@ function page() {
         })
     }
 
+    const convertUrl = (url) => {
+        const parts = url.split('/')
+        parts[2] = 'i.ibb.co.com'
+        return parts.join('/')
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault()
 
@@ -134,7 +142,7 @@ function page() {
             toast.dismiss()
             toast.error('Harap lengkapi nama brand, kabupaten/kota, latitude, dan longitude.')
         } else {
-            if (company.logo != '' && isValidFileSize(company.logo)) {
+            if (company.logo != '') {
                 const data = new FormData()
                 data.append('image', company.logo)
 
@@ -149,15 +157,15 @@ function page() {
                     }
                     return response.json()
                 }).then((data) => {
-                    const logoUrl = data.data.url
+                    const logoUrl = convertUrl(data.data.url)
                     const dataCompany = {
                         brand_name: company.brand_name,
-                        company_name: company.company_name,
-                        sector_id: company.sector_id,
+                        company_name: company.company_name || null,
+                        sector_id: company.sector_id || null,
                         logo: logoUrl,
-                        description: company.description,
-                        address: company.address,
-                        city: company.city,
+                        description: company.description || null,
+                        address: company.address || null,
+                        city: company.city || null,
                         location: company.latitude && company.longitude ? {
                             type: 'Point',
                             coordinates: [
@@ -175,12 +183,12 @@ function page() {
             } else {
                 const dataCompany = {
                     brand_name: company.brand_name,
-                    company_name: company.company_name,
-                    sector_id: company.sector_id,
+                    company_name: company.company_name || null,
+                    sector_id: company.sector_id || null,
                     logo: currLogo,
-                    description: company.description,
-                    address: company.address,
-                    city: company.city,
+                    description: company.description || null,
+                    address: company.address || null,
+                    city: company.city || null,
                     location: company.latitude && company.longitude ? {
                         type: 'Point',
                         coordinates: [

@@ -120,7 +120,15 @@ function page() {
                     'Authorization': Cookies.get('access-token'),
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(opportunity)
+                body: JSON.stringify({
+                    ...opportunity,
+                    activity_type: opportunity.activity_type || null,
+                    duration: opportunity.duration || null,
+                    quota: opportunity.quota || null,
+                    min_semester: opportunity.min_semester || null,
+                    salary: opportunity.salary || null,
+                    company_id: opportunity.company_id || null
+                })
             }).then(async (response) => {
                 if (!response.ok) {
                     return response.json().then(error => {

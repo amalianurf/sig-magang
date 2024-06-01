@@ -42,7 +42,7 @@ exports.create = async (req, res) => {
         
                 const sector = await SectorModel.bulkCreate(reqData);
                 if (!sector) {
-                    return res.status(400).json({ message: 'Gagal menambahkan data' });
+                    return res.status(400).json({ message: 'Gagal menambahkan data, harap cek kembali data' });
                 }
             } else {
                 return res.status(400).json({ message: 'Struktur data tidak sesuai format' });
