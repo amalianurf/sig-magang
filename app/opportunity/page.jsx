@@ -7,12 +7,13 @@ import CloseIcon from '@mui/icons-material/Close'
 import SearchIcon from '@mui/icons-material/Search'
 
 function page() {
+    const opportunitiesPerPage = 30
+    const [search, setSearch] = useState()
+    const [loading, setLoading] = useState(true)
+    const [currentPage, setCurrentPage] = useState(1)
     const [opportunities, setOpportunities] = useState([])
     const [filteredOpportunities, setFilteredOpportunities] = useState([])
-    const [search, setSearch] = useState()
-    const [currentPage, setCurrentPage] = useState(1)
-    const [loading, setLoading] = useState(true)
-    const opportunitiesPerPage = 30
+    const [countPage, setCountPage] = useState(Math.ceil(filteredOpportunities.length/opportunitiesPerPage))
 
     useEffect(() => {
         const fetchDataOpportunities = async () => {
@@ -79,19 +80,23 @@ function page() {
     })
 
     const handleSearchChange = (e) => {
+        setCurrentPage(1)
+
         const keyword = e.target.value
         setSearch(keyword)
 
         const filteredData = opportunities.filter((opportunity) => {
             return opportunity.name.toLowerCase().includes(keyword.toLowerCase())
         })
-
+        
         setFilteredOpportunities(filteredData)
+        setCountPage(Math.ceil(filteredData.length/opportunitiesPerPage))
     }
 
     const handleCloseSearch = () => {
         setSearch('')
         setFilteredOpportunities(opportunities)
+        setCountPage(Math.ceil(opportunities.length/opportunitiesPerPage))
     }
 
     return (
@@ -101,7 +106,7 @@ function page() {
                 <div className='w-[312px] relative'>
                     <SearchIcon className='w-5 absolute left-3 top-1/2 -translate-y-1/2 text-grey' fontSize='small' />
                     <input type='text' name='search' value={search} onChange={handleSearchChange} placeholder='Search' className='w-full px-9 pt-1.5 pb-[7px] border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' required />
-                    <Button type={'button'} onClick={handleCloseSearch} name={<CloseIcon className='absolute w-fit h-[85%] aspect-square p-1.5 right-3 top-1/2 -translate-y-1/2 text-grey hover:bg-neutral rounded-full' fontSize='small' />} buttonStyle={!search && 'hidden'} />
+                    <Button type={'button'} onClick={handleCloseSearch} name={<CloseIcon fontSize='small' />} buttonStyle={search ? 'absolute flex justify-center items-center w-fit h-[80%] aspect-square p-1.5 right-3 top-1/2 -translate-y-1/2 text-grey hover:bg-neutral rounded-full' : 'hidden'} />
                 </div>
             </div>
             <div className='w-full flex flex-col gap-6'>
@@ -111,7 +116,7 @@ function page() {
                     <div className='grid grid-cols-3 gap-4'>
                         {currentOpportunities.map((opportunity, index) => {
                             return (
-                                <OpportunityCard key={index} href={`/opportunity/${opportunity.id}`} image={opportunity.logo} name={opportunity.name} brand_name={opportunity.brand_name} city={opportunity.city} start_period={opportunity.start_period} />
+                                <OpportunityCard key={index} href={`opportunity/${opportunity.id}`} image={opportunity.logo} name={opportunity.name} brand_name={opportunity.brand_name} city={opportunity.city} start_period={opportunity.start_period} />
                             )
                         })}
                     </div>
@@ -119,7 +124,7 @@ function page() {
                 <ThemeProvider theme={paginationTheme}>
                     <Pagination
                         color='iris'
-                        count={Math.ceil(opportunities.length/opportunitiesPerPage)}
+                        count={countPage}
                         page={currentPage}
                         onChange={(event, value) => setCurrentPage(value)}
                         className='w-full flex justify-end'
