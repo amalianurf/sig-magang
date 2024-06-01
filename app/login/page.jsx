@@ -44,6 +44,7 @@ function page() {
                 return response.json()
             }).then((data) => {
                 toast.dismiss()
+                toast.loading('Beralih ke halaman dashboard...')
                 Cookies.set('access-token', data.accessToken)
                 router.push('/admin/dashboard')
             }).catch((error) => {
