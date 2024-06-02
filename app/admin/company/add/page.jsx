@@ -83,32 +83,38 @@ function page() {
             const filteredData = excelData.filter(newCompany => {
                 return !companyIds.includes(newCompany.id)
             })
-            const formatedData = filteredData.map((data) => ({
-                ...data,
-                company_name: data.company_name || null,
-                description: data.description || null,
-                logo: data.logo || 'https://i.ibb.co.com/NN3GdCG/placeholder.png',
-                address: data.address || null,
-                city: data.city || null,
-                sector_id: data.sector_id || null,
-                location: data.lat && data.lon ? {
-                    type: 'Point',
-                    coordinates: [
-                        data.lat,
-                        data.lon
-                    ]
-                } : null
-            }))
+            
+            if (filteredData.length > 0) {
+                const formatedData = filteredData.map((data) => ({
+                    ...data,
+                    company_name: data.company_name || null,
+                    description: data.description || null,
+                    logo: data.logo || 'https://i.ibb.co.com/NN3GdCG/placeholder.png',
+                    address: data.address || null,
+                    city: data.city || null,
+                    sector_id: data.sector_id || null,
+                    location: data.lat && data.lon ? {
+                        type: 'Point',
+                        coordinates: [
+                            data.lat,
+                            data.lon
+                        ]
+                    } : null
+                }))
 
-            uploadData(formatedData, 100).then((data) => {
+                uploadData(formatedData, 100).then((data) => {
+                    toast.dismiss()
+                    toast.success(data.message)
+                    setIsShow(false)
+                }).catch((error) => {
+                    toast.dismiss()
+                    toast.error(error.message)
+                    console.error('Error:', error)
+                })
+            } else {
                 toast.dismiss()
-                toast.success(data.message)
-                setIsShow(false)
-            }).catch((error) => {
-                toast.dismiss()
-                toast.error(error.message)
-                console.error('Error:', error)
-            })
+                toast.error('Data dengan ID tersebut sudah ada')
+            }
         }).catch((error) => {
             toast.dismiss()
             toast.error(error.message)

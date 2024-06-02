@@ -79,25 +79,31 @@ function page() {
             const filteredData = excelData.filter(newOpportunity => {
                 return !opportunityIds.includes(newOpportunity.id)
             })
-            const formatedData = filteredData.map((data) => ({
-                ...data,
-                activity_type: data.activity_type || null,
-                duration: data.duration || null,
-                quota: data.quota || null,
-                min_semester: data.min_semester || null,
-                salary: data.salary || null,
-                company_id: data.company_id || null
-            }))
 
-            uploadData(formatedData, 60).then((data) => {
+            if (filteredData.length > 0) {
+                const formatedData = filteredData.map((data) => ({
+                    ...data,
+                    activity_type: data.activity_type || null,
+                    duration: data.duration || null,
+                    quota: data.quota || null,
+                    min_semester: data.min_semester || null,
+                    salary: data.salary || null,
+                    company_id: data.company_id || null
+                }))
+    
+                uploadData(formatedData, 60).then((data) => {
+                    toast.dismiss()
+                    toast.success(data.message)
+                    setIsShow(false)
+                }).catch((error) => {
+                    toast.dismiss()
+                    toast.error(error.message)
+                    console.error('Error:', error)
+                })
+            } else {
                 toast.dismiss()
-                toast.success(data.message)
-                setIsShow(false)
-            }).catch((error) => {
-                toast.dismiss()
-                toast.error(error.message)
-                console.error('Error:', error)
-            })
+                toast.error('Data dengan ID tersebut sudah ada')
+            }
         }).catch((error) => {
             toast.dismiss()
             toast.error(error.message)

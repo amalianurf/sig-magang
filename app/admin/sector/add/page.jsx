@@ -58,15 +58,21 @@ function page() {
             const filteredData = excelData.filter(newSector => {
                 return !sectorIds.includes(newSector.id)
             })
-            uploadData(filteredData, 100).then((data) => {
+
+            if (filteredData.length > 0) {
+                uploadData(filteredData, 100).then((data) => {
+                    toast.dismiss()
+                    toast.success(data.message)
+                    setIsShow(false)
+                }).catch((error) => {
+                    toast.dismiss()
+                    toast.error(error.message)
+                    console.error('Error:', error)
+                })
+            } else {
                 toast.dismiss()
-                toast.success(data.message)
-                setIsShow(false)
-            }).catch((error) => {
-                toast.dismiss()
-                toast.error(error.message)
-                console.error('Error:', error)
-            })
+                toast.error('Data dengan ID tersebut sudah ada')
+            }
         }).catch((error) => {
             toast.dismiss()
             toast.error(error.message)
