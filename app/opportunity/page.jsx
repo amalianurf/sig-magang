@@ -13,7 +13,7 @@ function page() {
     const [currentPage, setCurrentPage] = useState(1)
     const [opportunities, setOpportunities] = useState([])
     const [filteredOpportunities, setFilteredOpportunities] = useState([])
-    const [countPage, setCountPage] = useState(Math.ceil(filteredOpportunities.length/opportunitiesPerPage))
+    const [countPage, setCountPage] = useState()
 
     useEffect(() => {
         const fetchDataOpportunities = async () => {
@@ -56,6 +56,7 @@ function page() {
                     joinedData.sort((a, b) => new Date(a.updatedAt) - new Date(b.updatedAt))
                     setOpportunities(joinedData)
                     setFilteredOpportunities(joinedData)
+                    setCountPage(Math.ceil(joinedData.length/opportunitiesPerPage))
                     setLoading(false)
                 })
             }).catch((error) => {
