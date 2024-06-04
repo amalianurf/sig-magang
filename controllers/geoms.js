@@ -65,3 +65,13 @@ exports.getAll = async (req, res) => {
         res.status(500).json({ message: 'Gagal mengambil data' });
     }
 };
+
+exports.getCity = async (req, res) => {
+    try {
+        const cities = await IndonesiaGeoModel.findAll({ attributes: ['city'] });
+        res.status(200).json(cities);
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ message: 'Gagal mengambil data' });
+    }
+};

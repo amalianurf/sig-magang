@@ -69,7 +69,7 @@ function page() {
                         <div className='flex flex-col gap-1'>
                             <label htmlFor='password' className='font-medium'>Password</label>
                             <div className='relative'>
-                                <input type={showPassword ? 'text' : 'password'} name='password' value={form.password} onChange={handleFormChange} placeholder='Password' className='w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' required />
+                                <input type={showPassword ? 'text' : 'password'} name='password' value={form.password} minLength={8} maxLength={12} onChange={handleFormChange} placeholder='Password' className='w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' required />
                                 <Button type={'button'} onClick={() => setShowPassword(!showPassword)} name={showPassword ? <VisibilityOffOutlinedIcon /> : <VisibilityOutlinedIcon />} buttonStyle={'absolute right-4 -top-1/5 translate-y-1/3 text-grey'} />
                             </div>
                         </div>
