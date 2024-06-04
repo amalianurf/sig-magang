@@ -57,12 +57,13 @@ function OpportunityForm(props) {
                     <div className='w-full flex items-start gap-5'>
                         <div className='w-full flex flex-col gap-4'>
                             <div className='flex flex-col gap-1'>
-                                <label htmlFor='name' className='font-medium'>Nama Lowongan</label>
-                                <input type='text' name='name' value={props.value.name} onChange={props.handleInputChange} placeholder='Nama Lowongan' className='w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' required />
+                                <label htmlFor='name' className='font-medium required-label'>Nama Lowongan</label>
+                                <input id='name' type='text' name='name' value={props.value.name} onChange={props.handleInputChange} placeholder='Nama Lowongan' className='w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' required />
                             </div>
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor='company_id' className='font-medium'>Perusahaan</label>
                                 <Select
+                                    id='company_id'
                                     name='company_id'
                                     onChange={(selectedOption) => props.handleSelectChange(selectedOption, 'company')}
                                     value={props.selectedOption.company}
@@ -76,6 +77,7 @@ function OpportunityForm(props) {
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor='activity_type' className='font-medium'>Sistem Magang</label>
                                 <Select
+                                    id='activity_type'
                                     name='activity_type'
                                     onChange={(selectedOption) => props.handleSelectChange(selectedOption, 'activity_type')}
                                     value={props.selectedOption.activity_type}
@@ -89,33 +91,33 @@ function OpportunityForm(props) {
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor='duration' className='font-medium'>Durasi</label>
                                 <div className='relative'>
-                                    <input type='number' name='duration' value={props.value.duration} onChange={props.handleInputChange} placeholder='Durasi Magang' className='relative w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' />
+                                    <input id='duration' type='number' name='duration' value={props.value.duration} onChange={props.handleInputChange} placeholder='Durasi Magang' className='relative w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' />
                                     <div className='absolute top-1/2 -translate-y-1/2 right-4 font-medium'>Bulan</div>
                                 </div>
                             </div>
                             <div className='flex flex-col gap-1'>
-                                <label htmlFor='description' className='font-medium'>Deskripsi</label>
-                                <textarea name='description' value={props.value.description} onChange={props.handleInputChange} placeholder='Deskripsi Lowongan' className='w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' cols='30' rows='3' required></textarea>
+                                <label htmlFor='description' className='font-medium required-label'>Deskripsi</label>
+                                <textarea id='description' name='description' value={props.value.description} onChange={props.handleInputChange} placeholder='Deskripsi Lowongan' className='w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' cols='30' rows='3' required></textarea>
                             </div>
                         </div>
                         <div className='w-full flex flex-col gap-4'>
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor='quota' className='font-medium'>Kuota Peserta</label>
-                                <input type='number' name='quota' value={props.value.quota} onChange={props.handleInputChange} placeholder='Kuota Peserta' className='relative w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' />
+                                <input id='quota' type='number' name='quota' value={props.value.quota} onChange={props.handleInputChange} placeholder='Kuota Peserta' className='relative w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' />
                             </div>
                             <div className='flex flex-col gap-1'>
-                                <label htmlFor='start_period' className='font-medium'>Periode Mulai</label>
-                                <input type='date' name='start_period' value={props.value.start_period} onChange={props.handleInputChange} className='relative w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' required />
+                                <label htmlFor='start_period' className='font-medium required-label'>Periode Mulai</label>
+                                <input id='start_period' type='date' name='start_period' value={props.value.start_period} onChange={props.handleInputChange} className='relative w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' required />
                             </div>
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor='min_semester' className='font-medium'>Minimal Semester</label>
-                                <input type='number' name='min_semester' value={props.value.min_semester} onChange={props.handleInputChange} placeholder='Minimal Semester' className='relative w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' />
+                                <input id='min_semester' type='number' name='min_semester' value={props.value.min_semester} onChange={props.handleInputChange} placeholder='Minimal Semester' className='relative w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' />
                             </div>
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor='salary' className='font-medium'>Bantuan Biaya Hidup</label>
                                 <div className='relative'>
                                     <div className='absolute top-1/2 -translate-y-1/2 left-4 font-medium z-10'>Rp</div>
-                                    <input type='number' name='salary' value={props.value.salary} onChange={props.handleInputChange} placeholder='Bantuan Biaya Hidup' className='relative w-full pl-11 pr-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' />
+                                    <input id='salary' type='number' name='salary' value={props.value.salary} onChange={props.handleInputChange} placeholder='Bantuan Biaya Hidup' className='relative w-full pl-11 pr-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' />
                                 </div>
                             </div>
                         </div>

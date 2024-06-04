@@ -73,3 +73,8 @@ input[type=number] {
 .overflow-scroll::-ms-scrollbar-track {
   background-color: #F1F1F1;
 }
+
+.required-label::after {
+  content: " *";
+  color: red;
+}

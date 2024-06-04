@@ -81,16 +81,17 @@ function CompanyForm(props) {
                     <div className='w-full flex items-start gap-5'>
                         <div className='w-full flex flex-col gap-4'>
                             <div className='flex flex-col gap-1'>
-                                <label htmlFor='brand_name' className='font-medium'>Nama Brand</label>
-                                <input type='text' name='brand_name' value={props.value.brand_name} onChange={props.handleInputChange} placeholder='Nama Brand' className='w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' required />
+                                <label htmlFor='brand_name' className='font-medium required-label'>Nama Brand</label>
+                                <input id='brand_name' type='text' name='brand_name' value={props.value.brand_name} onChange={props.handleInputChange} placeholder='Nama Brand' className='w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' required />
                             </div>
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor='company_name' className='font-medium'>Nama Perusahaan</label>
-                                <input type='text' name='company_name' value={props.value.company_name} onChange={props.handleInputChange} placeholder='Nama Perusahaan' className='w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' />
+                                <input id='company_name' type='text' name='company_name' value={props.value.company_name} onChange={props.handleInputChange} placeholder='Nama Perusahaan' className='w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' />
                             </div>
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor='sector_id' className='font-medium'>Sektor</label>
                                 <Select
+                                    id='sector_id'
                                     name='sector_id'
                                     onChange={(selectedOption) => props.handleSelectChange(selectedOption, 'sector')}
                                     value={props.selectedOption.sector}
@@ -103,21 +104,22 @@ function CompanyForm(props) {
                             </div>
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor='logo' className='font-medium'>Logo</label>
-                                <input type='file' name='logo' onChange={props.handleImageChange} accept='image/*' className='w-full px-3 py-2.5 border border-grey rounded-lg text-base text-grey outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6] file:text-black file:border-none file:px-4 file:py-2 file:mr-3 file:bg-grey-light file:font-medium file:rounded-lg' />
+                                <input id='logo' type='file' name='logo' onChange={props.handleImageChange} accept='image/*' className='w-full px-3 py-2.5 border border-grey rounded-lg text-base text-grey outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6] file:text-black file:border-none file:px-4 file:py-2 file:mr-3 file:bg-grey-light file:font-medium file:rounded-lg' />
                             </div>
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor='description' className='font-medium'>Deskripsi</label>
-                                <textarea name='description' value={props.value.description} onChange={props.handleInputChange} placeholder='Deskripsi Perusahaan' className='w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' cols='30' rows='3'></textarea>
+                                <textarea id='description' name='description' value={props.value.description} onChange={props.handleInputChange} placeholder='Deskripsi Perusahaan' className='w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' cols='30' rows='3'></textarea>
                             </div>
                         </div>
                         <div className='w-full flex flex-col gap-4'>
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor='address' className='font-medium'>Alamat</label>
-                                <textarea name='address' value={props.value.address} onChange={props.handleInputChange} placeholder='Alamat Perusahaan' className='w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' cols='30' rows='3'></textarea>
+                                <textarea id='address' name='address' value={props.value.address} onChange={props.handleInputChange} placeholder='Alamat Perusahaan' className='w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' cols='30' rows='3'></textarea>
                             </div>
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor='city' className='font-medium'>Kabupaten/Kota</label>
                                 <Select
+                                    id='city'
                                     name='city'
                                     onChange={(selectedOption) => props.handleSelectChange(selectedOption, 'city')}
                                     value={props.selectedOption.city}
@@ -130,11 +132,11 @@ function CompanyForm(props) {
                             </div>
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor='latitude' className='font-medium'>Latitude</label>
-                                <input type='number' name='latitude' value={props.value.latitude} onChange={props.handleInputChange} placeholder='Nilai Latitude' className='relative w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' />
+                                <input id='latitude' type='number' name='latitude' value={props.value.latitude} onChange={props.handleInputChange} placeholder='Nilai Latitude' className='relative w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' />
                             </div>
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor='longitude' className='font-medium'>Longitude</label>
-                                <input type='number' name='longitude' value={props.value.longitude} onChange={props.handleInputChange} placeholder='Nilai Longitude' className='relative w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' />
+                                <input id='longitude' type='number' name='longitude' value={props.value.longitude} onChange={props.handleInputChange} placeholder='Nilai Longitude' className='relative w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' />
                             </div>
                         </div>
                     </div>
