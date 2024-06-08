@@ -57,7 +57,7 @@ exports.getById = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        if (req.body.length > 1) {
+        if (Array.isArray(req.body)) {
             const isValidData = req.body.every((data) => {
                 return (
                     'name' in data &&
