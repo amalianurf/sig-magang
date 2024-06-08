@@ -51,7 +51,7 @@ function Map(props) {
             totalSquaredDifference += difference ** 2
         })
 
-        const variance = totalSquaredDifference / data.length
+        const variance = totalSquaredDifference / (data.length - 1)
         const standardDeviation = Math.sqrt(variance)
 
         return { standardDeviation, mean }
