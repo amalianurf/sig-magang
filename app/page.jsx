@@ -174,57 +174,61 @@ function page() {
     }
 
     const handleFilter = async () => {
-        if ((dateRange.start && dateRange.end) || selectedSector) {
-            fetch(selectedSector ? `${process.env.NEXT_PUBLIC_SERVER}/api/opportunities?sector=${selectedSector.value}` : `${process.env.NEXT_PUBLIC_SERVER}/api/opportunities`).then(async (response) => {
-                if (!response.ok) {
-                    return response.json().then(error => {
-                        throw new Error(error.message)
-                    })
-                }
-                return response.json()
-            }).then(async (data) => {
-                if (data) {
-                    if (dateRange.start && dateRange.end) {
-                        const filteredOpportunities = data.filter(function(opportunity) {
-                            const startPeriod = new Date(opportunity.start_period)
-                            const endDate = new Date(dateRange.end.getTime() + 24 * 60 * 60 * 1000)
-
-                            return startPeriod >= dateRange.start && startPeriod <= endDate
+        if (geoJsonData) {
+            if ((dateRange.start && dateRange.end) || selectedSector) {
+                fetch(selectedSector ? `${process.env.NEXT_PUBLIC_SERVER}/api/opportunities?sector=${selectedSector.value}` : `${process.env.NEXT_PUBLIC_SERVER}/api/opportunities`).then(async (response) => {
+                    if (!response.ok) {
+                        return response.json().then(error => {
+                            throw new Error(error.message)
                         })
-            
-                        let joinedData = []
-            
-                        filteredOpportunities.forEach((opportunity) => {
-                            const company = companies.find((company) => {
-                                return company.id == opportunity.company_id
-                            })
-            
-                            if (company) {
-                                joinedData.push({
-                                    id: opportunity.id,
-                                    start_period: opportunity.start_period,
-                                    Company: {
-                                        id: company.id,
-                                        city: company.city
-                                    }
-                                })
-                            }
-                        })
-
-                        const opportunitiesIds = joinedData.map(item => item.id)
-                        setFilteredOpportunityIds(opportunitiesIds)
-                        updateGeoJsonData(joinedData)
-                    } else {
-                        const opportunitiesIds = data.map(item => item.id)
-                        setFilteredOpportunityIds(opportunitiesIds)
-                        updateGeoJsonData(data)
                     }
-                }
-            }).catch((error) => {
-                console.error('Error:', error)
-            })
+                    return response.json()
+                }).then(async (data) => {
+                    if (data) {
+                        if (dateRange.start && dateRange.end) {
+                            const filteredOpportunities = data.filter(function(opportunity) {
+                                const startPeriod = new Date(opportunity.start_period)
+                                const endDate = new Date(dateRange.end.getTime() + 24 * 60 * 60 * 1000)
+    
+                                return startPeriod >= dateRange.start && startPeriod <= endDate
+                            })
+                
+                            let joinedData = []
+                
+                            filteredOpportunities.forEach((opportunity) => {
+                                const company = companies.find((company) => {
+                                    return company.id == opportunity.company_id
+                                })
+                
+                                if (company) {
+                                    joinedData.push({
+                                        id: opportunity.id,
+                                        start_period: opportunity.start_period,
+                                        Company: {
+                                            id: company.id,
+                                            city: company.city
+                                        }
+                                    })
+                                }
+                            })
+    
+                            const opportunitiesIds = joinedData.map(item => item.id)
+                            setFilteredOpportunityIds(opportunitiesIds)
+                            updateGeoJsonData(joinedData)
+                        } else {
+                            const opportunitiesIds = data.map(item => item.id)
+                            setFilteredOpportunityIds(opportunitiesIds)
+                            updateGeoJsonData(data)
+                        }
+                    }
+                }).catch((error) => {
+                    console.error('Error:', error)
+                })
+            } else {
+                toast.error('Harap lengkapi rentang tanggal atau pilih sektor')
+            }
         } else {
-            toast.error('Harap lengkapi rentang tanggal atau pilih sektor')
+            toast.error('Harap tunggu hingga label warna daerah muncul')
         }
     }
 
