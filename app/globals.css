@@ -78,3 +78,11 @@ input[type=number] {
   content: " *";
   color: red;
 }
+
+nextjs-portal {
+  display: none;
+}
+
+.nextjs-portal {
+  display: none;
+}

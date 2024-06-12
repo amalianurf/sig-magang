@@ -5,14 +5,15 @@ const path = require('path');
 const Sequelize = require('sequelize');
 const process = require('process');
 const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || 'development';
+const env = 'production';
 const config = require(__dirname + '/../config/config.json')[env];
 const db = {};
 
 let sequelize;
-if (env === 'production ') {
+if (env === 'production') {
   sequelize = new Sequelize(process.env[config.database], process.env[config.username], process.env[config.password], {
     host: process.env[config.host],
+    port: process.env[config.port],
     dialect: 'postgres',
     dialectOptions: {
       ssl: {

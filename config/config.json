@@ -6,11 +6,12 @@
     "host": "localhost",
     "dialect": "postgres"
   },
-  "production ": {
+  "production": {
     "username": "POSTGRES_PROD_USER",
     "password": "POSTGRES_PROD_PASSWORD",
     "database": "POSTGRES_PROD_DATABASE",
     "host": "POSTGRES_PROD_HOST",
+    "port": "POSTGRES_PROD_PORT",
     "dialect": "postgres"
   }
 }

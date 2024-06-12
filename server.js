@@ -4,8 +4,8 @@ const next = require('next');
 const cookieParser = require('cookie-parser');
 require('dotenv').config({ path: '.env.local' });
 
-const dev = process.env.NODE_ENV !== 'production ';
-const app = next({ dev });
+const dev = process.env.NODE_ENV !== 'production';
+const app = next({ dev, conf: { distDir: '.next' } });
 const handle = app.getRequestHandler();
 
 const middleware = require('./middleware/authorization');
