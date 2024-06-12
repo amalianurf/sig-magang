@@ -208,18 +208,27 @@ function Map(props) {
             </MapContainer>
             {props.geoJsonData && props.geoJsonData.features.length ? (
                 <div className='absolute right-0 bottom-0 w-full px-6 py-2 flex justify-end items-center gap-10 bg-white z-[1000]'>
-                    <div className='flex items-center gap-1'>
-                        <CircleIcon fontSize='small' className='text-green' />
-                        <div>Jumlah Lowongan &gt; {Math.floor(UpperLowerBounds(standardDeviation()).upperBounds)}</div>
-                    </div>
-                    <div className='flex items-center gap-1'>
-                        <CircleIcon fontSize='small' className='text-yellow' />
-                        <div>{Math.floor(UpperLowerBounds(standardDeviation()).upperBounds)} &ge; Jumlah Lowongan &ge; {Math.floor(UpperLowerBounds(standardDeviation()).lowerBounds)}</div>
-                    </div>
-                    <div className='flex items-center gap-1'>
-                        <CircleIcon fontSize='small' className='text-red' />
-                        <div>Lowongan &lt; {Math.floor(UpperLowerBounds(standardDeviation()).lowerBounds)}</div>
-                    </div>
+                    {UpperLowerBounds(standardDeviation()).upperBounds && UpperLowerBounds(standardDeviation()).lowerBounds ? (
+                        <>
+                            <div className='flex items-center gap-1'>
+                                <CircleIcon fontSize='small' className='text-green' />
+                                <div>Jumlah Lowongan &gt; {Math.floor(UpperLowerBounds(standardDeviation()).upperBounds)}</div>
+                            </div>
+                            <div className='flex items-center gap-1'>
+                                <CircleIcon fontSize='small' className='text-yellow' />
+                                <div>{Math.floor(UpperLowerBounds(standardDeviation()).upperBounds)} &ge; Jumlah Lowongan &ge; {Math.floor(UpperLowerBounds(standardDeviation()).lowerBounds)}</div>
+                            </div>
+                            <div className='flex items-center gap-1'>
+                                <CircleIcon fontSize='small' className='text-red' />
+                                <div>Lowongan &lt; {Math.floor(UpperLowerBounds(standardDeviation()).lowerBounds)}</div>
+                            </div>
+                        </>
+                    ) : (
+                        <div className='flex items-center gap-1'>
+                            <CircleIcon fontSize='small' className='text-grey' />
+                            <div>Jumlah Lowongan = {standardDeviation().mean}</div>
+                        </div>
+                    )}
                 </div>
             ) : ''}
         </>
