@@ -105,7 +105,8 @@ module.exports = {
         references: {
           model: 'Companies',
           key: 'id'
-        }
+        },
+        onDelete: 'CASCADE'
       },
       createdAt: {
         allowNull: false,
