@@ -38,7 +38,7 @@ function Map(props) {
     const standardDeviation = () => {
         const data = props.geoJsonData.features
         let total = 0
-        let totalSquaredDifference = 0
+        let totalSquaredDeviation = 0
 
         data.forEach((item) => {
             total += item.properties.opportunities
@@ -47,11 +47,11 @@ function Map(props) {
         const mean = total / data.length
 
         data.forEach((item) => {
-            const difference = item.properties.opportunities - mean
-            totalSquaredDifference += difference ** 2
+            const deviation = item.properties.opportunities - mean
+            totalSquaredDeviation += deviation ** 2
         })
 
-        const variance = totalSquaredDifference / (data.length - 1)
+        const variance = totalSquaredDeviation / (data.length - 1)
         const standardDeviation = Math.sqrt(variance)
 
         return { standardDeviation, mean }
@@ -147,8 +147,8 @@ function Map(props) {
                         data={props.geoJsonData}
                         style={(feature) => ({
                             fillColor: getPolygonColor(feature.properties.opportunities),
-                            color: '#ffffff',
-                            weight: 1
+                            color: '#5D5FEF',
+                            weight: 2
                         })}
                         onEachFeature={(feature, layer) =>{
                             layer.bindPopup(ReactDOMServer.renderToString(

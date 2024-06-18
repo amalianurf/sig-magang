@@ -89,7 +89,7 @@ function CompanyForm(props) {
                                 <input id='company_name' type='text' name='company_name' value={props.value.company_name} onChange={props.handleInputChange} placeholder='Nama Perusahaan' className='w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' />
                             </div>
                             <div className='flex flex-col gap-1'>
-                                <label htmlFor='sector_id' className='font-medium'>Sektor</label>
+                                <label htmlFor='sector_id' className='font-medium required-label'>Sektor</label>
                                 <Select
                                     id='sector_id'
                                     name='sector_id'
@@ -100,6 +100,7 @@ function CompanyForm(props) {
                                     isSearchable={true}
                                     isClearable={true}
                                     styles={selectStyle}
+                                    required
                                 />
                             </div>
                             <div className='flex flex-col gap-1'>

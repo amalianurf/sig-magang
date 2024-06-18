@@ -6,7 +6,10 @@ import CompanyInfoPanel from '@component/components/panel/CompanyInfoPanel'
 import OpportunityListPanel from '@component/components/panel/OpportunityListPanel'
 import { HeaderContext } from '../layout'
 
-const Map = dynamic(() => import('@component/components/map/Map'), { ssr: false })
+const Map = dynamic(() => import('@component/components/map/Map'), {
+    ssr: false,
+    loading: () => { return <div className='p-10'>Sebentar lagi...</div> }
+})
 
 function page() {
     const [geoJsonData, setGeoJsonData] = useState()
@@ -245,7 +248,7 @@ function page() {
 
     return (
         <>
-            {loading.company && loading.geojson && loading.sector && loading.opportunity ? (
+            {(loading.company && loading.geojson && loading.sector && loading.opportunity) || !Map ? (
                 <div className='p-10'>Loading...</div>
             ) : (
                 <section className='relative w-full rounded-t-2xl overflow-hidden'>

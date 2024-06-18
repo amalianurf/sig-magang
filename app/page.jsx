@@ -6,7 +6,10 @@ import CompanyInfoPanel from '@component/components/panel/CompanyInfoPanel'
 import toast, {Toaster} from 'react-hot-toast'
 import OpportunityListPanel from '@component/components/panel/OpportunityListPanel'
 
-const Map = dynamic(() => import('@component/components/map/Map'), { ssr: false })
+const Map = dynamic(() => import('@component/components/map/Map'), {
+    ssr: false,
+    loading: () => { return <div className='p-10'>Sebentar lagi...</div> }
+})
 
 function page() {
     const [navbarHeight, setNavbarHeight] = useState()

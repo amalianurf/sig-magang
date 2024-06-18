@@ -63,7 +63,7 @@ function page() {
                 uploadData(filteredData, 100).then((data) => {
                     toast.dismiss()
                     toast.success(data.message)
-                    setIsShow(false)
+                    router.push('/admin/sector')
                 }).catch((error) => {
                     toast.dismiss()
                     toast.error(error.message)
@@ -106,7 +106,7 @@ function page() {
             }).then((data) => {
                 toast.dismiss()
                 toast.success(data.message)
-                setSectorName('')
+                router.push('/admin/sector')
             }).catch((error) => {
                 toast.dismiss()
                 toast.error(error.message)

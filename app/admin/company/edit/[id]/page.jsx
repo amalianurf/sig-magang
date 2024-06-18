@@ -120,6 +120,7 @@ function page() {
         }).then((data) => {
             toast.dismiss()
             toast.success(data.message)
+            router.push('/admin/company')
         }).catch((error) => {
             toast.dismiss()
             toast.error(error.message)

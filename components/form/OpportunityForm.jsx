@@ -61,7 +61,7 @@ function OpportunityForm(props) {
                                 <input id='name' type='text' name='name' value={props.value.name} onChange={props.handleInputChange} placeholder='Nama Lowongan' className='w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' required />
                             </div>
                             <div className='flex flex-col gap-1'>
-                                <label htmlFor='company_id' className='font-medium'>Perusahaan</label>
+                                <label htmlFor='company_id' className='font-medium required-label'>Perusahaan</label>
                                 <Select
                                     id='company_id'
                                     name='company_id'
@@ -72,6 +72,7 @@ function OpportunityForm(props) {
                                     isSearchable={true}
                                     isClearable={true}
                                     styles={selectStyle}
+                                    required
                                 />
                             </div>
                             <div className='flex flex-col gap-1'>
