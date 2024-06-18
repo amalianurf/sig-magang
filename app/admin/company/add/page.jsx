@@ -105,7 +105,7 @@ function page() {
                 uploadData(formatedData, 100).then((data) => {
                     toast.dismiss()
                     toast.success(data.message)
-                    setIsShow(false)
+                    router.push('/admin/company')
                 }).catch((error) => {
                     toast.dismiss()
                     toast.error(error.message)
@@ -155,21 +155,7 @@ function page() {
         }).then((data) => {
             toast.dismiss()
             toast.success(data.message)
-            setCompany({
-                brand_name: '',
-                company_name: '',
-                sector_id: '',
-                logo: '',
-                description: '',
-                address: '',
-                city: '',
-                latitude: '',
-                longitude: ''
-            })
-            setSelectedOption({
-                sector: null,
-                city: null,
-            })
+            router.push('/admin/company')
         }).catch((error) => {
             toast.dismiss()
             toast.error(error.message)

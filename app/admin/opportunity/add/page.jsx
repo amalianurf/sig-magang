@@ -94,7 +94,7 @@ function page() {
                 uploadData(formatedData, 60).then((data) => {
                     toast.dismiss()
                     toast.success(data.message)
-                    setIsShow(false)
+                    router.push('/admin/opportunity')
                 }).catch((error) => {
                     toast.dismiss()
                     toast.error(error.message)
@@ -145,21 +145,7 @@ function page() {
             }).then((data) => {
                 toast.dismiss()
                 toast.success(data.message)
-                setOpportunity({
-                    name: '',
-                    activity_type: '',
-                    duration: '',
-                    description: '',
-                    quota: '',
-                    start_period: '',
-                    min_semester: '',
-                    salary: '',
-                    company_id: ''
-                })
-                setSelectedOption({
-                    company: null,
-                    activity_type: null,
-                })
+                router.push('/admin/opportunity')
             }).catch((error) => {
                 toast.dismiss()
                 toast.error(error.message)

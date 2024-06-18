@@ -131,6 +131,7 @@ function page() {
             }).then((data) => {
                 toast.dismiss()
                 toast.success(data.message)
+                router.push('/admin/opportunity')
             }).catch((error) => {
                 toast.dismiss()
                 toast.error(error.message)
