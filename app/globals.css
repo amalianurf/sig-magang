@@ -98,6 +98,15 @@ input[type=number] {
 .marker-cluster-large {
   background-color: rgba(244, 124, 255, 0.6) !important;
 }
+
 .marker-cluster-large div {
   background-color: rgba(241, 82, 255, 0.6) !important;
+}
+
+nextjs-portal {
+  display: none;
+}
+
+.nextjs-portal {
+  display: none;
 }
