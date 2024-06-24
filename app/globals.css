@@ -78,3 +78,26 @@ input[type=number] {
   content: " *";
   color: red;
 }
+
+.marker-cluster-small {
+  background-color: rgba(76, 174, 240, 0.6) !important;
+}
+
+.marker-cluster-small div {
+  background-color: rgba(51, 164, 240, 0.6) !important;
+}
+
+.marker-cluster-medium {
+  background-color: rgba(125, 137, 248, 0.6) !important;
+}
+
+.marker-cluster-medium div {
+  background-color: rgba(98, 113, 248, 0.6) !important;
+}
+
+.marker-cluster-large {
+  background-color: rgba(244, 124, 255, 0.6) !important;
+}
+.marker-cluster-large div {
+  background-color: rgba(241, 82, 255, 0.6) !important;
+}
