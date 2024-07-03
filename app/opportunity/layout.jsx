@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import NavBar from '@component/components/navigations/NavBar'
 
 function layout({ children }) {
-    const [navbarHeight, setNavbarHeight] = useState()
+    const [navbarHeight, setNavbarHeight] = useState(70)
 
     return (
         <>
