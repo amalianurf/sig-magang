@@ -71,9 +71,9 @@ function Map(props) {
 
         return value > upperBounds
             ? '#117E19'
-            : value <= upperBounds && value > lowerBounds
+            : value <= upperBounds && value >= lowerBounds
             ? '#FFFF00'
-            : value <= lowerBounds
+            : value < lowerBounds
             ? '#FA0014'
             : '#7C7C7C'
     }
