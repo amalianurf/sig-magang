@@ -69,11 +69,11 @@ function Map(props) {
     const getPolygonColor = (value) => {
         const { upperBounds, lowerBounds } = UpperLowerBounds(standardDeviation())
 
-        return value > upperBounds
+        return value > Math.floor(upperBounds)
             ? '#117E19'
-            : value <= upperBounds && value >= lowerBounds
+            : value <= Math.floor(upperBounds) && value >= Math.floor(lowerBounds)
             ? '#FFFF00'
-            : value < lowerBounds
+            : value < Math.floor(lowerBounds)
             ? '#FA0014'
             : '#7C7C7C'
     }
