@@ -217,7 +217,7 @@ function page() {
                 <Button type={'button'} onClick={() => setIsShow(true)} name={'Upload File'} buttonStyle={'w-fit h-fit text-center font-medium text-white text-base bg-iris hover:bg-iris/[.3] rounded-lg px-4 py-2'} />
             </div>
             <CompanyForm value={company} selectedOption={selectedOption} buttonName={'Tambah'} handleInputChange={handleInputChange} handleImageChange={handleImageChange} handleSelectChange={handleSelectChange} handleSubmit={handleSubmit} />
-            <UploadFileModal isShow={isShow} setIsShow={setIsShow} setExcelData={setExcelData} handleUpload={handleUpload} />
+            <UploadFileModal isShow={isShow} setIsShow={setIsShow} setExcelData={setExcelData} handleUpload={handleUpload} template={'/[Template]-Data-Perusahaan.xlsx'} />
         </section>
     )
 }
