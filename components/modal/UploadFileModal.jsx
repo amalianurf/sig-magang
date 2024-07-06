@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 import Button from '../Button'
 import toast from 'react-hot-toast'
 import * as Excel from 'exceljs'
@@ -60,8 +61,11 @@ function UploadFileModal(props) {
                 <h3 className='text-center'>Upload File</h3>
                 <form onSubmit={props.handleUpload} className='flex flex-col gap-6'>
                     <div className='flex flex-col gap-1'>
-                        <label htmlFor='upload-file' className='font-medium'>Tambah Data dengan File XLSX/XLS</label>
-                        <input type='file' name='upload-file' onChange={handleFileChange} accept='.xlsx, .xls' className='w-full px-3 py-2.5 border border-grey rounded-lg text-base text-grey outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6] file:text-black file:border-none file:px-4 file:py-2 file:mr-3 file:bg-grey-light file:font-medium file:rounded-lg' required />
+                        <label htmlFor='upload-file' className='font-medium'>
+                            Tambah Data dengan File XLSX.<br/>
+                            <Link href={props.template} target='_blank' rel='noopener noreferrer' className='text-iris underline'>Download template</Link>
+                        </label>
+                        <input type='file' name='upload-file' onChange={handleFileChange} accept='.xlsx' className='w-full px-3 py-2.5 border border-grey rounded-lg text-base text-grey outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6] file:text-black file:border-none file:px-4 file:py-2 file:mr-3 file:bg-grey-light file:font-medium file:rounded-lg' required />
                     </div>
                     <div className='flex justify-center'>
                         <Button type={'submit'} name={'Tambah Data'} buttonStyle={'w-fit px-4 py-2.5 text-white font-bold bg-iris hover:bg-iris/[.3] rounded-lg'} />
