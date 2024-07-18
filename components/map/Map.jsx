@@ -59,8 +59,8 @@ function Map(props) {
 
     // perhitungan batas atas dan batas bawah
     const UpperLowerBounds = (sd) => {
-        const upperBounds = sd.mean + (0.3 * sd.standardDeviation)
-        const lowerBounds = sd.mean - (0.3 * sd.standardDeviation)
+        const upperBounds = sd.mean + (0.34 * sd.standardDeviation)
+        const lowerBounds = sd.mean - (0.34 * sd.standardDeviation)
 
         return { upperBounds, lowerBounds }
     }
