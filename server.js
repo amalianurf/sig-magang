@@ -35,6 +35,21 @@ app.prepare().then(() => {
 
     server.get('/api/opportunities', opportunityController.getAll);
     server.get('/api/opportunity/:id', opportunityController.getById);
+    server.get('/api/active-opportunities', (req, res) => {
+        fetch(`https://api.kampusmerdeka.kemdikbud.go.id/magang/browse/opportunities?opportunity_type=MANDIRI`).then(async (response) => {
+            if (!response.ok) {
+                return response.json().then(error => {
+                    throw new Error(error.message)
+                })
+            }
+            return response.json()
+        }).then((data) => {
+            res.status(200).json(data);
+        }).catch((error) => {
+            console.error('Error:', error);
+            res.status(500).json({ message: error });
+        });
+    });
 
     server.get('/api/geoms', geomController.getAll);
     server.get('/api/cities', geomController.getCity);

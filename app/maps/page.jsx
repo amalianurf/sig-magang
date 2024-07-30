@@ -46,8 +46,6 @@ function page() {
                 return response.json()
             }).then((data) => {
                 setGeoJsonData(data)
-                setFilteredGeoJsonData(data)
-                setLoading({ ...loading, geojson: false })
             }).catch((error) => {
                 console.error('Error:', error)
             })
@@ -64,8 +62,6 @@ function page() {
             }).then((data) => {
                 const ids = data.map(item => item.id)
                 setOpportunityIds(ids)
-                setFilteredOpportunityIds(ids)
-                setLoading({ ...loading, opportunity: false })
             }).catch((error) => {
                 console.error('Error:', error)
             })
@@ -81,7 +77,6 @@ function page() {
                 return response.json()
             }).then((data) => {
                 setCompanies(data)
-                setFilteredCompanies(data)
                 setLoading({ ...loading, company: false })
             }).catch((error) => {
                 console.error('Error:', error)
@@ -109,6 +104,68 @@ function page() {
         fetchDataCompanies()
         fetchDataSectors()
     }, [])
+
+    useEffect(() => {
+        if (!loading.company) {
+            activeDataFilter()
+        }
+    }, [loading.company])
+
+    const activeDataFilter = async () => {
+        await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/active-opportunities`).then(async (response) => {
+            if (!response.ok) {
+                return response.json().then(error => {
+                    throw new Error(error.message)
+                })
+            }
+            return response.json()
+        }).then( async (data) => {
+            const activeOpportunityIds = data.data.map(item => item.id)
+            setFilteredOpportunityIds(activeOpportunityIds)
+
+            const activeCompanyIds = [...new Set(data.data.map(item => item.mitra_id))]
+            const filteredCompanies = companies.filter(item => activeCompanyIds.includes(item.id))
+            setFilteredCompanies(filteredCompanies)
+
+            await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/opportunities`).then(async (response) => {
+                if (!response.ok) {
+                    return response.json().then(error => {
+                        throw new Error(error.message)
+                    })
+                }
+                return response.json()
+            }).then((opportunities) => {
+                const filteredOpportunities = opportunities.filter(item => activeOpportunityIds.includes(item.id))
+
+                let joinedData = []
+
+                filteredOpportunities.forEach((opportunity) => {
+                    const company = filteredCompanies.find((company) => {
+                        return company.id == opportunity.company_id
+                    })
+
+                    if (company) {
+                        joinedData.push({
+                            id: opportunity.id,
+                            start_period: opportunity.start_period,
+                            Company: {
+                                id: company.id,
+                                city: company.city
+                            }
+                        })
+                    }
+                })
+
+                updateGeoJsonData(joinedData)
+                setLoading({
+                    geojson: false,
+                    opportunity: false
+                })
+            })
+        }).catch((error) => {
+            console.error('Error:', error)
+        })
+    }
 
     const updateGeoJsonData = (opportunities) => {
         const groupedOpportunityByCity = opportunities.reduce((accumulator, item) => {
@@ -168,8 +225,6 @@ function page() {
             type: 'FeatureCollection',
             features: newGeoJsonFeatures
         })
-
-        setIsFiltered(true)
     }
 
     const handleSelectChange = (option) => {
@@ -223,6 +278,7 @@ function page() {
                             setFilteredOpportunityIds(opportunitiesIds)
                             updateGeoJsonData(data)
                         }
+                        setIsFiltered(true)
                     }
                 }).catch((error) => {
                     console.error('Error:', error)
@@ -265,6 +321,7 @@ function page() {
                     handleSelectChange={handleSelectChange}
                     handleFilter={handleFilter}
                     handleResetData={handleResetData}
+                    activeDataFilter={activeDataFilter}
                 />
             )}
             <section style={{ paddingTop: navbarHeight }} className={`absolute bg-white top-0 left-0 min-h-full max-h-screen w-[582px] z-[999] overflow-scroll ${companyId || city ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-500 ease-in-out`}>

@@ -206,10 +206,14 @@ function Map(props) {
                     </MarkerClusterGroup>
                 )}
             </MapContainer>
-            {props.geoJsonData && props.geoJsonData.features.length ? (
-                <div className='absolute right-0 bottom-0 w-full px-6 py-2 flex justify-end items-center gap-10 bg-white z-[1000]'>
-                    {UpperLowerBounds(standardDeviation()).upperBounds && UpperLowerBounds(standardDeviation()).lowerBounds ? (
-                        <>
+            <div className='absolute right-0 bottom-0 w-full px-6 py-2 flex justify-between items-center bg-white z-[1000]'>
+                <div className='flex items-center gap-5'>
+                    <Button type={'button'} onClick={props.handleResetData} name={'Semua Data'} buttonStyle={'text-iris hover:underline'} />
+                    <Button type={'button'} onClick={props.activeDataFilter} name={'Data Tersedia'} buttonStyle={'text-iris hover:underline'} />
+                </div>
+                {props.geoJsonData && props.geoJsonData.features.length ? (
+                    UpperLowerBounds(standardDeviation()).upperBounds && UpperLowerBounds(standardDeviation()).lowerBounds ? (
+                        <div className='flex items-center gap-10'>
                             <div className='flex items-center gap-1'>
                                 <CircleIcon fontSize='small' className='text-green' />
                                 <div>Jumlah Lowongan &gt; {Math.floor(UpperLowerBounds(standardDeviation()).upperBounds)}</div>
@@ -222,15 +226,15 @@ function Map(props) {
                                 <CircleIcon fontSize='small' className='text-red' />
                                 <div>Lowongan &lt; {Math.floor(UpperLowerBounds(standardDeviation()).lowerBounds)}</div>
                             </div>
-                        </>
+                        </div>
                     ) : (
                         <div className='flex items-center gap-1'>
                             <CircleIcon fontSize='small' className='text-grey' />
                             <div>Jumlah Lowongan = {standardDeviation().mean}</div>
                         </div>
-                    )}
-                </div>
-            ) : ''}
+                    )
+                ) : ''}
+            </div>
         </>
     )
 }
