@@ -14,6 +14,7 @@ const Map = dynamic(() => import('@component/components/map/Map'), {
 function page() {
     const [geoJsonData, setGeoJsonData] = useState()
     const [filteredGeoJsonData, setFilteredGeoJsonData] = useState()
+    const [opportunities, setOpportunities] = useState()
     const [opportunityIds, setOpportunityIds] = useState()
     const [filteredOpportunityIds, setFilteredOpportunityIds] = useState()
     const [city, setCity] = useState()
@@ -23,6 +24,11 @@ function page() {
     const [sectors, setSectors] = useState()
     const [selectedSector, setSelectedSector] = useState()
     const [isFiltered, setIsFiltered] = useState(false)
+    const [isActiveData, setIsActiveData] = useState(true)
+    const [activeDataIds, setActiveDataIds] = useState({
+        activeOpportunityIds: '',
+        activeCompanyIds: ''
+    })
     const [dateRange, setDateRange] = useState({
         start: '',
         end: ''
@@ -62,6 +68,8 @@ function page() {
             }).then((data) => {
                 const ids = data.map(item => item.id)
                 setOpportunityIds(ids)
+                setOpportunities(data)
+                setLoading({ ...loading, opportunity: false })
             }).catch((error) => {
                 console.error('Error:', error)
             })
@@ -106,62 +114,62 @@ function page() {
     }, [])
 
     useEffect(() => {
-        if (!loading.company) {
+        if (!loading.company && !loading.opportunity) {
             activeDataFilter()
         }
-    }, [loading.company])
+    }, [loading.company, loading.opportunity])
 
     const activeDataFilter = async () => {
-        await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/active-opportunities`).then(async (response) => {
+        fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/opportunities/active`).then(async (response) => {
             if (!response.ok) {
                 return response.json().then(error => {
                     throw new Error(error.message)
                 })
             }
             return response.json()
-        }).then( async (data) => {
-            const activeOpportunityIds = data.data.map(item => item.id)
-            setFilteredOpportunityIds(activeOpportunityIds)
+        }).then((data) => {
+            const activeOpportunityIds = data.map(item => item.id)
+            const activeCompanyIds = [...new Set(data.map(item => item.company_id))]
 
-            const activeCompanyIds = [...new Set(data.data.map(item => item.mitra_id))]
+            setActiveDataIds({
+                activeOpportunityIds: activeOpportunityIds,
+                activeCompanyIds: activeCompanyIds
+            })
+
             const filteredCompanies = companies.filter(item => activeCompanyIds.includes(item.id))
             setFilteredCompanies(filteredCompanies)
 
-            await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/opportunities`).then(async (response) => {
-                if (!response.ok) {
-                    return response.json().then(error => {
-                        throw new Error(error.message)
+            const filteredOpportunities = opportunities.filter(item => activeOpportunityIds.includes(item.id))
+
+            let joinedData = []
+
+            filteredOpportunities.forEach((opportunity) => {
+                const company = filteredCompanies.find((company) => {
+                    return company.id == opportunity.company_id
+                })
+
+                if (company) {
+                    joinedData.push({
+                        id: opportunity.id,
+                        start_period: opportunity.start_period,
+                        Company: {
+                            id: company.id,
+                            city: company.city
+                        }
                     })
                 }
-                return response.json()
-            }).then((opportunities) => {
-                const filteredOpportunities = opportunities.filter(item => activeOpportunityIds.includes(item.id))
-
-                let joinedData = []
-
-                filteredOpportunities.forEach((opportunity) => {
-                    const company = filteredCompanies.find((company) => {
-                        return company.id == opportunity.company_id
-                    })
-
-                    if (company) {
-                        joinedData.push({
-                            id: opportunity.id,
-                            start_period: opportunity.start_period,
-                            Company: {
-                                id: company.id,
-                                city: company.city
-                            }
-                        })
-                    }
-                })
-
-                updateGeoJsonData(joinedData)
-                setLoading({
-                    geojson: false,
-                    opportunity: false
-                })
             })
+
+            updateGeoJsonData(joinedData)
+            setLoading({ ...loading, geojson: false })
+            setFilteredOpportunityIds(null)
+            setSelectedSector(null)
+            setDateRange({
+                start: '',
+                end: ''
+            })
+            setIsFiltered(false)
+            setIsActiveData(true)
         }).catch((error) => {
             console.error('Error:', error)
         })
@@ -242,6 +250,10 @@ function page() {
                     }
                     return response.json()
                 }).then(async (data) => {
+                    if (isActiveData) {
+                        data = data.filter(item => activeDataIds.activeOpportunityIds.includes(item.id))
+                    }
+
                     if (data) {
                         if (dateRange.start && dateRange.end) {
                             const filteredOpportunities = data.filter(function(opportunity) {
@@ -292,14 +304,32 @@ function page() {
     }
 
     const handleResetData = () => {
-        setFilteredCompanies(companies)
-        setFilteredGeoJsonData(geoJsonData)
+        if (isActiveData) {
+            activeDataFilter()
+        } else {
+            setFilteredCompanies(companies)
+            setFilteredGeoJsonData(geoJsonData)
+        }
+        setFilteredOpportunityIds(null)
         setSelectedSector(null)
         setDateRange({
             start: '',
             end: ''
         })
         setIsFiltered(false)
+    }
+
+    const handleShowAllData = () => {
+        setFilteredCompanies(companies)
+        setFilteredGeoJsonData(geoJsonData)
+        setFilteredOpportunityIds(null)
+        setSelectedSector(null)
+        setDateRange({
+            start: '',
+            end: ''
+        })
+        setIsFiltered(false)
+        setIsActiveData(false)
     }
 
     return (
@@ -321,6 +351,7 @@ function page() {
                     handleSelectChange={handleSelectChange}
                     handleFilter={handleFilter}
                     handleResetData={handleResetData}
+                    handleShowAllData={handleShowAllData}
                     activeDataFilter={activeDataFilter}
                 />
             )}

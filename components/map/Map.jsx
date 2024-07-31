@@ -208,10 +208,10 @@ function Map(props) {
             </MapContainer>
             <div className='absolute right-0 bottom-0 w-full px-6 py-2 flex justify-between items-center bg-white z-[1000]'>
                 <div className='flex items-center gap-5'>
-                    <Button type={'button'} onClick={props.handleResetData} name={'Semua Data'} buttonStyle={'text-iris hover:underline'} />
-                    <Button type={'button'} onClick={props.activeDataFilter} name={'Data Tersedia'} buttonStyle={'text-iris hover:underline'} />
+                    <Button type={'button'} onClick={props.handleShowAllData} name={'Semua Data'} buttonStyle={'text-iris hover:underline'} />
+                    <Button type={'button'} onClick={props.activeDataFilter} name={'Data Aktif'} buttonStyle={'text-iris hover:underline'} />
                 </div>
-                {props.geoJsonData && props.geoJsonData.features.length ? (
+                {props.geoJsonData ? (props.geoJsonData.features ? (props.geoJsonData.features.length ? (
                     UpperLowerBounds(standardDeviation()).upperBounds && UpperLowerBounds(standardDeviation()).lowerBounds ? (
                         <div className='flex items-center gap-10'>
                             <div className='flex items-center gap-1'>
@@ -233,7 +233,7 @@ function Map(props) {
                             <div>Jumlah Lowongan = {standardDeviation().mean}</div>
                         </div>
                     )
-                ) : ''}
+                ) : '') : '') : ''}
             </div>
         </>
     )
