@@ -41,11 +41,11 @@ function page() {
                 setOpportunity({
                     name: opportunity.name,
                     activity_type: opportunity.activity_type || '',
-                    duration: opportunity.duration || '',
+                    duration: opportunity.duration,
                     description: opportunity.description,
                     quota: opportunity.quota || '',
                     start_period: period.toISOString().split('T')[0],
-                    min_semester: opportunity.min_semester || '',
+                    min_semester: opportunity.min_semester,
                     salary: opportunity.salary || '',
                     company_id: opportunity.company_id || ''
                 })

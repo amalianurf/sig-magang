@@ -57,8 +57,8 @@ function CompanyForm(props) {
 
     const cityOptions = cities.map(data => {
         return ({
-            name: 'city',
-            value: data.city,
+            name: 'geo_id',
+            value: data.id,
             label: data.city,
         })
     })
@@ -118,10 +118,10 @@ function CompanyForm(props) {
                                 <textarea id='address' name='address' value={props.value.address} onChange={props.handleInputChange} placeholder='Alamat Perusahaan' className='w-full px-4 py-2 border border-grey rounded-lg text-base outline-none focus:border-iris/[.7] focus:ring-1 ring-iris/[.6]' cols='30' rows='3'></textarea>
                             </div>
                             <div className='flex flex-col gap-1'>
-                                <label htmlFor='city' className='font-medium'>Kabupaten/Kota</label>
+                                <label htmlFor='geo_id' className='font-medium'>Kabupaten/Kota</label>
                                 <Select
-                                    id='city'
-                                    name='city'
+                                    id='geo_id'
+                                    name='geo_id'
                                     onChange={(selectedOption) => props.handleSelectChange(selectedOption, 'city')}
                                     value={props.selectedOption.city}
                                     placeholder={'Pilih Kabupaten/Kota'}

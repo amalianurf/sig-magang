@@ -21,6 +21,19 @@ module.exports = {
           allowNull: false,
           type: Sequelize.DATE
         }
+    }))).then(() => (
+      queryInterface.createTable('IndonesiaGeos', {
+        id: {
+          type: Sequelize.STRING(6),
+          primaryKey: true,
+          allowNull: false,
+        },
+        city: {
+          type: Sequelize.STRING(50)
+        },
+        geom: {
+          type: Sequelize.GEOMETRY('MULTIPOLYGON')
+        }
     }))).then(() => queryInterface.createTable('Companies', {
       id: {
         type: Sequelize.STRING(36),
@@ -43,16 +56,24 @@ module.exports = {
       address: {
         type: Sequelize.TEXT
       },
-      city: {
-        type: Sequelize.STRING(50)
-      },
       location: {
         type: Sequelize.GEOMETRY('POINT')
+      },
+      accepted: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       },
       sector_id: {
         type: Sequelize.STRING(36),
         references: {
           model: 'Sectors',
+          key: 'id'
+        }
+      },
+      geo_id: {
+        type: Sequelize.STRING(6),
+        references: {
+          model: 'IndonesiaGeos',
           key: 'id'
         }
       },
@@ -76,7 +97,7 @@ module.exports = {
       },
       activity_type: {
         type: Sequelize.ENUM,
-        values: ['WFO', 'WFH', 'Hybrid']
+        values: ['WFO', 'WFH', 'HYBRID']
       },
       duration: {
         type: Sequelize.INTEGER,
@@ -99,6 +120,10 @@ module.exports = {
       },
       salary: {
         type: Sequelize.INTEGER,
+      },
+      accepted: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       },
       company_id: {
         type: Sequelize.STRING(36),
@@ -123,6 +148,8 @@ module.exports = {
       queryInterface.dropTable('Companies')
     )).then(() => (
       queryInterface.dropTable('Sectors')
+    )).then(() => (
+      queryInterface.dropTable('IndonesiaGeos')
     )).then(() => (
       queryInterface.sequelize.query('DROP EXTENSION postgis;')
     ));

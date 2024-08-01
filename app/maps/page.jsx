@@ -14,6 +14,7 @@ const Map = dynamic(() => import('@component/components/map/Map'), {
 function page() {
     const [geoJsonData, setGeoJsonData] = useState()
     const [filteredGeoJsonData, setFilteredGeoJsonData] = useState()
+    const [opportunities, setOpportunities] = useState()
     const [opportunityIds, setOpportunityIds] = useState()
     const [filteredOpportunityIds, setFilteredOpportunityIds] = useState()
     const [city, setCity] = useState()
@@ -23,6 +24,11 @@ function page() {
     const [sectors, setSectors] = useState()
     const [selectedSector, setSelectedSector] = useState()
     const [isFiltered, setIsFiltered] = useState(false)
+    const [isActiveData, setIsActiveData] = useState(true)
+    const [activeDataIds, setActiveDataIds] = useState({
+        activeOpportunityIds: '',
+        activeCompanyIds: ''
+    })
     const [dateRange, setDateRange] = useState({
         start: '',
         end: ''
@@ -31,7 +37,8 @@ function page() {
         geojson: true,
         sector: true,
         company: true,
-        opportunity: true
+        opportunity: true,
+        activeData: true
     })
     const { navbarHeight } = useContext(HeaderContext)
 
@@ -46,8 +53,7 @@ function page() {
                 return response.json()
             }).then((data) => {
                 setGeoJsonData(data)
-                setFilteredGeoJsonData(data)
-                setLoading({ ...loading, geojson: false })
+                setLoading(prevLoading => ({ ...prevLoading, geojson: false }))
             }).catch((error) => {
                 console.error('Error:', error)
             })
@@ -64,8 +70,8 @@ function page() {
             }).then((data) => {
                 const ids = data.map(item => item.id)
                 setOpportunityIds(ids)
-                setFilteredOpportunityIds(ids)
-                setLoading({ ...loading, opportunity: false })
+                setOpportunities(data)
+                setLoading(prevLoading => ({ ...prevLoading, opportunity: false }))
             }).catch((error) => {
                 console.error('Error:', error)
             })
@@ -81,8 +87,7 @@ function page() {
                 return response.json()
             }).then((data) => {
                 setCompanies(data)
-                setFilteredCompanies(data)
-                setLoading({ ...loading, company: false })
+                setLoading(prevLoading => ({ ...prevLoading, company: false }))
             }).catch((error) => {
                 console.error('Error:', error)
             })
@@ -98,7 +103,7 @@ function page() {
                 return response.json()
             }).then((data) => {
                 setSectors(data)
-                setLoading({ ...loading, sector: false })
+                setLoading(prevLoading => ({ ...prevLoading, sector: false }))
             }).catch((error) => {
                 console.error('Error:', error)
             })
@@ -110,26 +115,90 @@ function page() {
         fetchDataSectors()
     }, [])
 
+    useEffect(() => {
+        if (!loading.company && !loading.opportunity && !loading.geojson) {
+            activeDataFilter()
+        }
+    }, [loading.company, loading.opportunity, loading.geojson])
+
+    const activeDataFilter = async () => {
+        await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/opportunities/active`).then(async (response) => {
+            if (!response.ok) {
+                return response.json().then(error => {
+                    throw new Error(error.message)
+                })
+            }
+            return response.json()
+        }).then((data) => {
+            const activeOpportunityIds = data.map(item => item.id)
+            const activeCompanyIds = [...new Set(data.map(item => item.company_id))]
+
+            setActiveDataIds({
+                activeOpportunityIds: activeOpportunityIds,
+                activeCompanyIds: activeCompanyIds
+            })
+
+            const filteredCompanies = companies.filter(item => activeCompanyIds.includes(item.id))
+            setFilteredCompanies(filteredCompanies)
+
+            const filteredOpportunities = opportunities.filter(item => activeOpportunityIds.includes(item.id))
+
+            let joinedData = []
+
+            filteredOpportunities.forEach((opportunity) => {
+                const company = filteredCompanies.find((company) => {
+                    return company.id == opportunity.company_id
+                })
+
+                if (company) {
+                    joinedData.push({
+                        id: opportunity.id,
+                        start_period: opportunity.start_period,
+                        Company: {
+                            id: company.id,
+                            geo_id: company.geo_id
+                        }
+                    })
+                }
+            })
+
+            const ids = filteredOpportunities.map(item => item.id)
+            setFilteredOpportunityIds(ids)
+
+            updateGeoJsonData(joinedData)
+            setSelectedSector(null)
+            setDateRange({
+                start: '',
+                end: ''
+            })
+            setIsFiltered(false)
+            setIsActiveData(true)
+            setLoading(prevLoading => ({ ...prevLoading, activeData: false }))
+        }).catch((error) => {
+            console.error('Error:', error)
+        })
+    }
+
     const updateGeoJsonData = (opportunities) => {
         const groupedOpportunityByCity = opportunities.reduce((accumulator, item) => {
-            if (!accumulator[item.Company.city]) {
-                accumulator[item.Company.city] = []
+            if (!accumulator[item.Company.geo_id]) {
+                accumulator[item.Company.geo_id] = []
             }
 
-            accumulator[item.Company.city].push(item)
+            accumulator[item.Company.geo_id].push(item)
 
             return accumulator
         }, {})
-
+        
         const uniqueCompanyIds = [...new Set(opportunities.map(item => item.Company.id))]
-
+        
         const uniqueCompanies = uniqueCompanyIds.map(id => {
             const company = companies.find(item => item.id === id)
-
+            
             if (company) {
                 return {
                     id: id,
-                    city: company.city,
+                    geo_id: company.geo_id,
                     location: company.location
                 }
             }
@@ -138,25 +207,25 @@ function page() {
         setFilteredCompanies(uniqueCompanies)
 
         const groupedCompanyByCity = uniqueCompanies.reduce((accumulator, item) => {
-            if (!accumulator[item.city]) {
-                accumulator[item.city] = []
+            if (!accumulator[item.geo_id]) {
+                accumulator[item.geo_id] = []
             }
 
-            accumulator[item.city].push(item)
+            accumulator[item.geo_id].push(item)
 
             return accumulator
         }, {})
 
         const newGeoJsonFeatures = geoJsonData && geoJsonData.features.map(feature => {
-            const city = feature.properties.city
+            const id = feature.properties.id
 
-            if (groupedOpportunityByCity[city] && groupedOpportunityByCity[city].length > 0) {
+            if (groupedOpportunityByCity[id] && groupedOpportunityByCity[id].length > 0) {
                 return {
                     ...feature,
                     properties: {
                         ...feature.properties,
-                        companies: groupedCompanyByCity[city].length,
-                        opportunities: groupedOpportunityByCity[city].length
+                        companies: groupedCompanyByCity[id].length,
+                        opportunities: groupedOpportunityByCity[id].length
                     }
                 }
             } else {
@@ -168,8 +237,6 @@ function page() {
             type: 'FeatureCollection',
             features: newGeoJsonFeatures
         })
-
-        setIsFiltered(true)
     }
 
     const handleSelectChange = (option) => {
@@ -187,6 +254,10 @@ function page() {
                     }
                     return response.json()
                 }).then(async (data) => {
+                    if (isActiveData) {
+                        data = data.filter(item => activeDataIds.activeOpportunityIds.includes(item.id))
+                    }
+
                     if (data) {
                         if (dateRange.start && dateRange.end) {
                             const filteredOpportunities = data.filter(function(opportunity) {
@@ -209,7 +280,7 @@ function page() {
                                         start_period: opportunity.start_period,
                                         Company: {
                                             id: company.id,
-                                            city: company.city
+                                            geo_id: company.geo_id
                                         }
                                     })
                                 }
@@ -223,6 +294,7 @@ function page() {
                             setFilteredOpportunityIds(opportunitiesIds)
                             updateGeoJsonData(data)
                         }
+                        setIsFiltered(true)
                     }
                 }).catch((error) => {
                     console.error('Error:', error)
@@ -236,8 +308,13 @@ function page() {
     }
 
     const handleResetData = () => {
-        setFilteredCompanies(companies)
-        setFilteredGeoJsonData(geoJsonData)
+        if (isActiveData) {
+            activeDataFilter()
+        } else {
+            setFilteredCompanies(companies)
+            setFilteredGeoJsonData(geoJsonData)
+            setFilteredOpportunityIds(opportunityIds)
+        }
         setSelectedSector(null)
         setDateRange({
             start: '',
@@ -246,9 +323,38 @@ function page() {
         setIsFiltered(false)
     }
 
+    const handleShowAllData = () => {
+        setFilteredCompanies(companies)
+        setFilteredGeoJsonData(geoJsonData)
+        setFilteredOpportunityIds(opportunityIds)
+        setSelectedSector(null)
+        setDateRange({
+            start: '',
+            end: ''
+        })
+        setIsFiltered(false)
+        setIsActiveData(false)
+    }
+
+    const lastUpdate = () => {
+        const latestItem = opportunities.reduce((latest, item) => {
+            return new Date(item.updatedAt) > new Date(latest.updatedAt) ? item : latest
+        }, opportunities[0])
+
+        const options = { 
+            year: 'numeric', 
+            month: 'numeric', 
+            day: 'numeric'
+        }
+        
+        const formatedDate = new Date(latestItem.updatedAt).toLocaleDateString('id-ID', options)
+
+        return String(formatedDate)
+    }
+
     return (
         <>
-            {loading.company && loading.geojson && loading.sector && loading.opportunity ? (
+            {loading.company && loading.geojson && loading.sector && loading.opportunity && loading.activeData ? (
                 <div className='p-10'>Loading...</div>
             ) : (
                 <Map
@@ -259,12 +365,16 @@ function page() {
                     dateRange={dateRange}
                     selectedSector={selectedSector}
                     isFiltered={isFiltered}
+                    isActiveData={isActiveData}
                     setCity={setCity}
                     setCompanyId={setCompanyId}
                     setDateRange={setDateRange}
                     handleSelectChange={handleSelectChange}
                     handleFilter={handleFilter}
                     handleResetData={handleResetData}
+                    handleShowAllData={handleShowAllData}
+                    activeDataFilter={activeDataFilter}
+                    lastUpdate={lastUpdate}
                 />
             )}
             <section style={{ paddingTop: navbarHeight }} className={`absolute bg-white top-0 left-0 min-h-full max-h-screen w-[582px] z-[999] overflow-scroll ${companyId || city ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-500 ease-in-out`}>

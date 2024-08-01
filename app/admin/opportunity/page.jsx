@@ -9,6 +9,9 @@ import Cookies from 'js-cookie'
 import toast from 'react-hot-toast'
 
 function page() {
+    const [sectorIds, setSectorIds] = useState([])
+    const [companyIds, setCompanyIds] = useState([])
+    const [companies, setCompanies] = useState([])
     const [opportunities, setOpportunities] = useState([])
     const [loading, setLoading] = useState(true)
     const [confirmDelete, setConfirmDelete] = useState({
@@ -19,11 +22,10 @@ function page() {
         items: [],
         quickFilterExcludeHiddenColumns: false,
     })
-    const router = useRouter()
 
     useEffect(() => {
-        const fetchDataOpportunities = async () => {
-            await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/opportunities`).then(async (response) => {
+        const fetchDataSectors = async () => {
+            await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/sectors`).then(async (response) => {
                 if (!response.ok) {
                     return response.json().then(error => {
                         throw new Error(error.message)
@@ -31,15 +33,47 @@ function page() {
                 }
                 return response.json()
             }).then((data) => {
+                setSectorIds(data.map(item => item.id))
+            }).catch((error) => {
+                console.error('Error:', error)
+            })
+        }
+
+        const fetchDataOpportunities = async () => {
+            await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/opportunities/all`).then(async (response) => {
+                if (!response.ok) {
+                    return response.json().then(error => {
+                        throw new Error(error.message)
+                    })
+                }
+                return response.json()
+            }).then(async (data) => {
                 setOpportunities(data)
+
+                await fetchCompanies()
                 setLoading(false)
             }).catch((error) => {
                 console.error('Error:', error)
             })
         }
 
+        fetchDataSectors()
         fetchDataOpportunities()
     }, [])
+
+    const fetchCompanies = async () => {
+        await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/companies/all`).then(async (response) => {
+            if (!response.ok) {
+                return response.json().then(error => {
+                    throw new Error(error.message)
+                })
+            }
+            return response.json()
+        }).then((data) => {
+            setCompanies(data)
+            setCompanyIds(data.map(item => item.id))
+        })
+    }
 
     const handleDelete = (id) => {
         toast.loading('Menghapus data...')
@@ -100,12 +134,22 @@ function page() {
             field: 'actions',
             headerName: 'Aksi',
             width: 150,
-            renderCell: (params) => (
-                <div className='flex justify-center items-center gap-2 w-full h-full'>
-                    <Button type={'button'} href={`/admin/opportunity/edit/${params.id}`} onClick={() => { window.open(`${process.env.NEXT_PUBLIC_CLIENT}/admin/opportunity/edit/${params.id}`, '_self') }} name={'Edit'} buttonStyle={'text-center font-medium text-sm text-white bg-green hover:bg-green/[.3] rounded-md px-2 py-1 w-full'} />
-                    <Button type={'button'} onClick={() => setConfirmDelete({ showModal: true, id: params.id })} name={'Hapus'} buttonStyle={'text-center font-medium text-sm text-white bg-red hover:bg-red/[.3] rounded-md px-2 py-1 w-full'} />
-                </div>
-            )
+            renderCell: (params) => {
+                const company = companies.find(item => item.id === params.row.company_id)
+
+                if (company) {
+                    return (
+                        <div className='flex justify-center items-center gap-2 w-full h-full'>
+                            <Button type={'button'} href={`/admin/opportunity/edit/${params.id}`} onClick={() => { window.open(`${process.env.NEXT_PUBLIC_CLIENT}/admin/opportunity/edit/${params.id}`, '_self') }} name={'Edit'} buttonStyle={'text-center font-medium text-sm text-white bg-green hover:bg-green/[.3] rounded-md px-2 py-1 w-full'} />
+                            { params.row.accepted ? (
+                                <Button type={'button'} onClick={() => setConfirmDelete({ showModal: true, id: params.id })} name={'Hapus'} buttonStyle={'text-center font-medium text-sm text-white bg-red hover:bg-red/[.3] rounded-md px-2 py-1 w-full'} />
+                            ) : (
+                                <Button type={'button'} onClick={ company.accepted ? () => handleAccept(params.id) : null } name={'Terima'} buttonStyle={`text-center font-medium text-sm text-white ${ company.accepted ? 'bg-iris hover:bg-iris/[.3]' : 'bg-grey cursor-default' } rounded-md px-2 py-1 w-full`} />
+                            )}
+                        </div>
+                    )
+                }
+            }
         }
     ]
 
@@ -140,6 +184,202 @@ function page() {
         }
     }
 
+    const handleAccept = (id) => {
+        toast.loading('Menerima data...')
+        fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/opportunity/${id}`).then(async (response) => {
+            if (!response.ok) {
+                return response.json().then(error => {
+                    throw new Error(error.message)
+                })
+            }
+            return response.json()
+        }).then((data) => {
+            fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/opportunity/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': Cookies.get('access-token'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    ...data,
+                    accepted: true
+                })
+            }).then(async (response) => {
+                if (!response.ok) {
+                    return response.json().then(error => {
+                        throw new Error(error.message)
+                    })
+                }
+                return response.json()
+            }).then((data) => {
+                setOpportunities(prevOpportunities =>
+                    prevOpportunities.map(opportunity =>
+                        opportunity.id === id ? { ...opportunity, accepted: true } : opportunity
+                    )
+                )
+                toast.dismiss()
+                toast.success('Data lowongan telah diterima')
+            })
+        }).catch((error) => {
+            toast.dismiss()
+            toast.error(error.message)
+            console.error('Error:', error.message)
+        })
+    }
+
+    const addSycnCompanies = async (data, chunkSize) => {
+        let response
+
+        for (let i = 0; i < data.length; i += chunkSize) {
+            const chunk = data.slice(i, i + chunkSize)
+            response = await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/company`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': Cookies.get('access-token'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(chunk)
+            })
+    
+            if (!response.ok) {
+                const error = await response.json()
+                throw new Error(error.message)
+            }
+        }
+
+        return response.json()
+    }
+
+    const addSycnOpportunities = async (data, chunkSize) => {
+        let response
+
+        for (let i = 0; i < data.length; i += chunkSize) {
+            const chunk = data.slice(i, i + chunkSize)
+            response = await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/opportunity`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': Cookies.get('access-token'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(chunk)
+            })
+    
+            if (!response.ok) {
+                const error = await response.json()
+                throw new Error(error.message)
+            }
+        }
+
+        return response.json()
+    }
+
+    const syncData = async () => {
+        toast.loading('Sinkronisasi data...')
+        await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/opportunities/active`).then(async (response) => {
+            if (!response.ok) {
+                return response.json().then(error => {
+                    throw new Error(error.message)
+                })
+            }
+            return response.json()
+        }).then(async (data) => {
+            const opportunityIds = opportunities.map(item => item.id)
+            const newOpportunities = data.filter(item => !opportunityIds.includes(item.id))
+            const newOpportunityIds = newOpportunities.map(item => item.id)
+            const newCompanyIds = [...new Set(data.map(item => item.company_id))].filter(id => !companyIds.includes(id))
+
+            if (newCompanyIds.length > 0) {
+                await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/companies/sync`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ids: newCompanyIds})
+                }).then(async (response) => {
+                    if (!response.ok) {
+                        return response.json().then(error => {
+                            throw new Error(error.message)
+                        })
+                    }
+                    return response.json()
+                }).then(async (companies) => {
+                    const sectors = companies.map(item => ({
+                        id: item.sector_id,
+                        name: item.sector_name
+                    }))
+                    const newSectors = [...new Set(sectors.map(item => JSON.stringify(item)))].map(item => JSON.parse(item)).filter(item => !sectorIds.includes(item.id))
+
+                    await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/sector`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': Cookies.get('access-token'),
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(newSectors)
+                    }).then(async (response) => {
+                        if (!response.ok) {
+                            return response.json().then(error => {
+                                throw new Error(error.message)
+                            })
+                        }
+                    })
+
+                    await addSycnCompanies(companies, 100)
+                })
+            }
+
+            if (newOpportunityIds.length > 0) {
+                await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/opportunities/sync`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ids: newOpportunityIds })
+                }).then(async (response) => {
+                    if (!response.ok) {
+                        return response.json().then(error => {
+                            throw new Error(error.message)
+                        })
+                    }
+                    return response.json()
+                }).then(async (details) => {
+                    const mergedData = newOpportunities.map(opportunity => {
+                        const detail = details.find(item => item.id === opportunity.id)
+                        if (detail) {
+                            return { ...opportunity, ...detail }
+                        }
+                        return opportunity
+                    })
+
+                    await addSycnOpportunities(mergedData, 60)
+                    await fetchCompanies()
+                    setOpportunities([...mergedData, ...opportunities])
+                })
+            }
+
+            toast.dismiss()
+            toast.success('Sinkronisasi data selesai')
+        }).catch((error) => {
+            toast.dismiss()
+            toast.error(error.message)
+            console.error('Error:', error.message)
+        })
+    }
+
+    const checkAndSync = () => {
+        const now = new Date()
+        const targetHour = 2
+    
+        if (now.getHours() === targetHour) {
+            syncData()
+        }
+    }
+
+    useEffect(() => {
+        const interval = setInterval(checkAndSync, 3600000)
+        return () => clearInterval(interval)
+    }, [])
+
     return (
         <section className='p-10'>
             {loading ? (
@@ -147,7 +387,10 @@ function page() {
             ) : (
                 <>
                     <div className='relative'>
-                        <Button type={'button'} href={'/admin/opportunity/add'} onClick={() => { window.open(`${process.env.NEXT_PUBLIC_CLIENT}/admin/opportunity/add`, '_self') }} name={'Tambah Data'} buttonStyle={'absolute right-0 top-0 z-10 w-fit h-fit text-center font-medium text-white text-base bg-iris hover:bg-iris/[.3] rounded-lg px-4 py-2'} />
+                        <div className='absolute right-0 top-0 z-10 flex items-center gap-2'>
+                            <Button type={'button'} onClick={syncData} name={'Sinkronisasi'} buttonStyle={'w-fit h-fit text-center font-medium text-white text-base bg-iris hover:bg-iris/[.3] rounded-lg px-4 py-2'} />
+                            <Button type={'button'} href={'/admin/opportunity/add'} onClick={() => { window.open(`${process.env.NEXT_PUBLIC_CLIENT}/admin/opportunity/add`, '_self') }} name={'Tambah Data'} buttonStyle={'w-fit h-fit text-center font-medium text-white text-base bg-iris hover:bg-iris/[.3] rounded-lg px-4 py-2'} />
+                        </div>
                         <ThemeProvider theme={paginationTheme}>
                             <DataGrid
                                 autoHeight

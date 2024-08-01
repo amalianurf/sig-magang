@@ -62,7 +62,6 @@ function CompanyInfoPanel(props) {
     }, [props.companyId])
 
     const handleClosePanel = () => {
-        props.setFilteredOpportunityIds(props.opportunityIds)
         props.setCompanyId(null)
     }
 

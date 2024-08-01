@@ -26,16 +26,24 @@ module.exports = (sequelize, DataTypes) => {
     address: {
       type: DataTypes.TEXT
     },
-    city: {
-      type: DataTypes.STRING(50)
-    },
     location: {
       type: DataTypes.GEOMETRY('POINT'),
+    },
+    accepted: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     },
     sector_id: {
       type: DataTypes.STRING(36),
       references: {
         model: 'Sector',
+        key: 'id'
+      }
+    },
+    geo_id: {
+      type: DataTypes.STRING(6),
+      references: {
+        model: 'IndonesiaGeo',
         key: 'id'
       }
     }
@@ -47,6 +55,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Company.associate = (models) => {
     Company.belongsTo(models.Sector, { foreignKey: 'sector_id' });
+    Company.belongsTo(models.IndonesiaGeo, { foreignKey: 'geo_id' });
     Company.hasMany(models.Opportunity, { foreignKey: 'company_id', onDelete: 'CASCADE' });
   }
 

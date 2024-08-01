@@ -15,7 +15,7 @@ function page() {
         logo: '',
         description: '',
         address: '',
-        city: '',
+        geo_id: '',
         latitude: '',
         longitude: ''
     })
@@ -46,12 +46,24 @@ function page() {
                     logo: '',
                     description: company.description || '',
                     address: company.address || '',
-                    city: company.city || '',
+                    geo_id: company.geo_id || '',
                     latitude: (company.location && company.location.coordinates[0]) || '',
                     longitude: (company.location && company.location.coordinates[1]) || ''
                 })
 
                 if (company.sector_id) {
+                    let city
+                    await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/cities`).then(async (response) => {
+                        if (!response.ok) {
+                            return response.json().then(error => {
+                                throw new Error(error.message)
+                            })
+                        }
+                        return response.json()
+                    }).then((data) => {
+                        city = data.find(item => item.id === company.geo_id)
+                    })
+
                     await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/sector/${company.sector_id}`).then(async (response) => {
                         if (!response.ok) {
                             return response.json().then(error => {
@@ -68,13 +80,10 @@ function page() {
                             },
                             city: {
                                 name: 'city',
-                                value: company.city,
-                                label: company.city
+                                value: company.geo_id,
+                                label: city.city
                             }
                         })
-                    }).catch((error) => {
-                        console.error('Error:', error)
-                        setLoading(false)
                     })
                 }
                 setLoading(false)
@@ -166,7 +175,7 @@ function page() {
                         logo: logoUrl,
                         description: company.description || null,
                         address: company.address || null,
-                        city: company.city || null,
+                        geo_id: company.geo_id || null,
                         location: company.latitude && company.longitude ? {
                             type: 'Point',
                             coordinates: [
@@ -189,7 +198,7 @@ function page() {
                     logo: currLogo,
                     description: company.description || null,
                     address: company.address || null,
-                    city: company.city || null,
+                    geo_id: company.geo_id || null,
                     location: company.latitude && company.longitude ? {
                         type: 'Point',
                         coordinates: [
