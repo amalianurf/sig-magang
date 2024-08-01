@@ -206,9 +206,9 @@ function Map(props) {
             </MapContainer>
             { props.lastUpdate ? (
                 <div className='absolute right-4 bottom-12 text-sm z-[1000]'>
-                    Terakhir diperbarui : { props.lastUpdate() }
+                    Terakhir diperbarui : { props.lastUpdate }
                 </div>
-            ) : ''}
+            ) : '' }
             <div className='absolute right-0 bottom-0 w-full px-6 py-2 flex justify-between items-center bg-white z-[1000]'>
                 <div className='flex items-center gap-5'>
                     <Button type={'button'} onClick={props.handleShowAllData} name={'Semua Data'} buttonStyle={'text-iris hover:underline'} />
