@@ -88,7 +88,8 @@ function page() {
                     quota: data.quota || null,
                     min_semester: data.min_semester || null,
                     salary: data.salary || null,
-                    company_id: data.company_id || null
+                    company_id: data.company_id || null,
+                    accepted: true
                 }))
     
                 uploadData(formatedData, 60).then((data) => {
@@ -133,7 +134,8 @@ function page() {
                     quota: opportunity.quota || null,
                     min_semester: opportunity.min_semester || null,
                     salary: opportunity.salary || null,
-                    company_id: opportunity.company_id || null
+                    company_id: opportunity.company_id || null,
+                    accepted: true
                 })
             }).then(async (response) => {
                 if (!response.ok) {

@@ -25,6 +25,18 @@ function page() {
                 }
                 return response.json()
             }).then(async (companies) => {
+                let cities = []
+                await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/cities`).then(async (response) => {
+                    if (!response.ok) {
+                        return response.json().then(error => {
+                            throw new Error(error.message)
+                        })
+                    }
+                    return response.json()
+                }).then((data) => {
+                    cities = data
+                })
+
                 await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/opportunities`).then(async (response) => {
                     if (!response.ok) {
                         return response.json().then(error => {
@@ -39,14 +51,16 @@ function page() {
                         const company = companies.find((company) => {
                             return company.id == opportunity.company_id
                         })
-    
+                        
                         if (company) {
+                            const city = cities.find(item => item.id === company.geo_id)
+
                             joinedData.push({
                                 id: opportunity.id,
                                 name: opportunity.name,
                                 brand_name: company.brand_name,
                                 logo: company.logo,
-                                city: company.city,
+                                city: city ? city.city : null,
                                 start_period: opportunity.start_period,
                                 updatedAt: opportunity.updatedAt
                             })

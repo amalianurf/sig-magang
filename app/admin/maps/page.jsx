@@ -37,7 +37,8 @@ function page() {
         geojson: true,
         sector: true,
         company: true,
-        opportunity: true
+        opportunity: true,
+        activeData: true
     })
     const { headerHeight } = useContext(HeaderContext)
 
@@ -52,6 +53,7 @@ function page() {
                 return response.json()
             }).then((data) => {
                 setGeoJsonData(data)
+                setLoading(prevLoading => ({ ...prevLoading, geojson: false }))
             }).catch((error) => {
                 console.error('Error:', error)
             })
@@ -69,7 +71,7 @@ function page() {
                 const ids = data.map(item => item.id)
                 setOpportunityIds(ids)
                 setOpportunities(data)
-                setLoading({ ...loading, opportunity: false })
+                setLoading(prevLoading => ({ ...prevLoading, opportunity: false }))
             }).catch((error) => {
                 console.error('Error:', error)
             })
@@ -85,7 +87,7 @@ function page() {
                 return response.json()
             }).then((data) => {
                 setCompanies(data)
-                setLoading({ ...loading, company: false })
+                setLoading(prevLoading => ({ ...prevLoading, company: false }))
             }).catch((error) => {
                 console.error('Error:', error)
             })
@@ -101,7 +103,7 @@ function page() {
                 return response.json()
             }).then((data) => {
                 setSectors(data)
-                setLoading({ ...loading, sector: false })
+                setLoading(prevLoading => ({ ...prevLoading, sector: false }))
             }).catch((error) => {
                 console.error('Error:', error)
             })
@@ -114,23 +116,22 @@ function page() {
     }, [])
 
     useEffect(() => {
-        if (!loading.company && !loading.opportunity) {
+        if (!loading.company && !loading.opportunity && !loading.geojson) {
             activeDataFilter()
         }
-    }, [loading.company, loading.opportunity])
+    }, [loading.company, loading.opportunity, loading.geojson])
 
     const activeDataFilter = async () => {
-        fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/opportunities/active`).then(async (response) => {
+        await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/opportunities/active`).then(async (response) => {
             if (!response.ok) {
                 return response.json().then(error => {
                     throw new Error(error.message)
                 })
             }
             return response.json()
-        }).then((data) => {
+        }).then(async (data) => {
             const activeOpportunityIds = data.map(item => item.id)
             const activeCompanyIds = [...new Set(data.map(item => item.company_id))]
-            console.log(activeOpportunityIds)
 
             setActiveDataIds({
                 activeOpportunityIds: activeOpportunityIds,
@@ -155,15 +156,16 @@ function page() {
                         start_period: opportunity.start_period,
                         Company: {
                             id: company.id,
-                            city: company.city
+                            geo_id: company.geo_id
                         }
                     })
                 }
             })
 
+            const ids = filteredOpportunities.map(item => item.id)
+            setFilteredOpportunityIds(ids)
+
             updateGeoJsonData(joinedData)
-            setLoading({ ...loading, geojson: false })
-            setFilteredOpportunityIds(null)
             setSelectedSector(null)
             setDateRange({
                 start: '',
@@ -171,6 +173,7 @@ function page() {
             })
             setIsFiltered(false)
             setIsActiveData(true)
+            setLoading(prevLoading => ({ ...prevLoading, activeData: false }))
         }).catch((error) => {
             console.error('Error:', error)
         })
@@ -178,24 +181,24 @@ function page() {
 
     const updateGeoJsonData = (opportunities) => {
         const groupedOpportunityByCity = opportunities.reduce((accumulator, item) => {
-            if (!accumulator[item.Company.city]) {
-                accumulator[item.Company.city] = []
+            if (!accumulator[item.Company.geo_id]) {
+                accumulator[item.Company.geo_id] = []
             }
 
-            accumulator[item.Company.city].push(item)
+            accumulator[item.Company.geo_id].push(item)
 
             return accumulator
         }, {})
-
+        
         const uniqueCompanyIds = [...new Set(opportunities.map(item => item.Company.id))]
-
+        
         const uniqueCompanies = uniqueCompanyIds.map(id => {
             const company = companies.find(item => item.id === id)
-
+            
             if (company) {
                 return {
                     id: id,
-                    city: company.city,
+                    geo_id: company.geo_id,
                     location: company.location
                 }
             }
@@ -204,25 +207,25 @@ function page() {
         setFilteredCompanies(uniqueCompanies)
 
         const groupedCompanyByCity = uniqueCompanies.reduce((accumulator, item) => {
-            if (!accumulator[item.city]) {
-                accumulator[item.city] = []
+            if (!accumulator[item.geo_id]) {
+                accumulator[item.geo_id] = []
             }
 
-            accumulator[item.city].push(item)
+            accumulator[item.geo_id].push(item)
 
             return accumulator
         }, {})
 
         const newGeoJsonFeatures = geoJsonData && geoJsonData.features.map(feature => {
-            const city = feature.properties.city
+            const id = feature.properties.id
 
-            if (groupedOpportunityByCity[city] && groupedOpportunityByCity[city].length > 0) {
+            if (groupedOpportunityByCity[id] && groupedOpportunityByCity[id].length > 0) {
                 return {
                     ...feature,
                     properties: {
                         ...feature.properties,
-                        companies: groupedCompanyByCity[city].length,
-                        opportunities: groupedOpportunityByCity[city].length
+                        companies: groupedCompanyByCity[id].length,
+                        opportunities: groupedOpportunityByCity[id].length
                     }
                 }
             } else {
@@ -277,7 +280,7 @@ function page() {
                                         start_period: opportunity.start_period,
                                         Company: {
                                             id: company.id,
-                                            city: company.city
+                                            geo_id: company.geo_id
                                         }
                                     })
                                 }
@@ -310,8 +313,8 @@ function page() {
         } else {
             setFilteredCompanies(companies)
             setFilteredGeoJsonData(geoJsonData)
+            setFilteredOpportunityIds(opportunityIds)
         }
-        setFilteredOpportunityIds(null)
         setSelectedSector(null)
         setDateRange({
             start: '',
@@ -323,7 +326,7 @@ function page() {
     const handleShowAllData = () => {
         setFilteredCompanies(companies)
         setFilteredGeoJsonData(geoJsonData)
-        setFilteredOpportunityIds(null)
+        setFilteredOpportunityIds(opportunityIds)
         setSelectedSector(null)
         setDateRange({
             start: '',
@@ -335,7 +338,7 @@ function page() {
 
     return (
         <>
-            {(loading.company && loading.geojson && loading.sector && loading.opportunity) || !Map ? (
+            {(loading.company && loading.geojson && loading.sector && loading.opportunity && loading.activeData) ? (
                 <div className='p-10'>Loading...</div>
             ) : (
                 <section className='relative w-full rounded-t-2xl overflow-hidden'>
@@ -347,6 +350,7 @@ function page() {
                         dateRange={dateRange}
                         selectedSector={selectedSector}
                         isFiltered={isFiltered}
+                        isActiveData={isActiveData}
                         setCity={setCity}
                         setCompanyId={setCompanyId}
                         setDateRange={setDateRange}

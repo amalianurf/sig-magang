@@ -16,10 +16,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     activity_type: {
       type: DataTypes.ENUM,
-      values: ['WFO', 'WFH', 'Hybrid']
+      values: ['WFO', 'WFH', 'HYBRID']
     },
     duration: {
-      type: DataTypes.NUMBER(2),
+      type: DataTypes.INTEGER,
       defaultValue: 0
     },
     description: {
@@ -27,25 +27,30 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     quota: {
-      type: DataTypes.NUMBER(2)
+      type: DataTypes.INTEGER
     },
     start_period: {
       type: DataTypes.DATE,
       allowNull: false
     },
     min_semester: {
-      type: DataTypes.NUMBER(1),
+      type: DataTypes.INTEGER,
       defaultValue: 0,
     },
     salary: {
-      type: DataTypes.NUMBER(8),
+      type: DataTypes.INTEGER,
+    },
+    accepted: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     },
     company_id: {
       type: DataTypes.STRING(36),
       references: {
         model: 'Company',
         key: 'id'
-      }
+      },
+      onDelete: 'CASCADE'
     }
   }, {
     sequelize,

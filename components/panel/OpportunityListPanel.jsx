@@ -38,7 +38,6 @@ function OpportunityListPanel(props) {
     }, [props.city])
 
     const handleClosePanel = () => {
-        props.setFilteredOpportunityIds(props.opportunityIds)
         props.setCity(null)
     }
 

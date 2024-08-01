@@ -16,7 +16,7 @@ function page() {
         logo: '',
         description: '',
         address: '',
-        city: '',
+        geo_id: '',
         latitude: '',
         longitude: ''
     })
@@ -91,7 +91,7 @@ function page() {
                     description: data.description || null,
                     logo: data.logo || 'https://i.ibb.co.com/NN3GdCG/placeholder.png',
                     address: data.address || null,
-                    city: data.city || null,
+                    geo_id: data.geo_id || null,
                     sector_id: data.sector_id || null,
                     location: data.lat && data.lon ? {
                         type: 'Point',
@@ -99,7 +99,8 @@ function page() {
                             data.lat,
                             data.lon
                         ]
-                    } : null
+                    } : null,
+                    accepted: true
                 }))
 
                 uploadData(formatedData, 100).then((data) => {
@@ -136,14 +137,15 @@ function page() {
                 logo: image,
                 description: company.description || null,
                 address: company.address || null,
-                city: company.city || null,
+                geo_id: company.geo_id || null,
                 location: company.latitude && company.longitude ? {
                     type: 'Point',
                     coordinates: [
                         company.latitude,
                         company.longitude
                     ]
-                } : null
+                } : null,
+                accepted: true
             })
         }).then(async (response) => {
             if (!response.ok) {

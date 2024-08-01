@@ -9,6 +9,7 @@ import toast from 'react-hot-toast'
 
 function page() {
     const [opportunities, setOpportunities] = useState([])
+    const [activeOpportunities, setActiveOpportunities] = useState([])
     const [companies, setCompanies] = useState([])
     const [sectors, setSectors] = useState([])
     const [loading, setLoading] = useState({
@@ -20,23 +21,39 @@ function page() {
     useEffect(() => {
         toast.dismiss()
         const fetchDataOpportunities = async () => {
-            await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/opportunities`).then(async (response) => {
+            await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/opportunities/all`).then(async (response) => {
                 if (!response.ok) {
                     return response.json().then(error => {
                         throw new Error(error.message)
                     })
                 }
                 return response.json()
-            }).then((data) => {
+            }).then(async (data) => {
                 setOpportunities(data)
-                setLoading({ ...loading, opportunity: false })
+
+                await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/opportunities/active`).then(async (response) => {
+                    if (!response.ok) {
+                        return response.json().then(error => {
+                            throw new Error(error.message)
+                        })
+                    }
+                    return response.json()
+                }).then((activeData) => {
+                    const activeOpportunityIds = activeData.map(item => item.id)
+                    const filteredOpportunities = data.filter(item => activeOpportunityIds.includes(item.id))
+
+                    setActiveOpportunities(filteredOpportunities.length)
+                    setLoading({ ...loading, opportunity: false })
+                }).catch((error) => {
+                    console.error('Error:', error)
+                })
             }).catch((error) => {
                 console.error('Error:', error)
             })
         }
 
         const fetchDataCompanies = async () => {
-            await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/companies`).then(async (response) => {
+            await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/companies/all`).then(async (response) => {
                 if (!response.ok) {
                     return response.json().then(error => {
                         throw new Error(error.message)
@@ -99,23 +116,6 @@ function page() {
     const barXAxisData = Object.keys(opportunitiesByMonth)
     const barSeriesData = barXAxisData.map((month) => opportunitiesByMonth[month].length)
 
-    const countOpportunitiesByStartPeriod = (opportunities) => {
-        const currentDate = new Date()
-        let started = 0
-        let notStarted = 0
-      
-        opportunities.forEach((opportunity) => {
-            const opportunityDate = new Date(opportunity.start_period)
-            if (opportunityDate < currentDate) {
-                started += 1
-            } else {
-                notStarted += 1
-            }
-        })
-      
-        return { started, notStarted }
-    }
-
     return (
         <section className='flex flex-col gap-10 p-10'>
             {loading.opportunity && loading.company && loading.sector ? (
@@ -158,8 +158,8 @@ function page() {
                                             arcLabel: (item) => String(item.value),
                                             arcLabelMinAngle: 45,
                                             data: [
-                                                { value: countOpportunitiesByStartPeriod(opportunities).started, label: 'Telah dimulai', color: '#FA0014' },
-                                                { value: countOpportunitiesByStartPeriod(opportunities).notStarted, label: 'Belum dimulai', color: '#117E19' }
+                                                { value: opportunities.length - activeOpportunities, label: 'Telah dimulai', color: '#FA0014' },
+                                                { value: activeOpportunities, label: 'Belum dimulai', color: '#117E19' }
                                             ]
                                         }
                                     ]}

@@ -24,15 +24,13 @@ function Map(props) {
     }, [props.geoJsonData, mapView])
 
     useEffect(() => {
-        if (props.isFiltered) {
-            props.setCompanyId(null)
-            props.setCity(null)
-            setMapView({
-                center: [-1.3631627162310562, 118.42289645522916],
-                zoom: 5
-            })
-        }
-    }, [props.isFiltered])
+        props.setCompanyId(null)
+        props.setCity(null)
+        setMapView({
+            center: [-1.3631627162310562, 118.42289645522916],
+            zoom: 5
+        })
+    }, [props.isFiltered, props.isActiveData])
 
     // perhitungan simpangan baku
     const standardDeviation = () => {
@@ -164,7 +162,7 @@ function Map(props) {
                                 mouseover: (e) => { layer.openPopup(e.latlng) },
                                 mouseout: (e) => { layer.closePopup() },
                                 click: (e) => {
-                                    props.setCity(feature.properties.city)
+                                    props.setCity(feature.properties.id)
                                     props.setCompanyId(null)
                                     setMapView({
                                         center: [e.latlng.lat, e.latlng.lng - 0.25],
@@ -206,6 +204,11 @@ function Map(props) {
                     </MarkerClusterGroup>
                 )}
             </MapContainer>
+            { props.lastUpdate ? (
+                <div className='absolute right-4 bottom-12 text-sm z-[1000]'>
+                    Terakhir diperbarui : { props.lastUpdate() }
+                </div>
+            ) : ''}
             <div className='absolute right-0 bottom-0 w-full px-6 py-2 flex justify-between items-center bg-white z-[1000]'>
                 <div className='flex items-center gap-5'>
                     <Button type={'button'} onClick={props.handleShowAllData} name={'Semua Data'} buttonStyle={'text-iris hover:underline'} />

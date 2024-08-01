@@ -1,9 +1,20 @@
 const CompanyModel = require('../models').Company;
+const IndonesiaGeoModel = require('../models').IndonesiaGeo;
 const { v4: uuidv4 } = require('uuid');
 
 exports.getAll = async (req, res) => {
     try {
         const companies = await CompanyModel.findAll({ order: [['updatedAt', 'DESC']] });
+        res.status(200).json(companies);
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ message: 'Gagal mengambil data' });
+    }
+};
+
+exports.getAcceptedData = async (req, res) => {
+    try {
+        const companies = await CompanyModel.findAll({ where: { accepted: true }, order: [['updatedAt', 'DESC']] });
         res.status(200).json(companies);
     } catch (error) {
         console.error('Error:', error);
@@ -25,6 +36,95 @@ exports.getById = async (req, res) => {
     }
 };
 
+exports.getFromAPI = async (req, res) => {
+    try {
+        const ids = req.body.ids;
+        const companies = [];
+
+        const cities = await IndonesiaGeoModel.findAll({ attributes: ['id', 'city'] });
+
+        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        const getCityId = async (cityName) => {
+            const city = cities.find(item => item.city === cityName);
+            return city ? city.id : null;
+        }
+
+        const getCoordinates = async (address) => {
+            try {
+                const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${process.env.MAPS_KEY}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                const location = data.results[0].geometry.location;
+                return location;
+            } catch (error) {
+                console.error('Error:', error);
+                return null;
+            }
+        }
+
+        const fetchCompanies = async (id) => {
+            try {
+                const response = await fetch(`https://api.kampusmerdeka.kemdikbud.go.id/mitra/public/id/${id}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                const cityId = await getCityId(data.data.city)
+                const coordinates = await getCoordinates(data.data.hq_address)
+                const modifiedData = {
+                    id: data.data.id,
+                    brand_name: data.data.brand_name,
+                    company_name: data.data.name,
+                    description: data.data.description,
+                    logo: data.data.logo,
+                    address: data.data.hq_address,
+                    location: coordinates ? {
+                        type: 'Point',
+                        coordinates: [
+                            coordinates.lng,
+                            coordinates.lat
+                        ]
+                    } : null,
+                    sector_id: data.data.sector.id == '00000000-0000-0000-0000-000000000000' ? '291b3dc0-35f4-4071-bca0-06274b2be832' : data.data.sector.id,
+                    sector_name: data.data.sector.name,
+                    geo_id: cityId
+                };
+
+                return modifiedData;
+            } catch (error) {
+                console.error("Error:", error);
+                throw error;
+            }
+        };
+
+        const fetchCompaniesRecursively = async (ids) => {
+            if (ids.length === 0) {
+                return res.status(200).json(companies);
+            }
+
+            const id = ids.shift();
+            try {
+                const company = await fetchCompanies(id);
+                companies.push(company);
+            } catch (error) {
+                console.error(`Gagal melakukan fetching untuk company dengan id ${id}. Akan mencoba lagi setelah 6 menit.`);
+                await sleep(360000);
+                ids.unshift(id);
+            }
+
+            await fetchCompaniesRecursively(ids);
+        };
+
+        await fetchCompaniesRecursively([...ids]);
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ message: 'Gagal mengambil data.' });
+    }
+}
+
 exports.create = async (req, res) => {
     try {
         if (Array.isArray(req.body)) {
@@ -35,9 +135,9 @@ exports.create = async (req, res) => {
                     'description' in data &&
                     'logo' in data &&
                     'address' in data &&
-                    'city' in data &&
                     'location' in data &&
-                    'sector_id' in data
+                    'sector_id' in data &&
+                    'geo_id' in data
                 );
             });
     

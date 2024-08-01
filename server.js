@@ -30,12 +30,16 @@ app.prepare().then(() => {
     server.get('/api/sectors', sectorController.getAll);
     server.get('/api/sector/:id', sectorController.getById);
 
-    server.get('/api/companies', companyController.getAll);
+    server.get('/api/companies', companyController.getAcceptedData);
     server.get('/api/company/:id', companyController.getById);
+    server.get('/api/companies/all', companyController.getAll);
+    server.post('/api/companies/sync', companyController.getFromAPI);
 
-    server.get('/api/opportunities', opportunityController.getAll);
+    server.get('/api/opportunities', opportunityController.getAcceptedData);
     server.get('/api/opportunity/:id', opportunityController.getById);
+    server.get('/api/opportunities/all', opportunityController.getAll);
     server.get('/api/opportunities/active', opportunityController.getFromAPI);
+    server.post('/api/opportunities/sync', opportunityController.getDetailFromAPI);
 
     server.get('/api/geoms', geomController.getAll);
     server.get('/api/cities', geomController.getCity);

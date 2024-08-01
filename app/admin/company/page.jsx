@@ -1,6 +1,5 @@
 'use client'
 import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import Button from '@component/components/Button'
 import ConfirmDeleteModal from '@component/components/modal/ConfirmDeleteModal'
 import { DataGrid, useGridApiContext, useGridSelector, gridPageSelector, gridPageCountSelector, GridToolbarQuickFilter } from '@mui/x-data-grid'
@@ -10,6 +9,7 @@ import toast from 'react-hot-toast'
 
 function page() {
     const [companies, setCompanies] = useState([])
+    const [opportunities, setOpportunities] = useState([])
     const [loading, setLoading] = useState(true)
     const [confirmDelete, setConfirmDelete] = useState({
         showModal: false,
@@ -19,11 +19,42 @@ function page() {
         items: [],
         quickFilterExcludeHiddenColumns: false,
     })
-    const router = useRouter()
 
     useEffect(() => {
         const fetchDataCompanies = async () => {
-            await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/companies`).then(async (response) => {
+            await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/companies/all`).then(async (response) => {
+                if (!response.ok) {
+                    return response.json().then(error => {
+                        throw new Error(error.message)
+                    })
+                }
+                return response.json()
+            }).then(async (companies) => {
+                await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/cities`).then(async (response) => {
+                    if (!response.ok) {
+                        return response.json().then(error => {
+                            throw new Error(error.message)
+                        })
+                    }
+                    return response.json()
+                }).then((cities) => {
+                    const mergedData = companies.map(company => {
+                        const city = cities.find(item => item.id === company.geo_id)
+                        return {
+                            ...company,
+                            city: city ? city.city : null
+                        }
+                    })
+                    setCompanies(mergedData)
+                    setLoading(false)
+                })
+            }).catch((error) => {
+                console.error('Error:', error)
+            })
+        }
+
+        const fetchDataOpportunities = async () => {
+            await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/opportunities/all`).then(async (response) => {
                 if (!response.ok) {
                     return response.json().then(error => {
                         throw new Error(error.message)
@@ -31,14 +62,14 @@ function page() {
                 }
                 return response.json()
             }).then((data) => {
-                setCompanies(data)
-                setLoading(false)
+                setOpportunities(data)
             }).catch((error) => {
                 console.error('Error:', error)
             })
         }
 
         fetchDataCompanies()
+        fetchDataOpportunities()
     }, [])
 
     const handleDelete = (id) => {
@@ -95,7 +126,11 @@ function page() {
             renderCell: (params) => (
                 <div className='flex justify-center items-center gap-2 w-full h-full'>
                     <Button type={'button'} href={`/admin/company/edit/${params.id}`} onClick={() => { window.open(`${process.env.NEXT_PUBLIC_CLIENT}/admin/company/edit/${params.id}`, '_self') }} name={'Edit'} buttonStyle={'text-center font-medium text-sm text-white bg-green hover:bg-green/[.3] rounded-md px-2 py-1 w-full'} />
-                    <Button type={'button'} onClick={() => setConfirmDelete({ showModal: true, id: params.id })} name={'Hapus'} buttonStyle={'text-center font-medium text-sm text-white bg-red hover:bg-red/[.3] rounded-md px-2 py-1 w-full'} />
+                    { params.row.accepted ? (
+                        <Button type={'button'} onClick={() => setConfirmDelete({ showModal: true, id: params.id })} name={'Hapus'} buttonStyle={'text-center font-medium text-sm text-white bg-red hover:bg-red/[.3] rounded-md px-2 py-1 w-full'} />
+                    ) : (
+                        <Button type={'button'} onClick={() => handleAccept(params.id)} name={'Terima'} buttonStyle={'text-center font-medium text-sm text-white bg-iris hover:bg-iris/[.3] rounded-md px-2 py-1 w-full'} />
+                    )}
                 </div>
             )
         }
@@ -130,6 +165,61 @@ function page() {
         if (params.field !== 'actions') {
             window.open(`${process.env.NEXT_PUBLIC_CLIENT}/admin/company/${params.id}`, '_self')
         }
+    }
+
+    const handleAccept = (id) => {
+        toast.loading('Mengirim data...')
+        fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/company/${id}`).then(async (response) => {
+            if (!response.ok) {
+                return response.json().then(error => {
+                    throw new Error(error.message)
+                })
+            }
+            return response.json()
+        }).then(async (data) => {
+            await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/company/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': Cookies.get('access-token'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    ...data,
+                    accepted: true
+                })
+            }).then(async (response) => {
+                if (!response.ok) {
+                    return response.json().then(error => {
+                        throw new Error(error.message)
+                    })
+                }
+            })
+
+            const relatedOpportunities = opportunities.filter(item => item.company_id === id)
+
+            await Promise.all(relatedOpportunities.map(async (opportunity) => {
+                await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/opportunity/${opportunity.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': Cookies.get('access-token'),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ...opportunity, accepted: true })
+                })
+            }))
+
+            setCompanies(prevCompanies =>
+                prevCompanies.map(company =>
+                    company.id === id ? { ...company, accepted: true } : company
+                )
+            )
+            toast.dismiss()
+            toast.success('Data perusahaan dan lowongan magang telah diterima')
+        }).catch((error) => {
+            toast.dismiss()
+            toast.error(error.message)
+            console.error('Error:', error.message)
+        })
     }
 
     return (
