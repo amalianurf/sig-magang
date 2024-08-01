@@ -24,6 +24,7 @@ function page() {
     const [sectors, setSectors] = useState()
     const [selectedSector, setSelectedSector] = useState()
     const [isFiltered, setIsFiltered] = useState(false)
+    const [lastUpdate, setLastUpdate] = useState()
     const [isActiveData, setIsActiveData] = useState(true)
     const [activeDataIds, setActiveDataIds] = useState({
         activeOpportunityIds: '',
@@ -71,6 +72,7 @@ function page() {
                 const ids = data.map(item => item.id)
                 setOpportunityIds(ids)
                 setOpportunities(data)
+                setLastUpdate(getLastUpdate(data))
                 setLoading(prevLoading => ({ ...prevLoading, opportunity: false }))
             }).catch((error) => {
                 console.error('Error:', error)
@@ -336,7 +338,7 @@ function page() {
         setIsActiveData(false)
     }
 
-    const lastUpdate = () => {
+    const getLastUpdate = (opportunities) => {
         const latestItem = opportunities.reduce((latest, item) => {
             return new Date(item.updatedAt) > new Date(latest.updatedAt) ? item : latest
         }, opportunities[0])
@@ -349,7 +351,7 @@ function page() {
         
         const formatedDate = new Date(latestItem.updatedAt).toLocaleDateString('id-ID', options)
 
-        return String(formatedDate)
+        return formatedDate
     }
 
     return (
