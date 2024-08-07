@@ -7,6 +7,7 @@ exports.getAll = async (req, res) => {
     try {
         const companyCounts = await CompanyModel.findAll({
             attributes: ['geo_id', [Sequelize.fn('COUNT', Sequelize.col('id')), 'company_count']],
+            where: { accepted: true },
             group: 'geo_id'
         });
 
@@ -16,6 +17,7 @@ exports.getAll = async (req, res) => {
                 attributes: ['geo_id']
             }],
             attributes: ['Company.geo_id', [Sequelize.fn('COUNT', Sequelize.col('Opportunity.id')), 'opportunity_count']],
+            where: { accepted: true },
             group: ['Company.geo_id', 'Company.id']
         });
 

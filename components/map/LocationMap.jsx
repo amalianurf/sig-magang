@@ -9,7 +9,7 @@ function LocationMap(props) {
     const mapPosition = props.position.length === 2 ? props.position : defaultPosition
 
     return (
-        <MapContainer center={mapPosition} zoom={15} style={{ height: '30%', width: '30%', position: 'absolute', top: '200px', right: '40px' }}>
+        <MapContainer center={mapPosition} zoom={15} style={{ height: '250px', width: '30%', position: 'absolute', top: '200px', right: '40px' }}>
             <TileLayer
                 attribution='&copy <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
