@@ -324,7 +324,7 @@ function page() {
                         }
                     })
 
-                    await addSycnCompanies(companies, 100)
+                    await addSycnCompanies(companies, 80)
                 })
             }
 
@@ -362,7 +362,7 @@ function page() {
         }).catch((error) => {
             toast.dismiss()
             toast.error(error.message)
-            console.error('Error:', error.message)
+            console.error('Sinkronisasi data gagal')
         })
     }
 
