@@ -366,20 +366,6 @@ function page() {
         })
     }
 
-    const checkAndSync = () => {
-        const now = new Date()
-        const targetHour = 2
-    
-        if (now.getHours() === targetHour) {
-            syncData()
-        }
-    }
-
-    useEffect(() => {
-        const interval = setInterval(checkAndSync, 3600000)
-        return () => clearInterval(interval)
-    }, [])
-
     return (
         <section className='p-10'>
             {loading ? (
