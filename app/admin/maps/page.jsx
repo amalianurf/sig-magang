@@ -1,15 +1,10 @@
 'use client'
 import React, { useState, useEffect, useContext } from 'react'
-import dynamic from 'next/dynamic'
 import toast from 'react-hot-toast'
+import Map from '@component/components/map/Map'
 import CompanyInfoPanel from '@component/components/panel/CompanyInfoPanel'
 import OpportunityListPanel from '@component/components/panel/OpportunityListPanel'
 import { HeaderContext } from '../layout'
-
-const Map = dynamic(() => import('@component/components/map/Map'), {
-    ssr: false,
-    loading: () => { return <div className='p-10'>Sebentar lagi...</div> }
-})
 
 function page() {
     const [geoJsonData, setGeoJsonData] = useState()

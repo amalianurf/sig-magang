@@ -1,16 +1,12 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import dynamic from 'next/dynamic'
 import { useRouter, useParams } from 'next/navigation'
 import CompanyDetail from '@component/components/company/CompanyDetail'
 import Button from '@component/components/Button'
+import Map from '@component/components/map/LocationMap'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import toast from 'react-hot-toast'
 import Cookies from 'js-cookie'
-
-const Map = dynamic(() => import('@component/components/map/LocationMap'), {
-    ssr: false
-})
 
 function page() {
     const { id } = useParams('id')

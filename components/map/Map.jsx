@@ -1,9 +1,5 @@
+'use client'
 import React, { useState, useEffect } from 'react'
-import { MapContainer, TileLayer, GeoJSON, Marker, Popup } from 'react-leaflet'
-import MarkerClusterGroup from 'react-leaflet-cluster'
-import 'leaflet/dist/leaflet.css'
-import 'leaflet-defaulticon-compatibility'
-import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css'
 import Select from 'react-select'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -14,6 +10,7 @@ import CloseIcon from '@mui/icons-material/Close'
 
 function Map(props) {
     const [mapKey, setMapKey] = useState(0)
+    const [isClient, setIsClient] = useState(false)
     const [mapView, setMapView] = useState({
         center: [-1.3631627162310562, 118.42289645522916],
         zoom: 5
@@ -22,6 +19,10 @@ function Map(props) {
     useEffect(() => {
         setMapKey((prevKey) => prevKey + 1)
     }, [props.geoJsonData, mapView])
+
+    useEffect(() => {
+        setIsClient(typeof window !== 'undefined')
+    }, [])
 
     useEffect(() => {
         props.setCompanyId(null)
@@ -86,6 +87,16 @@ function Map(props) {
         indicatorSeparator: (styles) => ({ ...styles, display: 'none' })
     }
 
+    if (!isClient) {
+        return null
+    }
+
+    const { MapContainer, TileLayer, GeoJSON, Marker, Popup } = require('react-leaflet')
+    const MarkerClusterGroup = require('react-leaflet-cluster').default
+    require('leaflet/dist/leaflet.css')
+    require('leaflet-defaulticon-compatibility')
+    require('leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css')
+
     return (
         <>
             {props.sectors && (
@@ -139,7 +150,7 @@ function Map(props) {
                     attribution='&copy <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
                 />
-                {props.geoJsonData && (
+                {props.geoJsonData ? (
                     <GeoJSON
                         key={mapKey}
                         data={props.geoJsonData}
@@ -172,6 +183,8 @@ function Map(props) {
                             })
                         }}
                     />
+                ) : (
+                    <div className='absolute w-full min-h-screen flex justify-center items-center text-xl bg-white/[.4] z-[1000] cursor-wait'>Loading...</div>
                 )}
                 {props.companies && (
                     <MarkerClusterGroup chunkedLoading showCoverageOnHover={false} >
