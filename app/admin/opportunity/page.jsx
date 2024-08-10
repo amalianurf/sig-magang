@@ -1,6 +1,5 @@
 'use client'
 import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import Button from '@component/components/Button'
 import ConfirmDeleteModal from '@component/components/modal/ConfirmDeleteModal'
 import { DataGrid, useGridApiContext, useGridSelector, gridPageSelector, gridPageCountSelector, GridToolbarQuickFilter } from '@mui/x-data-grid'
@@ -365,20 +364,6 @@ function page() {
             console.error('Sinkronisasi data gagal')
         })
     }
-
-    const checkAndSync = () => {
-        const now = new Date()
-        const targetHour = 2
-    
-        if (now.getHours() === targetHour) {
-            syncData()
-        }
-    }
-
-    useEffect(() => {
-        const interval = setInterval(checkAndSync, 3600000)
-        return () => clearInterval(interval)
-    }, [])
 
     return (
         <section className='p-10'>

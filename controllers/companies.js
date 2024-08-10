@@ -84,8 +84,8 @@ exports.getFromAPI = async (req, res) => {
                     location: coordinates ? {
                         type: 'Point',
                         coordinates: [
-                            coordinates.lng,
-                            coordinates.lat
+                            coordinates.lat,
+                            coordinates.lng
                         ]
                     } : null,
                     sector_id: data.data.sector.id == '00000000-0000-0000-0000-000000000000' ? '291b3dc0-35f4-4071-bca0-06274b2be832' : data.data.sector.id,
