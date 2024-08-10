@@ -1,12 +1,24 @@
-import React from 'react'
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-import 'leaflet/dist/leaflet.css'
-import 'leaflet-defaulticon-compatibility'
-import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css'
+'use client'
+import React, { useEffect, useState } from 'react'
 
 function LocationMap(props) {
+    const [isClient, setIsClient] = useState(false)
+
     const defaultPosition = [51.505, -0.09]
     const mapPosition = props.position.length === 2 ? props.position : defaultPosition
+
+    useEffect(() => {
+        setIsClient(typeof window !== 'undefined')
+    }, [])
+
+    if (!isClient) {
+        return null
+    }
+
+    const { MapContainer, TileLayer, Marker, Popup } = require('react-leaflet')
+    require('leaflet/dist/leaflet.css')
+    require('leaflet-defaulticon-compatibility')
+    require('leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css')
 
     return (
         <MapContainer center={mapPosition} zoom={15} style={{ height: '250px', width: '30%', position: 'absolute', top: '200px', right: '40px' }}>
